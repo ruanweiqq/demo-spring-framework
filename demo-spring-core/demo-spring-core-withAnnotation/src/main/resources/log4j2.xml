@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN" monitorInterval="30">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+		<RollingFile name="RollingFile" fileName="demo-springframework-withAnnotation.log"
+			filePattern="-%d{yyyy-MM-dd}_%i.log">
+			<TimeBasedTriggeringPolicy interval="24"
+				modulate="true" />
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</RollingFile>
+		<Async name="Async">
+			<AppenderRef ref="RollingFile" />
+		</Async>
+	</Appenders>
+
+	<Loggers>
+		<Root level="INFO">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="Async" />
+		</Root>
+		<Logger name="java.sql.Connection" level="DEBUG" />
+		<Logger name="java.sql.Statement" level="DEBUG" />
+		<Logger name="java.sql.PreparedStatement" level="DEBUG" />
+		<Logger name="java.sql.ResultSet" level="DEBUG" />
+		<Logger name="org.springframework.jdbc.core" level="DEBUG" />
+		<Logger name="org.apache.ibatis.logging.jdbc" level="DEBUG" />
+		<Logger name="org.mybatis" level="DEBUG" />
+	</Loggers>
+</Configuration>

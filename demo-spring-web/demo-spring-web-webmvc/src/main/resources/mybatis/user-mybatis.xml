@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- 拷贝以下内容至文件mybatis-config.xml -->
+<!-- <typeAlias aliUserEntityUser" tyorg.ruanwei.demo.user.dao.entitytUserEntityUser" /> 
+	 <mapper resource="mybatis/user-mybatis.xml" /> -->
+
+<mapper namespace="org.ruanwei.demo.springframework.web.user.dao.UserDao">
+	<resultMap id="UserMap" type="User">
+		<result property="id" column="ID" />
+		<result property="name" column="NAME" />
+		<result property="gender" column="GENDER" />
+		<result property="age" column="AGE" />
+		<result property="birthday" column="BIRTHDAY" />
+		<result property="degree" column="DEGREE" />
+		<result property="cellphone" column="CELLPHONE" />
+		<result property="email" column="EMAIL" />
+		<result property="hobby" column="HOBBY" />
+		<result property="intro" column="INTRO" />
+		<result property="lastUpdTime" column="LASTUPDTIME" />
+	</resultMap>
+
+	<sql id="userColumn">
+		<![CDATA[
+		select ID, NAME, GENDER, AGE, BIRTHDAY, DEGREE, CELLPHONE, EMAIL, HOBBY, INTRO, LASTUPDTIME from user
+		]]>
+	</sql>
+
+	<select id="list4page" parameterType="User" resultMap="UserMap">
+		<include refid="userColumn" />
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			1=1
+			<if test="id!=0">AND ID = #{id}</if>
+			<if test="name!=null and name!=''">AND NAME like '%${name}%'</if>
+			<if test="gender!=0">AND GENDER = #{gender}</if>
+			<if test="age!=0">AND AGE = #{age}</if>
+			<if test="birthday!=null">AND BIRTHDAY = #{birthday}</if>
+			<if test="degree!=0">AND DEGREE = #{degree}</if>
+			<if test="cellphone!=null and cellphone!=''">AND CELLPHONE like '%${cellphone}%'</if>
+			<if test="email!=null and email!=''">AND EMAIL like '%${email}%'</if>
+			<if test="hobby!=0">AND HOBBY = #{hobby}</if>
+			<if test="intro!=null and intro!=''">AND INTRO like '%${intro}%'</if>
+			limit #{start},#{offset}
+		</trim>
+	</select>
+
+	<select id="findByExample" parameterType="User" resultMap="UserMap">
+		<include refid="userColumn" />
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			1=1
+			<if test="id!=0">AND ID = #{id}</if>
+			<if test="name!=null and name!=''">AND NAME like '%${name}%'</if>
+			<if test="gender!=0">AND GENDER = #{gender}</if>
+			<if test="age!=0">AND AGE = #{age}</if>
+			<if test="birthday!=null">AND BIRTHDAY = #{birthday}</if>
+			<if test="degree!=0">AND DEGREE = #{degree}</if>
+			<if test="cellphone!=null and cellphone!=''">AND CELLPHONE like '%${cellphone}%'</if>
+			<if test="email!=null and email!=''">AND EMAIL like '%${email}%'</if>
+			<if test="hobby!=0">AND HOBBY = #{hobby}</if>
+			<if test="intro!=null and intro!=''">AND INTRO like '%${intro}%'</if>
+		</trim>
+	</select>
+
+	<select id="countByExample" parameterType="User" resultType="long">
+		select count(*) from user
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			1=1
+			<if test="id!=0">AND ID = #{id}</if>
+			<if test="name!=null and name!=''">AND NAME like '%${name}%'</if>
+			<if test="gender!=0">AND GENDER = #{gender}</if>
+			<if test="age!=0">AND AGE = #{age}</if>
+			<if test="birthday!=null">AND BIRTHDAY = #{birthday}</if>
+			<if test="degree!=0">AND DEGREE = #{degree}</if>
+			<if test="cellphone!=null and cellphone!=''">AND CELLPHONE like '%${cellphone}%'</if>
+			<if test="email!=null and email!=''">AND EMAIL like '%${email}%'</if>
+			<if test="hobby!=0">AND HOBBY = #{hobby}</if>
+			<if test="intro!=null and intro!=''">AND INTRO like '%${intro}%'</if>
+		</trim>
+	</select>
+
+	<select id="findById" parameterType="long" resultMap="UserMap">
+		<include refid="userColumn" />
+		where ID=#{value}
+	</select>
+
+	<update id="update" parameterType="User">
+		update user
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="name!=null and name!=''">NAME = #{name},</if>
+			<if test="gender!=0">GENDER = #{gender},</if>
+			<if test="age!=0">AGE = #{age},</if>
+			<if test="birthday!=null">BIRTHDAY = #{birthday},</if>
+			<if test="degree!=0">DEGREE = #{degree},</if>
+			<if test="cellphone!=null and cellphone!=''">CELLPHONE = #{cellphone},</if>
+			<if test="email!=null and email!=''">EMAIL = #{email},</if>
+			<if test="hobby!=0">HOBBY = #{hobby},</if>
+			<if test="intro!=null and intro!=''">INTRO = #{intro},</if>
+		</trim>
+		WHERE ID = #{id}
+	</update>
+
+	<insert id="save" parameterType="User">
+		insert into user (NAME, GENDER, AGE, BIRTHDAY, DEGREE, CELLPHONE, EMAIL, HOBBY, INTRO)
+		values (#{name}, #{gender}, #{age}, #{birthday}, #{degree}, #{cellphone}, #{email}, #{hobby}, #{intro})
+	</insert>
+
+	<delete id="delete" parameterType="long">
+		delete from user where ID = #{value}
+	</delete>
+
+	<delete id="batchDelete" parameterType="java.lang.String">
+		delete from user where ID in
+		<foreach collection="array" item="item" index="index" open="(" separator=","
+			close=")">#{item}</foreach>
+	</delete>
+
+</mapper>

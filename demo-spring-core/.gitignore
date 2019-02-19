@@ -1,0 +1,14 @@
+/.settings/
+/.project
+
+
+# idea
+.idea
+*.iml
+/demo-springframework-xmlConfig/demo-springframework-xmlConfig.iml
+/demo-springframework-javaConfig/demo-springframework-javaConfig.iml
+/demo-springframework-temp/demo-springframework-temp.iml
+/demo-springframework-xmlConfig/target
+/demo-springframework-javaConfig/target
+/demo-springframework-temp/target
+/.README.md.html

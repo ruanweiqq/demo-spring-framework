@@ -1,0 +1,6 @@
+/target/
+/demo-springframework-javaConfig.log
+/.settings/
+/.classpath
+/.DS_Store
+/.project

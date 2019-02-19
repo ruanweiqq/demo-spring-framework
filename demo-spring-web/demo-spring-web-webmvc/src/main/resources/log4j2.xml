@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN" monitorInterval="30">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %level{WARN=W, DEBUG=D, ERROR=E, TRACE=T, INFO=I} %c{1}[%L] - %msg%n" />
+		</Console>
+		<RollingFile name="RollingFile" fileName="${log.path}/demo-springweb-webmvc.log"
+			filePattern="${log.path}/demo-springweb-webmvc-%d{yyyy-MM-dd}.log">
+			<!-- <SizeBasedTriggeringPolicy size="100M" /> -->
+			<TimeBasedTriggeringPolicy interval="12" modulate="true" />
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %level{WARN=W, DEBUG=D, ERROR=E, TRACE=T, INFO=I} %c{1}[%L] - %msg%n" />
+		</RollingFile>
+		<Async name="Async">
+			<AppenderRef ref="RollingFile" />
+		</Async>
+	</Appenders>
+
+	<Loggers>
+		<Root level="DEBUG">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="Async" />
+		</Root>
+		<Logger name="java.sql.Connection" level="DEBUG" />
+		<Logger name="java.sql.Statement" level="DEBUG" />
+		<Logger name="java.sql.PreparedStatement" level="DEBUG" />
+		<Logger name="java.sql.ResultSet" level="DEBUG" />
+		<Logger name="org.springframework.jdbc.core" level="DEBUG" />
+		<Logger name="org.apache.ibatis.logging.jdbc" level="DEBUG" />
+		<Logger name="org.mybatis" level="DEBUG" />
+		<Logger name="org.springframework" level="INFO" />
+	</Loggers>
+</Configuration>
