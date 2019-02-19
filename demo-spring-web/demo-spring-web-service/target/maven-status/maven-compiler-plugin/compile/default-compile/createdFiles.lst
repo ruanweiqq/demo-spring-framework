@@ -1,7 +1,0 @@
-org/ruanwei/demo/springframework/user/dao/UserDao.class
-org/ruanwei/demo/springframework/user/service/impl/UserJmsServiceImpl.class
-org/ruanwei/demo/springframework/user/service/impl/UserDubboServiceImpl.class
-META-INF/spring.components
-org/ruanwei/demo/springframework/user/service/impl/UserHttpInvokerServiceImpl.class
-org/ruanwei/demo/springframework/user/service/impl/UserHessianServiceImpl.class
-org/ruanwei/demo/springframework/user/service/impl/UserRmiServiceImpl.class
