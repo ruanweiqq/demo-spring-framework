@@ -1,0 +1,7 @@
+org/ruanwei/demo/springframework/remoting/user/service/UserJmsService.class
+org/ruanwei/demo/springframework/remoting/user/param/UserResp.class
+org/ruanwei/demo/springframework/remoting/user/service/UserRmiService.class
+org/ruanwei/demo/springframework/remoting/user/service/UserDubboService.class
+org/ruanwei/demo/springframework/remoting/user/service/UserBurlapService.class
+org/ruanwei/demo/springframework/remoting/user/service/UserHttpInvokerService.class
+org/ruanwei/demo/springframework/remoting/user/service/UserHessianService.class

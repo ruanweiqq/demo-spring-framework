@@ -1,0 +1,14 @@
+org/ruanwei/demo/springframework/web/user/web/UserHandler.class
+META-INF/spring.components
+org/ruanwei/demo/springframework/web/WebAppConfig.class
+org/ruanwei/demo/springframework/web/user/web/form/UserForm.class
+org/ruanwei/demo/springframework/web/user/web/UserRestController.class
+org/ruanwei/demo/springframework/web/user/dao/entity/UserEntity$WithPageingView.class
+org/ruanwei/demo/springframework/web/user/dao/entity/UserEntity.class
+org/ruanwei/demo/springframework/web/user/service/impl/UserServiceImpl.class
+org/ruanwei/demo/springframework/web/SpringWebApplication.class
+org/ruanwei/demo/springframework/web/user/service/UserService.class
+org/ruanwei/demo/springframework/web/user/dao/entity/UserEntity$WithoutPageingView.class
+org/ruanwei/demo/springframework/web/user/dao/entity/UserEntity$Update.class
+org/ruanwei/demo/springframework/web/user/dao/entity/UserEntity$Create.class
+org/ruanwei/demo/springframework/web/user/dao/UserDao.class

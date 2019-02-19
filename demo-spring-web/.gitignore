@@ -1,28 +1,31 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# Eclipse files
 /.settings/
 /.project
 
-logs
-
-# idea
+# idea files
 .idea
 *.iml
-/demo-springweb-commons/demo-springweb-commons.iml
-/demo-springweb-remoting/demo-springweb-remoting.iml
-/demo-springweb-service/demo-springweb-service.iml
-/demo-springweb-webflux/demo-springweb-webflux.iml
-/demo-springweb-webmvc/demo-springweb-webmvc.iml
-/demo-springweb-commons/target
-/demo-springweb-remoting/target
-/demo-springweb-service/target
-/demo-springweb-webflux/target
-/demo-springweb-webmvc/target
-.DS_Store
-logs
-target
-pom.xml.versionsBackup
-
-/demo-springweb-commons/logs
-/demo-springweb-remoting/logs
-/demo-springweb-service/logs
-/demo-springweb-webflux/logs
-/demo-springweb-webmvc/logs
