@@ -35,7 +35,7 @@
 
 		<junit.version>5.2.0</junit.version>
 
-		<spring.version>5.1.5.RELEASE</spring.version>
+		<spring.version>5.0.12.RELEASE</spring.version>
 		<spring-data-releasetrain.version>Kay-SR9</spring-data-releasetrain.version>
 		<spring-data-jdbc.version>1.0.0.RC2</spring-data-jdbc.version>
 
