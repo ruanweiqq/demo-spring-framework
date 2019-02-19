@@ -12,7 +12,7 @@
 	<artifactId>demo-spring-web-remoting</artifactId>
 	<packaging>jar</packaging>
 	<version>2019.02.19</version>
-	<name>Demo:Spring Web Remoting</name>
+	<name>Demo:Spring Framework Web Remoting</name>
 	<url>http://www.ruanwei.org</url>
 
 	<properties>

@@ -12,7 +12,7 @@
 	<artifactId>demo-springweb-service</artifactId>
 	<packaging>war</packaging>
 	<version>2019.02.19</version>
-	<name>Demo:Spring Web Service</name>
+	<name>Demo:Spring Framework Web Service</name>
 	<url>http://www.ruanwei.org</url>
 
 	<properties>

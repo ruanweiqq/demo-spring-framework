@@ -12,7 +12,7 @@
 	<version>2019.02.19</version>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Web WebFlux</name>
+	<name>Demo:Spring Framework Web WebFlux</name>
 
 	<dependencies>
 		<dependency>

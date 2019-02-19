@@ -12,7 +12,7 @@
     <version>2019.02.19</version>
     <packaging>pom</packaging>
 
-    <name>Demo:Spring Web</name>
+    <name>Demo:Spring Framework Web</name>
 
     <properties>
     </properties>

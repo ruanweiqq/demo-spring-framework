@@ -13,7 +13,7 @@
 	<version>2019.02.19</version>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Core</name>
+	<name>Demo:Spring Framework Core</name>
 
 	<modules>
 		<module>demo-spring-core-withoutAnnotation</module>

@@ -17,7 +17,8 @@
 	<name>Demo:Spring Framework Share Starter</name>
 
 	<properties>
-		<demo-spring-share.version>2019.02.19</demo-spring-share.version>
+		<demo-spring-share-bom.version>2019.02.19</demo-spring-share-bom.version>
+		<demo-spring-share-commons.version>2019.02.19</demo-spring-share-commons.version>
 	</properties>
 
 	<dependencyManagement>
@@ -25,14 +26,14 @@
 			<dependency>
 				<groupId>org.ruanwei.demo</groupId>
 				<artifactId>demo-spring-share-bom</artifactId>
-				<version>${demo-spring-share.version}</version>
+				<version>${demo-spring-share-bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.ruanwei.demo</groupId>
 				<artifactId>demo-spring-share-commons</artifactId>
-				<version>${demo-spring-share.version}</version>
+				<version>${demo-spring-share-commons.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
