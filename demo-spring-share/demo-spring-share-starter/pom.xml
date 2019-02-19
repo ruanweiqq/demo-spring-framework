@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -13,19 +14,25 @@
 	<version>2019.02.19</version>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Share Starter</name>
+	<name>Demo:Spring Framework Share Starter</name>
 
 	<properties>
+		<demo-spring-share.version>2019.02.19</demo-spring-share.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.ruanwei.demo</groupId>
-				<artifactId>demo-share-bom</artifactId>
-				<version>0.0.2</version>
+				<artifactId>demo-spring-share-bom</artifactId>
+				<version>${demo-spring-share.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-share-commons</artifactId>
+				<version>${demo-spring-share.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -47,16 +54,15 @@
 			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
 			<artifactId>demo-spring-share-commons</artifactId>
-			<version>2019.02.19</version>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>demo-share-starter</finalName>
+		<finalName>demo-spring-share-starter</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -98,7 +104,7 @@
 					<version>9.4.8.v20171121</version>
 					<configuration>
 						<webAppConfig>
-							<contextPath>/springweb-web</contextPath>
+							<contextPath>/spring-web</contextPath>
 						</webAppConfig>
 						<systemProperties>
 							<systemProperty>
