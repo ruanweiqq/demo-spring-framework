@@ -312,14 +312,14 @@
 				<scope>provided</scope>
 			</dependency>
 			
-			<!-- 3.Multipart -->
+			<!-- E.3.Multipart -->
 			<dependency>
 				<groupId>commons-fileupload</groupId>
 				<artifactId>commons-fileupload</artifactId>
 				<version>1.2.2</version>
 			</dependency>
 
-			<!-- 4.View -->
+			<!-- E.4.View -->
 			<!-- PDF -->
 			<dependency>
 				<groupId>com.itextpdf</groupId>
@@ -333,14 +333,14 @@
 				<version>3.15</version>
 			</dependency>
 
-			<!-- 5.Http Client -->
+			<!-- E.5.Http Client -->
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>4.5.3</version>
 			</dependency>
 
-			<!-- 6.WebSocket -->
+			<!-- E.6.WebSocket -->
 			<dependency>
 				<groupId>javax.websocket</groupId>
 				<artifactId>javax.websocket-api</artifactId>
@@ -349,6 +349,7 @@
 			<!-- ========== E.Spring Framework Web End ========== -->
 
 			<!-- ========== F.Other Start ========== -->
+			<!-- F.1.Apache Commons -->
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
@@ -365,6 +366,7 @@
 				<version>4.1</version>
 			</dependency>
 
+			<!-- F.2.Lombok -->
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
@@ -372,6 +374,7 @@
 				<scope>provided</scope>
 			</dependency>
 
+			<!-- F.3.Zookeeper -->
 			<dependency>
 				<groupId>org.apache.zookeeper</groupId>
 				<artifactId>zookeeper</artifactId>
@@ -383,16 +386,13 @@
 				<version>0.1</version>
 			</dependency>
 
+			<!-- F.4.reactor netty -->
 			<dependency>
 				<groupId>io.projectreactor.ipc</groupId>
 				<artifactId>reactor-netty</artifactId>
 				<version>0.7.8.RELEASE</version>
 			</dependency>
 			<!-- ========== F.Other End ========== -->
-
-
-
-
 
 			<!-- ========== Unknow Start ========== -->
 			<dependency>
