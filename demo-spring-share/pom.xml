@@ -7,7 +7,7 @@
 	<version>2019.02.19</version>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Share</name>
+	<name>Demo:Spring Framework Share</name>
 	<url>http://www.ruanwei.org</url>
 	<description></description>
 
@@ -17,7 +17,7 @@
 			<name>ruanwei</name>
 			<email>ruanwei@ruanwei.org</email>
 			<url>http://www.ruanwei.org</url>
-			<organization>www.ruanwei.org</organization>
+			<organization>ruanwei.org</organization>
 			<organizationUrl>http://www.ruanwei.org</organizationUrl>
 			<roles>
 				<role>author</role>
@@ -37,7 +37,7 @@
 
 		<junit.version>5.2.0</junit.version>
 
-		<spring.version>5.0.8.RELEASE</spring.version>
+		<spring.version>5.1.5.RELEASE</spring.version>
 		<spring-data-releasetrain.version>Kay-SR9</spring-data-releasetrain.version>
 		<spring-data-jdbc.version>1.0.0.RC2</spring-data-jdbc.version>
 
@@ -52,7 +52,7 @@
 	</modules>
 
 	<build>
-		<finalName>demo-share</finalName>
+		<finalName>demo-spring-share</finalName>
 	</build>
 
 	<profiles>
@@ -70,13 +70,6 @@
 			<id>prod</id>
 			<properties>
 				<env>production</env>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>zxy</id>
-			<properties>
-				<env>zxy</env>
 			</properties>
 		</profile>
 	</profiles>
