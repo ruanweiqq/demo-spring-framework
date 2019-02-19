@@ -1,6 +1,0 @@
-/Users/ruanwei/Applications/eclipse-workspace/demo-spring-framework/demo-spring-web/demo-spring-web-service/src/main/java/org/ruanwei/demo/springframework/user/service/impl/UserHttpInvokerServiceImpl.java
-/Users/ruanwei/Applications/eclipse-workspace/demo-spring-framework/demo-spring-web/demo-spring-web-service/src/main/java/org/ruanwei/demo/springframework/user/service/impl/UserDubboServiceImpl.java
-/Users/ruanwei/Applications/eclipse-workspace/demo-spring-framework/demo-spring-web/demo-spring-web-service/src/main/java/org/ruanwei/demo/springframework/user/service/impl/UserJmsServiceImpl.java
-/Users/ruanwei/Applications/eclipse-workspace/demo-spring-framework/demo-spring-web/demo-spring-web-service/src/main/java/org/ruanwei/demo/springframework/user/dao/UserDao.java
-/Users/ruanwei/Applications/eclipse-workspace/demo-spring-framework/demo-spring-web/demo-spring-web-service/src/main/java/org/ruanwei/demo/springframework/user/service/impl/UserHessianServiceImpl.java
-/Users/ruanwei/Applications/eclipse-workspace/demo-spring-framework/demo-spring-web/demo-spring-web-service/src/main/java/org/ruanwei/demo/springframework/user/service/impl/UserRmiServiceImpl.java
