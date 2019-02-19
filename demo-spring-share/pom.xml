@@ -8,8 +8,6 @@
 	<packaging>pom</packaging>
 
 	<name>Demo:Spring Framework Share</name>
-	<url>http://www.ruanwei.org</url>
-	<description></description>
 
 	<developers>
 		<developer>
