@@ -327,10 +327,10 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		CustomEditorConfigurer customEditorConfigurer = new CustomEditorConfigurer();
 
 		// 方式四：单个指定PropertyEditor
-		registerPropertyEditors(customEditorConfigurer);
+		// registerPropertyEditors(customEditorConfigurer);
 
 		// 方式五：分组指定PropertyEditor
-		registerPropertyEditorRegistrars(customEditorConfigurer);
+		// registerPropertyEditorRegistrars(customEditorConfigurer);
 
 		log.info("customEditorConfigurer==========" + customEditorConfigurer);
 		return customEditorConfigurer;
@@ -351,12 +351,12 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 
 	private void registerFormatterRegistrars(FormattingConversionServiceFactoryBean conversionService) {
 		Set<FormatterRegistrar> formatterRegistrars = new HashSet<FormatterRegistrar>();
-		formatterRegistrars.add(new PeopleFormatterRegistrar());
 		JodaTimeFormatterRegistrar jodaTimeFormatterRegistrar = new JodaTimeFormatterRegistrar();
 		DateTimeFormatterFactoryBean dateTimeFormatterFactoryBean = new DateTimeFormatterFactoryBean();
 		dateTimeFormatterFactoryBean.setPattern("yyyy-MM-dd");
 		jodaTimeFormatterRegistrar.setDateFormatter(dateTimeFormatterFactoryBean.getObject());
 		formatterRegistrars.add(jodaTimeFormatterRegistrar);
+		formatterRegistrars.add(new PeopleFormatterRegistrar());
 		conversionService.setFormatterRegistrars(formatterRegistrars);
 	}
 
@@ -401,6 +401,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	}
 
 	// building message codes from validation error codes,used by DataBinder
+	@Bean
 	public MessageCodesResolver messageCodesResolver() {
 		return new DefaultMessageCodesResolver();
 	}
@@ -498,6 +499,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	}
 
 	// PropertyPlaceholderConfigurer通过指定location/properties属性，以替换@Value中的占位符
+	// @Bean
 	public static PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
 		PropertyPlaceholderConfigurer propertyPlaceholderConfigurer = new PropertyPlaceholderConfigurer();
 		propertyPlaceholderConfigurer.setLocations(new ClassPathResource("family.properties"),
@@ -514,18 +516,6 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 			@Value("${family.familyCount:2}") int familyCount, @Qualifier("father") People father) {
 		MyFamilyFactoryBean myFamilyFactoryBean = new MyFamilyFactoryBean(familyName, familyCount, father);
 		return myFamilyFactoryBean;
-	}
-
-	// ==========B.AOP and Instrumentation==========
-	@Bean("myAspect")
-	public MyAspect myAspect() {
-		return new MyAspect();
-	}
-
-	@Bean("good")
-	public GoodImpl good() {
-		GoodImpl good = new GoodImpl();
-		return good;
 	}
 
 }

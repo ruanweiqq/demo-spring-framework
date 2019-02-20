@@ -173,16 +173,16 @@
 	<util:property-path id="someField2"
 		path="father.name" />
 	<!-- see MethodInvokingFactoryBean -->
-	<bean id="sysProps"
-		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-		<property name="targetClass" value="java.lang.System" />
-		<property name="targetMethod" value="getProperties" />
-	</bean>
 	<bean id="someField3"
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetObject" ref="sysProps" />
 		<property name="targetMethod" value="getProperty" />
 		<property name="arguments" value="java.version" />
+	</bean>
+	<bean id="sysProps"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass" value="java.lang.System" />
+		<property name="targetMethod" value="getProperties" />
 	</bean>
 
 	<!-- A.2.Data Binding -->
@@ -335,45 +335,6 @@
 	
 	<!-- A.7 switches on the load-time weaving -->
 	<!-- <context:load-time-weaver/> -->
-	
-	<!-- ==========B.AOP and Instrumentation========== -->
-	<bean id="myAspect"
-		class="org.ruanwei.demo.springframework.core.aop.MyAspect" />
-	<bean id="good"
-		class="org.ruanwei.demo.springframework.core.aop.GoodImpl" />
-	<!-- To force the use of CGLIB(against JDK dynamic) proxies set the value 
-		of the proxy-target-class attribute of the <aop:config> element to true. -->
-	<aop:config>
-		<aop:pointcut id="myPointcut"
-			expression="execution(* org.ruanwei.demo.springframework.core.ioc.Family.say*(..)) and args(message)" />
-		<!-- <aop:advisor advice-ref="myAspect" pointcut-ref="myPointcut" order="3" 
-			/> -->
-		<aop:aspect id="myAspect1" ref="myAspect" order="1">
-			<aop:pointcut id="myPointcut1"
-				expression="within(org.ruanwei.demo.springframework.core.ioc.*) and execution(* *..Family.say*(..)) and this(t) and args(message)" />
-			<aop:before pointcut-ref="myPointcut1" method="before" />
-			<aop:after pointcut-ref="myPointcut1" method="after" />
-		</aop:aspect>
-		<aop:aspect id="myAspect2" ref="myAspect" order="2">
-			<aop:pointcut id="myPointcut2"
-				expression="within(org.ruanwei.demo.springframework.core.ioc.*) and execution(* *..Family.say*(..)) and this(t) and args(message)" />
-			<aop:after-returning pointcut-ref="myPointcut2"
-				method="afterReturning" returning="ret" />
-			<aop:after-throwing pointcut-ref="myPointcut2"
-				method="afterThrowing" throwing="e" />
-		</aop:aspect>
-		<aop:aspect id="myAspect3" ref="myAspect" order="3">
-			<aop:pointcut id="myPointcut3"
-				expression="within(org.ruanwei.demo.springframework.core.ioc.*) and execution(* *..Family.say*(..)) and args(message)" />
-			<aop:around pointcut-ref="myPointcut3" method="around" />
-		</aop:aspect>
-		<aop:aspect id="myAspect4" order="4">
-			<aop:declare-parents
-				types-matching="org.ruanwei.demo.springframework.core.aop.GoodImpl"
-				implement-interface="org.ruanwei.demo.springframework.core.aop.Happy"
-				default-impl="org.ruanwei.demo.springframework.core.aop.HappyImpl" />
-		</aop:aspect>
-	</aop:config>
 	
 	<!-- <context:spring-configured /> -->
 
