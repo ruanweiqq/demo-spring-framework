@@ -4,10 +4,33 @@
 - demo-springframework-withoutAnnotation模块为纯基于XML/Java的配置元数据的项目，未开启基于注解的配置元数据。
 - demo-springframework-withAnnotation模块为基于XML/Java的配置元数据的项目，并开启基于注解的配置元数据(<context:annotation-config/>)。
 
-First Header  | Second Header
-------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
+基于XML的配置元数据  | 基于Java的配置元数据 | 基于注解的配置元数据
+------------- | ------------- | -------------
+< beans>  | @Configuration | Content Cell
+< beans profile="dev"/>  | @Profile("dev") | 
+< beans default-lazy-init="true"/>  | none | 
+< beans default-autowire="byName"/>  | none | 
+< beans default-autowire-candidates="*Service"/>  | none | 
+< import resource="classpath:dataAccess.xml">  | @Import(DadaAccessConfig.class) | 
+< bean class="DadaAccessConfig.class">  | @ImportResource("classpath:dataAccess.xml") |
+ctx.getEnvironment().getPropertySources().addFirst(new ResourcePropertySource("ps.properties"))  | @PropertySource("classpath:ps.properties") |
+< bean id="myBean" class="org.ruanwei.MyBean"> | @Bean("myBean") |
+none  | @Description("this is a bean") |
+< bean lazy-init-"true"> | @Lazy |
+< bean depends-on-"anotherBean"> | @DependsOn("anotherBean") |
+< bean scope="singleton"> | @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)/JSR-330:@Singleton/@Scope |
+< bean init-method="init">/InitializingBean | @Bean(initMethod="init") |
+< bean destroy-method="destroy">/DisposableBean  | @Bean(destroyMethod="destroy") |
+< bean p:order="1">/PriorityOrdered/Ordered | @Order(1)/JSR-250:@Priority(1) |
+< bean autowire="byType"> | @Bean(autowire=Autowire.BY_TYPE) |
+< bean primary="true"> | @Primary |
+< bean autowire-candidate="false"> | none |
+< bean>< qualifier value="primaryBean"/>< /bean> | @Qualifier("primaryBean")/JSR-330:@Named("primaryBean")/@Qualifier |
+< bean>< lookup-method name="createCommand" bean="myCommand"/>< /bean> | none |
+< bean>< replaced-method name="computeValue" replacer="replacementComputeValue"/>< /bean>  | none |
+< context:load-time-weaver/> | @EnableLoadTimeWeaving |
+< context:spring-configured/> | @EnableSpringConfigured |
+< aop:scoped-proxy proxy-target-class="true"/> | @Scope(proxyMode=ScopedProxyMode.TARGET_CLASS) |
 
 
 ### 基于XML的和基于Java的配置元数据主要对比：
