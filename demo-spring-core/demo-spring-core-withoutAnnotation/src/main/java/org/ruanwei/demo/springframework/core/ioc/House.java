@@ -31,7 +31,6 @@ public class House {
 	private String someField2;
 	private String someField3;
 
-	// Setter-based dependency injection
 	public void setHouseName(String houseName) {
 		log.info("setHouseName(String houseName)" + houseName);
 		this.houseName = houseName;

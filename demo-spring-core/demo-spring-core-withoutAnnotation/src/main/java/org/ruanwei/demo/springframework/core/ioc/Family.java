@@ -36,27 +36,7 @@ public class Family implements ApplicationContextAware, BeanFactoryAware,
 		ApplicationEventPublisherAware, EnvironmentAware, BeanClassLoaderAware,
 		BeanNameAware, LoadTimeWeaverAware {
 	private static Log log = LogFactory.getLog(Family.class);
-
-	// 1.Constructor-based dependency injection
-	private String familyName;
-	private int familyCount;
-	private People father;
-
-	// 2.Setter-based dependency injection
-	// JSR-303 Bean Validation
-	@Valid
-	private People mother;
-	@Valid
-	@PeopleFormat(separator = Separator.SLASH)
-	private People son;
-	@Valid
-	@PeopleFormat(separator = Separator.SLASH)
-	private People daughter;
-
-	// 3.Method injection: Lookup method injection
-	// TODO:加@Valid报错
-	private People guest;
-
+	
 	private ApplicationContext context;
 	private BeanFactory beanFactory;
 	private MessageSource messageSource;
@@ -69,6 +49,23 @@ public class Family implements ApplicationContextAware, BeanFactoryAware,
 	private ClassLoader classLoader;
 	private LoadTimeWeaver loadTimeWeaver;
 
+	private String familyName;
+	private int familyCount;
+	private People father;
+
+	// JSR-303 Bean Validation
+	@Valid
+	private People mother;
+	@Valid
+	@PeopleFormat(separator = Separator.SLASH)
+	private People son;
+	@Valid
+	@PeopleFormat(separator = Separator.SLASH)
+	private People daughter;
+
+	// TODO:加@Valid报错
+	private People guest;
+
 	// JSR-349:Method Validation with @Validated
 	@NotNull
 	public String sayHello(@Size(min = 2, max = 8) String message) {
@@ -78,13 +75,13 @@ public class Family implements ApplicationContextAware, BeanFactoryAware,
 		log.info("3 + 5 = " + calc(3, 5));
 
 		// 3.Method injection: Lookup method injection
-		People guest = createGuest();
+		People bueaty = createBueaty();
 		// 这里是为了兼容不适用@Lookup注解时的方法注入
-		if (guest == null) {
-			guest = new People("ruan_default", 0);
+		if (bueaty == null) {
+			bueaty = new People("ruan_bueaty", 0);
 		}
 		// 等价于PayloadApplicationEvent<People>(this,guest);
-		publisher.publishEvent(guest);
+		publisher.publishEvent(bueaty);
 
 		return message;
 	}
@@ -128,8 +125,8 @@ public class Family implements ApplicationContextAware, BeanFactoryAware,
 	}
 
 	// 3.Method injection: Lookup method injection
-	protected People createGuest() {
-		log.info("createGuest");
+	protected People createBueaty() {
+		log.info("createBueaty");
 		return null;
 	}
 

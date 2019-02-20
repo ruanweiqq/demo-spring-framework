@@ -30,7 +30,7 @@
 		<!-- Proxied scoped beans as dependencies -->
 		<property name="guest" ref="guest" />
 		<!-- 3.Method injection: Lookup method injection -->
-		<lookup-method name="createGuest" bean="guest" />
+		<lookup-method name="createBueaty" bean="guest" />
 		<!-- 3.Method injection: Arbitrary method replacement -->
 		<replaced-method name="calc" replacer="myMethodReplacer" />
 	</bean>
