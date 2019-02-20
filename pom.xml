@@ -5,7 +5,7 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-share-starter</artifactId>
+		<artifactId>demo-spring-framework-share-starter</artifactId>
 		<version>2019.02.19</version>
 	</parent>
 
