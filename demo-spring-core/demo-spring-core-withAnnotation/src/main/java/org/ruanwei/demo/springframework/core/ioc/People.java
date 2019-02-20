@@ -31,7 +31,6 @@ public class People implements SmartLifecycle {
 
 	private volatile boolean running = false;
 
-	// 1.Constructor-based dependency injection
 	@NotEmpty
 	@Size(min = 1, max = 12)
 	@FamilyName2("ruan")
@@ -46,7 +45,7 @@ public class People implements SmartLifecycle {
 			@Value("${father.age:35}") int age) {
 		this.name = name;
 		this.age = age;
-		log.info("People2(String name,int age)" + this);
+		log.info("People(String name,int age)" + this);
 	}
 
 	// ApplicationListener callback

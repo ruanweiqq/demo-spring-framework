@@ -33,34 +33,9 @@ import org.springframework.validation.annotation.Validated;
 @Lazy
 @DependsOn("house")
 @Component("family")
-public class Family implements BeanNameAware, BeanClassLoaderAware,
-		LoadTimeWeaverAware {
+public class Family implements BeanNameAware, BeanClassLoaderAware, LoadTimeWeaverAware {
 	private static Log log = LogFactory.getLog(Family.class);
 
-	// 1.Constructor-based dependency injection
-	private String familyName;
-	private int familyCount;
-	private People father;
-
-	@Valid
-	@Qualifier("somebody")
-	@Autowired
-	private People mother;
-
-	@Value("${son.all}")
-	@PeopleFormat2(separator = Separator.SLASH)
-	private People son;
-
-	@Value("${daughter.all}")
-	@PeopleFormat2(separator = Separator.SLASH)
-	private People daughter;
-
-	@Valid
-	@Qualifier("somebody")
-	@Autowired
-	private People guest;
-
-	// 2.Setter-based dependency injection
 	@Autowired
 	private ApplicationContext context;
 
@@ -84,6 +59,28 @@ public class Family implements BeanNameAware, BeanClassLoaderAware,
 	private ClassLoader classLoader;
 	private LoadTimeWeaver loadTimeWeaver;
 
+	private String familyName;
+	private int familyCount;
+	private People father;
+
+	@Valid
+	@Qualifier("somebody")
+	@Autowired
+	private People mother;
+
+	@Value("${son.all}")
+	@PeopleFormat2(separator = Separator.SLASH)
+	private People son;
+
+	@Value("${daughter.all}")
+	@PeopleFormat2(separator = Separator.SLASH)
+	private People daughter;
+
+	@Valid
+	@Qualifier("somebody")
+	@Autowired
+	private People guest;
+
 	// JSR-349:Method Validation with @Validated
 	@NotNull
 	public String sayHello(@Size(min = 2, max = 8) String message) {
@@ -93,12 +90,12 @@ public class Family implements BeanNameAware, BeanClassLoaderAware,
 		log.info("3 + 5 = " + calc(3, 5));
 
 		// 3.Method injection: Lookup method injection
-		People guest = createGuest();
-		if (guest == null) {
-			guest = new People("ruanwei_def", 18);
+		People bueaty = createBueaty();
+		if (bueaty == null) {
+			bueaty = new People("ruanwei_def", 18);
 		}
 		// 等价于PayloadApplicationEvent<People2>(this,guest);
-		publisher.publishEvent(guest);
+		publisher.publishEvent(bueaty);
 
 		return message;
 	}
@@ -107,13 +104,11 @@ public class Family implements BeanNameAware, BeanClassLoaderAware,
 	// 1.Constructor-based dependency injection(byName with javac -g)
 	@Autowired
 	public Family(@Value("${family.1.familyName:ruan_def}") String familyName,
-			@Value("${family.familyCount:2}") int familyCount,
-			@Valid People father) {
+			@Value("${family.familyCount:2}") int familyCount, @Valid People father) {
 		this.familyName = familyName;
 		this.familyCount = familyCount;
 		this.father = father;
-		log.info("Family(String familyName, int familyCount, People father)"
-				+ this);
+		log.info("Family(String familyName, int familyCount, People father)" + this);
 	}
 
 	// 2.Setter-based dependency injection
@@ -125,8 +120,7 @@ public class Family implements BeanNameAware, BeanClassLoaderAware,
 
 	@Override
 	public void setLoadTimeWeaver(LoadTimeWeaver loadTimeWeaver) {
-		log.info("setLoadTimeWeaver(LoadTimeWeaver loadTimeWeaver)"
-				+ loadTimeWeaver);
+		log.info("setLoadTimeWeaver(LoadTimeWeaver loadTimeWeaver)" + loadTimeWeaver);
 		this.loadTimeWeaver = loadTimeWeaver;
 	}
 
@@ -138,8 +132,8 @@ public class Family implements BeanNameAware, BeanClassLoaderAware,
 
 	// 3.Method injection: Lookup method injection
 	@Lookup("father")
-	protected People createGuest() {
-		log.info("createGuest");
+	protected People createBueaty() {
+		log.info("createBueaty");
 		return null;
 	}
 
@@ -162,10 +156,8 @@ public class Family implements BeanNameAware, BeanClassLoaderAware,
 
 	@Override
 	public String toString() {
-		return "Family [familyName=" + familyName + ", familyCount="
-				+ familyCount + ", father=" + father + ", mother=" + mother
-				+ ", son=" + son + ", daughter=" + daughter + ", guest="
-				+ guest + "]";
+		return "Family [familyName=" + familyName + ", familyCount=" + familyCount + ", father=" + father + ", mother="
+				+ mother + ", son=" + son + ", daughter=" + daughter + ", guest=" + guest + "]";
 	}
 
 }
