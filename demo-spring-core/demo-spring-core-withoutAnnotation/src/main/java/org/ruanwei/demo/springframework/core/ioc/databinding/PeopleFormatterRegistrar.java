@@ -16,9 +16,11 @@ public class PeopleFormatterRegistrar implements FormatterRegistrar {
 	@Override
 	public void registerFormatters(FormatterRegistry registry) {
 		log.debug("registerFormatters(FormatterRegistry registry)" + registry);
+		// S -> T
 		registry.addConverter(new StringToPeopleConverter());
 		registry.addConverterFactory(new StringToPeopleConverterFactory());
 		
+		// String -> T
 		registry.addFormatter(new PeopleFormatter("/"));
 		registry.addFormatterForFieldType(People.class, new PeopleFormatter("/"));
 		registry.addFormatterForFieldAnnotation(new PeopleFormatAnnotationFormatterFactory());
