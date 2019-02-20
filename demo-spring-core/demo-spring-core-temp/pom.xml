@@ -4,11 +4,11 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-core</artifactId>
+		<artifactId>demo-spring-framework-core</artifactId>
 		<version>2019.02.19</version>
 	</parent>
 
-	<artifactId>demo-spring-core-temp</artifactId>
+	<artifactId>demo-spring-framework-core-temp</artifactId>
 	<version>2019.02.19</version>
 	<packaging>jar</packaging>
 
@@ -81,7 +81,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-core-temp</finalName>
+		<finalName>demo-spring-framework-core-temp</finalName>
 	</build>
 
 </project>

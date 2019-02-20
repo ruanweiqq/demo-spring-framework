@@ -9,16 +9,16 @@
 		<version>2019.02.19</version>
 	</parent>
 
-	<artifactId>demo-spring-core</artifactId>
+	<artifactId>demo-spring-framework-core</artifactId>
 	<version>2019.02.19</version>
 	<packaging>pom</packaging>
 
 	<name>Demo:Spring Framework Core</name>
 
 	<modules>
-		<module>demo-spring-core-withoutAnnotation</module>
-		<module>demo-spring-core-withAnnotation</module>
-		<module>demo-spring-core-temp</module>
+		<module>demo-spring-framework-core-withoutAnnotation</module>
+		<module>demo-spring-framework-core-withAnnotation</module>
+		<module>demo-spring-framework-core-temp</module>
 	</modules>
 
 	<dependencyManagement>
@@ -154,7 +154,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-core</finalName>
+		<finalName>demo-spring-framework-core</finalName>
 	</build>
 
 </project>

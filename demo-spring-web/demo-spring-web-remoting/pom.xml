@@ -4,12 +4,12 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-web</artifactId>
+		<artifactId>demo-spring-framework-web</artifactId>
 		<version>2019.02.19</version>
 		<!-- <relativePath>../pom.xml</relativePath> -->
 	</parent>
 
-	<artifactId>demo-spring-web-remoting</artifactId>
+	<artifactId>demo-spring-framework-web-remoting</artifactId>
 	<packaging>jar</packaging>
 	<version>2019.02.19</version>
 	<name>Demo:Spring Framework Web Remoting</name>
@@ -22,6 +22,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-web-remoting</finalName>
+		<finalName>demo-spring-framework-web-remoting</finalName>
 	</build>
 </project>

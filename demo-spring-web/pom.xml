@@ -8,7 +8,7 @@
         <version>2019.02.19</version>
     </parent>
 
-    <artifactId>demo-spring-web</artifactId>
+    <artifactId>demo-spring-framework-web</artifactId>
     <version>2019.02.19</version>
     <packaging>pom</packaging>
 
@@ -18,10 +18,10 @@
     </properties>
 
     <modules>
-        <module>demo-spring-web-remoting</module>
-        <module>demo-spring-web-service</module>
-        <module>demo-spring-web-webmvc</module>
-        <module>demo-spring-web-webflux</module>
+        <module>demo-spring-framework-web-remoting</module>
+        <module>demo-spring-framework-web-service</module>
+        <module>demo-spring-framework-web-webmvc</module>
+        <module>demo-spring-framework-web-webflux</module>
     </modules>
 
     <dependencyManagement>
@@ -39,7 +39,7 @@
     </dependencies>
 
     <build>
-        <finalName>demo-spring-web</finalName>
+        <finalName>demo-spring-framework-web</finalName>
     </build>
 
 </project>

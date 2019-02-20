@@ -8,7 +8,7 @@
 		<version>2019.02.19</version>
 	</parent>
 
-	<artifactId>demo-spring-web-webflux</artifactId>
+	<artifactId>demo-spring-framework-web-webflux</artifactId>
 	<version>2019.02.19</version>
 	<packaging>jar</packaging>
 
@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
-			<artifactId>demo-spring-web-remoting</artifactId>
+			<artifactId>demo-spring-framework-web-remoting</artifactId>
 			<version>2019.02.19</version>
 		</dependency>
 
@@ -60,7 +60,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-web-webflux</finalName>
+		<finalName>demo-spring-framework-web-webflux</finalName>
 		<filters>
 			<filter>src/main/filters/${env}.properties</filter>
 		</filters>

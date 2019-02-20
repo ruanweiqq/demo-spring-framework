@@ -5,11 +5,11 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-share</artifactId>
+		<artifactId>demo-spring-framework-share</artifactId>
 		<version>2019.02.19</version>
 	</parent>
 
-	<artifactId>demo-spring-share-commons</artifactId>
+	<artifactId>demo-spring-framework-share-commons</artifactId>
 	<version>2019.02.19</version>
 	<packaging>jar</packaging>
 
@@ -23,8 +23,8 @@
 		<dependencies>
 			<dependency>
 				<groupId>org.ruanwei.demo</groupId>
-				<artifactId>demo-spring-share-bom</artifactId>
-				<version>${demo-spring-share-bom.version}</version>
+				<artifactId>demo-spring-framework-share-bom</artifactId>
+				<version>${demo-spring-framework-share-bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -109,6 +109,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-share-commons</finalName>
+		<finalName>demo-spring-framework-share-commons</finalName>
 	</build>
 </project>

@@ -4,11 +4,11 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-web</artifactId>
+		<artifactId>demo-spring-framework-web</artifactId>
 		<version>2019.02.19</version>
 	</parent>
 
-	<artifactId>demo-spring-web-webmvc</artifactId>
+	<artifactId>demo-spring-framework-web-webmvc</artifactId>
 	<version>2019.02.19</version>
 	<packaging>war</packaging>
 
@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
-			<artifactId>demo-spring-web-remoting</artifactId>
+			<artifactId>demo-spring-framework-web-remoting</artifactId>
 			<version>2019.02.19</version>
 		</dependency>
 
@@ -153,7 +153,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-springweb-webmvc</finalName>
+		<finalName>demo-spring-framework-web-webmvc</finalName>
 		<filters>
 			<filter>src/main/filters/${env}.properties</filter>
 		</filters>
