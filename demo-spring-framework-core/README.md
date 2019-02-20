@@ -36,22 +36,22 @@ none  | none | @Autowired(required="true")<br/>JSR-250:@Resource("myBean")<br/>J
 none  | none | @Value("${placeholder}")/@Value("#{SpEL}")
 org.springframework.context.event.EventListener  | none | @EventListener
 none  | none | @PersistenceContext
-- | - | -
+分隔线 | 分隔线 | 分隔线
 < context:annotation-config/> | @Bean xxxBeanPostProcessor | 开启基于注解的配置元数据
 < context:component-scan base-package="org.ruanwei" scoped-proxy="class"/> | @ComponentScan(basePackages="org.ruanwei",scopedProxy=ScopedProxyMode.CLASS) |
-- | - | -
+分隔线 | 分隔线 | 分隔线
 < aop:aspectj-autoproxy/>  | @EnableAspectJAutoProxy | 开启基于@AspectJ风格的AOP配置
 基于schema风格的AOP配置  | 基于Java的配置元数据 | 基于@AspectJ风格的AOP配置
 < aop:config><br/>< aop:aspect ref="myAspect"><br/>< /aop:config> | none | @AspectJ
 < aop:aspect><br/>< aop:pointcut id="myPointcut" expression="execution(* transfer(..))"/><br/>< /aop:aspect> | none | @Pointcut("execution(* transfer(..))")
 < aop:aspect><br/>< aop:before pointcut-ref="myPointcut" method="myAdviceMethod"/><br/>< /aop:aspect> | none | @Before("org.ruanwei.SystemArchitecture.myPointcut()")
 < aop:aspect><br/>< aop:declare-parents types-matching="org.ruanwei.*A*" implement-interface="org.ruanwei.B" default-impl="org.ruanwei.BImpl"/><br/>< /aop:aspect> | none | @DeclareParents(value="org.ruanwei.*A*",defaultImpl=BImpl.class)
-- | - | -
+分隔线 | 分隔线 | 分隔线
 tx:annotation-driven transaction-manager="txManager"/> | @EnableTransactionManagement | 开启基于@Transactional注解的事务声明配置
 基于XML的事务声明配置 | 基于Java的配置元数据 | 基于@Transactional注解的事务声明配置
 < tx:advice id="txAdvice" transaction-manager="txManager"><br/>< tx:attributes><br/>< tx:method name="get*"/><br/>< /tx:attributes><br/>< /tx:advice>  | none | @Transactional
 < aop:config><br/>< aop:pointcut id="myPointcut" expression="execution(* transfer(..))"/><br/>< aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut"/><br/>< /aop:config>  | none |
--  | - | -
+分隔线 | 分隔线 | 分隔线
 
 ### 基于XML的和基于Java的配置元数据主要对比：
 - &lt;beans> vs @Configuration.
