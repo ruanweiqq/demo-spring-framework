@@ -8,7 +8,7 @@
 		<version>2019.02.19</version>
 	</parent>
 
-	<artifactId>demo-springweb-webflux</artifactId>
+	<artifactId>demo-spring-web-webflux</artifactId>
 	<version>2019.02.19</version>
 	<packaging>jar</packaging>
 
@@ -60,7 +60,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-springweb-webflux</finalName>
+		<finalName>demo-spring-web-webflux</finalName>
 		<filters>
 			<filter>src/main/filters/${env}.properties</filter>
 		</filters>

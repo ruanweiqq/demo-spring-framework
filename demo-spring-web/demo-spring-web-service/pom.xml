@@ -9,7 +9,7 @@
 		<!-- <relativePath>../pom.xml</relativePath> -->
 	</parent>
 
-	<artifactId>demo-springweb-service</artifactId>
+	<artifactId>demo-spring-web-service</artifactId>
 	<packaging>war</packaging>
 	<version>2019.02.19</version>
 	<name>Demo:Spring Framework Web Service</name>
@@ -62,7 +62,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-springweb-service</finalName>
+		<finalName>demo-spring-web-service</finalName>
 		<filters>
 			<filter>src/main/filters/${env}.properties</filter>
 		</filters>
