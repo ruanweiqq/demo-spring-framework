@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-starter</artifactId>
-		<version>2019.02.19</version>
+		<version>2019.02.21</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-starter-bom</artifactId>
-	<version>2019.02.19</version>
+	<version>2019.02.21</version>
 	<packaging>pom</packaging>
 
 	<name>Demo:Spring Framework Starter BOM</name>

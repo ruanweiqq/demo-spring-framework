@@ -6,17 +6,17 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-starter</artifactId>
-		<version>2019.02.19</version>
+		<version>2019.02.21</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-starter-commons</artifactId>
-	<version>2019.02.19</version>
+	<version>2019.02.21</version>
 	<packaging>jar</packaging>
 
 	<name>Demo:Spring Framework Starter Commons</name>
 
 	<properties>
-		<demo-spring-framework-starter-bom.version>2019.02.19</demo-spring-framework-starter-bom.version>
+		<demo-spring-framework-starter-bom.version>2019.02.21</demo-spring-framework-starter-bom.version>
 	</properties>
 
 	<dependencyManagement>
