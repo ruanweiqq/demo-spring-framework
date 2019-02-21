@@ -11,10 +11,9 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 public class UserHibernateDao {
 	private static Log log = LogFactory.getLog(UserHibernateDao.class);
 
-	private static final String sql_11 = "select name from user where id = 1";
-	private static final String sql_12 = "select name from user where id = ?";
-	private static final String hql_12 = "from demo.User user where user.id=?";
-	private static final String sql_13 = "select name from user where id = :id";
+	private static final String sql_11 = "select name from user where id = ?";
+	private static final String sql_12 = "select name from user where id = :id";
+	private static final String hql_1 = "from demo.User user where user.id = ?";
 
 	private SessionFactory sessionFactory;
 	private HibernateTemplate hibernateTemplate;
@@ -25,7 +24,7 @@ public class UserHibernateDao {
 	}
 
 	public void queryForSingleRowWithSingleColumn(int id) {
-		List<User> list = sessionFactory.getCurrentSession().createQuery(hql_12).setParameter(0, 1).list();
+		List<User> list = sessionFactory.getCurrentSession().createQuery(hql_1).setParameter(0, 1).list();
 		list.forEach(e -> log.info("e========" + e));
 	}
 }
