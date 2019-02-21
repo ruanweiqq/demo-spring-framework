@@ -12,7 +12,8 @@
 
 	<artifactId>demo-spring-framework-starter-all</artifactId>
 	<version>2019.02.21</version>
-	<packaging>pom</packaging>
+	<!-- <packaging>pom</packaging> -->
+	<packaging>jar</packaging>
 
 	<name>Demo:Spring Framework Starter All</name>
 
@@ -77,6 +78,11 @@
 
 			<!-- A.2.Testing -->
 			<!-- JUnit -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<!-- <scope>test</scope> -->
+		</dependency>
 			<!-- ========== A.Common End ========== -->
 
 			<!-- ========== B.Spring Framework Start ========== -->
@@ -382,12 +388,12 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope>
+			<!-- <scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>javax.servlet.jsp-api</artifactId>
-			<scope>provided</scope>
+			<!-- <scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -455,7 +461,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
+			<!-- <scope>provided</scope> -->
 		</dependency>
 
 			<!-- F.3.Zookeeper -->

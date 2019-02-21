@@ -3,21 +3,37 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-share-starter</artifactId>
-		<version>2019.02.19</version>
-	</parent>
-
+	<groupId>org.ruanwei.demo</groupId>
 	<artifactId>demo-spring-framework</artifactId>
 	<version>2019.02.19</version>
 	<packaging>pom</packaging>
 
 	<name>Demo:Spring Framework</name>
 
+	<developers>
+		<developer>
+			<id>ruanwei</id>
+			<name>ruanwei</name>
+			<email>ruanwei@ruanwei.org</email>
+			<url>http://www.ruanwei.org</url>
+			<organization>ruanwei.org</organization>
+			<organizationUrl>http://www.ruanwei.org</organizationUrl>
+			<roles>
+				<role>author</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+	</properties>
+
 	<modules>
-		<module>demo-spring-framework-starter</module>		
-	    <module>demo-spring-framework-withoutAnnotation</module>		
+		<module>demo-spring-framework-starter</module>
+		<module>demo-spring-framework-withoutAnnotation</module>
 		<module>demo-spring-framework-core</module>
 		<module>demo-spring-framework-web</module>
 		<module>demo-spring-framework-temp</module>
@@ -26,5 +42,81 @@
 	<build>
 		<finalName>demo-spring-framework</finalName>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<env>development</env>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+
+		<profile>
+			<id>prod</id>
+			<properties>
+				<env>production</env>
+			</properties>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<!-- 除了Maven Central仓库外，Spring自己提供了如下仓库 -->
+		<repository>
+			<id>io.spring.repo.maven.milestone</id>
+			<name>Spring Milestone Repository</name>
+			<url>http://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>io.spring.repo.maven.snapshot</id>
+			<name>Spring Snapshot Repository</name>
+			<url>http://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>io.spring.repo.maven.release</id>
+			<name>Spring GA Repository</name>
+			<url>http://repo.spring.io/release/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+
+		<repository>
+			<id>spring-libs-milestone</id>
+			<name>Spring Milestones Repository</name>
+			<url>https://repo.spring.io/libs-milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-libs-snapshot</id>
+			<name>Spring Snapshot Repository</name>
+			<url>http://repo.spring.io/libs-snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-libs-releases</id>
+			<name>Spring project artifacts and all transitive dependencies</name>
+			<url>http://repo.spring.io/libs-release</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-releases</id>
+			<url>https://repo.spring.io/libs-release</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 </project>
