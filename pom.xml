@@ -16,9 +16,11 @@
 	<name>Demo:Spring Framework</name>
 
 	<modules>
-		<module>demo-spring-framework-share</module>
-		<module>demo-spring-framework-web</module>
+		<module>demo-spring-framework-starter</module>		
+	    <module>demo-spring-framework-withoutAnnotation</module>		
 		<module>demo-spring-framework-core</module>
+		<module>demo-spring-framework-web</module>
+		<module>demo-spring-framework-temp</module>
 	</modules>
 
 	<build>
