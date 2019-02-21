@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.ruanwei.demo</groupId>
-	<artifactId>demo-spring-framework-share</artifactId>
+	<artifactId>demo-spring-framework-starter</artifactId>
 	<version>2019.02.19</version>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Framework Share</name>
+	<name>Demo:Spring Framework Starter</name>
 
 	<developers>
 		<developer>
@@ -31,13 +31,13 @@
 	</properties>
 
 	<modules>
-		<module>demo-spring-framework-share-bom</module>
-		<module>demo-spring-framework-share-starter</module>
-		<module>demo-spring-framework-share-commons</module>
+		<module>demo-spring-framework-starter-bom</module>
+		<module>demo-spring-framework-starter-all</module>
+		<module>demo-spring-framework-starter-commons</module>
 	</modules>
 
 	<build>
-		<finalName>demo-spring-framework-share</finalName>
+		<finalName>demo-spring-framework-starter</finalName>
 	</build>
 
 	<profiles>

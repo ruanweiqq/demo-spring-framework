@@ -4,15 +4,15 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-core</artifactId>
+		<artifactId>demo-spring-framework</artifactId>
 		<version>2019.02.19</version>
 	</parent>
 
-	<artifactId>demo-spring-framework-core-temp</artifactId>
+	<artifactId>demo-spring-framework-temp</artifactId>
 	<version>2019.02.19</version>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Core(Temp)</name>
+	<name>Demo:Spring Framework Temp(will remove)</name>
 
 	<dependencies>
 
@@ -81,7 +81,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-framework-core-temp</finalName>
+		<finalName>demo-spring-framework-temp</finalName>
 	</build>
 
 </project>

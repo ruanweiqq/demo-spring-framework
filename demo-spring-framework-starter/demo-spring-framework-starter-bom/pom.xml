@@ -5,15 +5,15 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-share</artifactId>
+		<artifactId>demo-spring-framework-starter</artifactId>
 		<version>2019.02.19</version>
 	</parent>
 
-	<artifactId>demo-spring-framework-share-bom</artifactId>
+	<artifactId>demo-spring-framework-starter-bom</artifactId>
 	<version>2019.02.19</version>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Framework Share BOM</name>
+	<name>Demo:Spring Framework Starter BOM</name>
 
 	<properties>
 		<log4j.version>2.10.0</log4j.version>
@@ -449,6 +449,6 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>demo-spring-framework-share-bom</finalName>
+		<finalName>demo-spring-framework-starter-bom</finalName>
 	</build>
 </project>
