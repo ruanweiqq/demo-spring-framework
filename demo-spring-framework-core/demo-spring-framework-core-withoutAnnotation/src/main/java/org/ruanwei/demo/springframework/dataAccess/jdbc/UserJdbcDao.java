@@ -1,5 +1,6 @@
 package org.ruanwei.demo.springframework.dataAccess.jdbc;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -51,7 +53,6 @@ public class UserJdbcDao {
 	private JdbcTemplate jdbcTemplate;
 	// named parameters instead of the traditional JDBC "?" placeholders.
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-	private AdvancedJdbcTemplate advancedJdbcTemplate;
 
 	// 2.core SimpleJdbc classes
 	private SimpleJdbcInsert simpleJdbcInsert;
@@ -64,37 +65,30 @@ public class UserJdbcDao {
 	private SqlUpdate sqlUpdate;
 	private StoredProcedure storedProcedure;
 
-	private static final String sql_11 = "select name from user where id = 1";
-	private static final String sql_12 = "select name from user where id = ?";
-	private static final String sql_13 = "select name from user where id = :id";
+	private static final String sql_11 = "select name from user where id = ?";
+	private static final String sql_12 = "select name from user where id = :id";
 
-	private static final String sql_21 = "select name, age from user where id = 1";
-	private static final String sql_22 = "select name, age from user where id = ?";
-	private static final String sql_23 = "select name, age from user where id = :id";
+	private static final String sql_21 = "select name, age from user where id = ?";
+	private static final String sql_22 = "select name, age from user where id = :id";
 
-	private static final String sql_31 = "select * from user where id = 1";
-	private static final String sql_32 = "select * from user where id = ?";
-	private static final String sql_33 = "select * from user where id = :id";
+	private static final String sql_31 = "select * from user where id = ?";
+	private static final String sql_32 = "select * from user where id = :id";
 
-	private static final String sql_41 = "select name from user where id > 0";
-	private static final String sql_42 = "select name from user where id > ?";
-	private static final String sql_43 = "select name from user where id > :id";
+	private static final String sql_41 = "select name from user where id > ?";
+	private static final String sql_42 = "select name from user where id > :id";
 
-	private static final String sql_51 = "select name, age from user where id > 0";
-	private static final String sql_52 = "select name, age from user where id > ?";
-	private static final String sql_53 = "select name, age from user where id > :id";
+	private static final String sql_51 = "select name, age from user where id > ?";
+	private static final String sql_52 = "select name, age from user where id > :id";
 
-	private static final String sql_61 = "select * from user where id > 0";
-	private static final String sql_62 = "select * from user where id > ?";
-	private static final String sql_63 = "select * from user where id > :id";
+	private static final String sql_61 = "select * from user where id > ?";
+	private static final String sql_62 = "select * from user where id > :id";
 
-	private static final String sql_71 = "insert into user(name,age,birthday) values(\"ruanwei\", 35, \"1983-07-06\")";
-	private static final String sql_72 = "insert into user(name,age,birthday) values(?, ?, ?)";
-	private static final String sql_73 = "insert into user(name,age,birthday) values(:name, :age, :birthday)";
+//	private static final String sql_71 = "insert into user(name,age,birthday) values(\"ruanwei\", 35, \"1983-07-06\")";
+	private static final String sql_71 = "insert into user(name,age,birthday) values(?, ?, ?)";
+	private static final String sql_72 = "insert into user(name,age,birthday) values(:name, :age, :birthday)";
 
-	private static final String sql_81 = "update user set age = 18 where name = 'ruanwei'";
-	private static final String sql_82 = "update user set age = ? where name = ?";
-	private static final String sql_83 = "update user set age = :age where name = :name";
+	private static final String sql_81 = "update user set age = ? where name = ?";
+	private static final String sql_82 = "update user set age = :age where name = :name";
 
 	private static final String sql_9 = "delete from user where id > ?";
 
@@ -105,7 +99,6 @@ public class UserJdbcDao {
 	public void setDataSource(@Qualifier("jdbcDataSource") DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-		this.advancedJdbcTemplate = new AdvancedJdbcTemplate(dataSource);
 
 		this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("user").usingGeneratedKeyColumns("id");
 		this.simpleJdbcCall = new SimpleJdbcCall(dataSource);
@@ -114,78 +107,77 @@ public class UserJdbcDao {
 	// ====================single row====================
 	// RowMapperResultSetExtractor & SingleColumnRowMapper
 	public void queryForSingleRowWithSingleColumn(int id) {
-		String column1 = jdbcTemplate.queryForObject(sql_11, String.class);
-		String column2 = jdbcTemplate.queryForObject(sql_12, new Object[] { id }, String.class);
+		String column1 = jdbcTemplate.queryForObject(sql_11, new Object[] { id }, String.class);
 
 		Map<String, Integer> namedParam = new HashMap<String, Integer>();
 		namedParam.put("id", id);
-		String column3 = namedParameterJdbcTemplate.queryForObject(sql_13, namedParam, String.class);
-		log.info("column1=" + column1 + ",column2=" + column2 + ",column3=" + column3);
+		String column2 = namedParameterJdbcTemplate.queryForObject(sql_12, namedParam, String.class);
+
+		log.info("column1=" + column1 + ",column2=" + column2);
 	}
 
 	// RowMapperResultSetExtractor & ColumnMapRowMapper
 	public void queryForSingleRowAsColumnMap(int id) {
-		Map<String, Object> columnMap1 = jdbcTemplate.queryForMap(sql_21);
-		Map<String, Object> columnMap2 = jdbcTemplate.queryForMap(sql_22, new Object[] { id });
+		Map<String, Object> columnMap1 = jdbcTemplate.queryForMap(sql_21, new Object[] { id });
 
 		Map<String, Integer> namedParam = new HashMap<String, Integer>();
 		namedParam.put("id", id);
-		Map<String, Object> columnMap3 = namedParameterJdbcTemplate.queryForMap(sql_23, namedParam);
+		Map<String, Object> columnMap2 = namedParameterJdbcTemplate.queryForMap(sql_22, namedParam);
+
 		columnMap1.forEach((k, v) -> log.info(k + "=" + v));
 		columnMap2.forEach((k, v) -> log.info(k + "=" + v));
-		columnMap3.forEach((k, v) -> log.info(k + "=" + v));
 	}
 
 	// RowMapperResultSetExtractor & BeanPropertyRowMapper
 	public void queryForSingleRowAsBeanProperty(int id) {
-		User obj1 = advancedJdbcTemplate.queryForObject(sql_31, User.class);
-		User obj2 = advancedJdbcTemplate.queryForObject(sql_32, new Object[] { id }, User.class);
+		User obj1 = jdbcTemplate.queryForObject(sql_31, new Object[] { id },
+				new BeanPropertyRowMapper<User>(User.class));
 
 		Map<String, Integer> namedParam = new HashMap<String, Integer>();
 		namedParam.put("id", id);
-		User obj3 = advancedJdbcTemplate.queryForObject(sql_33, namedParam, User.class);
-		log.info("obj1=" + obj1 + ",obj2=" + obj2 + ",obj3=" + obj3);
+		User obj2 = namedParameterJdbcTemplate.queryForObject(sql_32, namedParam,
+				new BeanPropertyRowMapper<User>(User.class));
+
+		log.info("obj1=" + obj1 + ",obj2=" + obj2);
 	}
 
 	// ====================multiple row====================
 	public void queryForListWithSingleColumn(int largerThanId) {
-		List<String> columnList1 = jdbcTemplate.queryForList(sql_41, String.class);
-		List<String> columnList2 = jdbcTemplate.queryForList(sql_42, new Object[] { largerThanId }, String.class);
+		List<String> columnList1 = jdbcTemplate.queryForList(sql_41, new Object[] { largerThanId }, String.class);
 
 		Map<String, Integer> namedParam = new HashMap<String, Integer>();
 		namedParam.put("id", largerThanId);
-		List<String> columnList3 = namedParameterJdbcTemplate.queryForList(sql_43, namedParam, String.class);
+		List<String> columnList2 = namedParameterJdbcTemplate.queryForList(sql_42, namedParam, String.class);
+
 		columnList1.forEach(column -> log.info("column=" + column));
 		columnList2.forEach(column -> log.info("column=" + column));
-		columnList3.forEach(column -> log.info("column=" + column));
 	}
 
 	public void queryForListWithColumnMap(int largerThanId) {
-		List<Map<String, Object>> columnMapList1 = jdbcTemplate.queryForList(sql_51);
-		List<Map<String, Object>> columnMapList2 = jdbcTemplate.queryForList(sql_52, new Object[] { largerThanId });
+		List<Map<String, Object>> columnMapList1 = jdbcTemplate.queryForList(sql_51, new Object[] { largerThanId });
 
 		Map<String, Integer> namedParam = new HashMap<String, Integer>();
 		namedParam.put("id", largerThanId);
-		List<Map<String, Object>> columnMapList3 = namedParameterJdbcTemplate.queryForList(sql_53, namedParam);
+		List<Map<String, Object>> columnMapList2 = namedParameterJdbcTemplate.queryForList(sql_52, namedParam);
 
 		columnMapList1.forEach(columbMap -> columbMap.forEach((k, v) -> log.info(k + "=" + v)));
 		columnMapList2.forEach(columbMap -> columbMap.forEach((k, v) -> log.info(k + "=" + v)));
-		columnMapList3.forEach(columbMap -> columbMap.forEach((k, v) -> log.info(k + "=" + v)));
 	}
 
 	public void queryForListWithBeanProperty(int largerThanId) {
-		List<User> objList1 = advancedJdbcTemplate.queryForObjectList(sql_61, User.class);
-		List<User> objList2 = advancedJdbcTemplate.queryForObjectList(sql_62, new Object[] { largerThanId },
-				User.class);
-		List<User> objList3 = advancedJdbcTemplate.queryForObjectList(sql_62, pss0, User.class);
+		List<User> objList1 = jdbcTemplate.query(sql_61, new Object[] { largerThanId },
+				new BeanPropertyRowMapper<User>(User.class));
+
+		List<User> objList2 = jdbcTemplate.query(sql_61, pss0, new BeanPropertyRowMapper<User>(User.class));
 
 		Map<String, Integer> namedParam = new HashMap<String, Integer>();
 		namedParam.put("id", largerThanId);
-		List<User> objList4 = advancedJdbcTemplate.queryForObjectList(sql_63, namedParam, User.class);
+		List<User> objList3 = namedParameterJdbcTemplate.query(sql_62, namedParam,
+				new BeanPropertyRowMapper<User>(User.class));
+
 		objList1.forEach(obj -> log.info("obj=" + obj));
 		objList2.forEach(obj -> log.info("obj=" + obj));
 		objList3.forEach(obj -> log.info("obj=" + obj));
-		objList4.forEach(obj -> log.info("obj=" + obj));
 	}
 
 	// ====================update====================
@@ -193,7 +185,7 @@ public class UserJdbcDao {
 	public int createUser1(User user) {
 		log.info("createUser1(User user)" + user);
 
-		int count = jdbcTemplate.update(sql_72, user.getName(), user.getAge(), user.getBirthday());
+		int count = jdbcTemplate.update(sql_71, user.getName(), user.getAge(), user.getBirthday());
 		return count;
 	}
 
@@ -201,7 +193,7 @@ public class UserJdbcDao {
 		log.info("createUser2(User user)");
 
 		PreparedStatementSetter upss = buildUserPSS(user);
-		int count = jdbcTemplate.update(sql_72, upss);
+		int count = jdbcTemplate.update(sql_71, upss);
 		return count;
 	}
 
@@ -209,7 +201,7 @@ public class UserJdbcDao {
 		log.info("createUser3(User user)");
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		PreparedStatementCreator upsc = buildUserPSC(sql_72, user);
+		PreparedStatementCreator upsc = buildUserPSC(sql_71, user);
 		int count = jdbcTemplate.update(upsc, keyHolder);
 		log.info("generatedKey=" + keyHolder.getKey().longValue());
 		return count;
@@ -219,7 +211,7 @@ public class UserJdbcDao {
 		log.info("createUser4(T t)");
 
 		SqlParameterSource sqlParamSource = SqlParameterSourceUtils.createBatch(t)[0];
-		int count = namedParameterJdbcTemplate.update(sql_73, sqlParamSource);
+		int count = namedParameterJdbcTemplate.update(sql_72, sqlParamSource);
 		return count;
 	}
 
@@ -229,7 +221,7 @@ public class UserJdbcDao {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		SqlParameterSource sqlParamSource = SqlParameterSourceUtils.createBatch(t)[0];
 
-		int count = namedParameterJdbcTemplate.update(sql_73, sqlParamSource, keyHolder);
+		int count = namedParameterJdbcTemplate.update(sql_72, sqlParamSource, keyHolder);
 		log.info("generatedKey=" + keyHolder.getKey().longValue());
 		return count;
 	}
@@ -239,7 +231,7 @@ public class UserJdbcDao {
 		log.info("batchUpdateUser1(final List<User> users)");
 
 		BatchPreparedStatementSetter ubpss = buildUserBPSS(users);
-		int[] updateCounts = jdbcTemplate.batchUpdate(sql_82, ubpss);
+		int[] updateCounts = jdbcTemplate.batchUpdate(sql_81, ubpss);
 		return updateCounts;
 	}
 
@@ -247,7 +239,7 @@ public class UserJdbcDao {
 		log.info("batchUpdateUser2(final List<User> users)");
 
 		ParameterizedPreparedStatementSetter<User> uppss = buildUserPPSS();
-		int[][] updateCounts = jdbcTemplate.batchUpdate(sql_82, users, 2, uppss);
+		int[][] updateCounts = jdbcTemplate.batchUpdate(sql_81, users, 2, uppss);
 		return updateCounts;
 	}
 
@@ -255,7 +247,7 @@ public class UserJdbcDao {
 		log.info("batchUpdateUser3(final List<User> users)");
 
 		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(list);
-		int[] updateCounts = namedParameterJdbcTemplate.batchUpdate(sql_83, batch);
+		int[] updateCounts = namedParameterJdbcTemplate.batchUpdate(sql_82, batch);
 		return updateCounts;
 	}
 
@@ -263,7 +255,7 @@ public class UserJdbcDao {
 		log.info("batchUpdateUser4(final Map<String, ?>... batchValues)");
 
 		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(batchValues);
-		int[] updateCounts = namedParameterJdbcTemplate.batchUpdate(sql_83, batch);
+		int[] updateCounts = namedParameterJdbcTemplate.batchUpdate(sql_82, batch);
 		return updateCounts;
 	}
 
@@ -306,13 +298,14 @@ public class UserJdbcDao {
 		SqlParameterSource in = new MapSqlParameterSource().addValue("in_id", 1);
 		simpleJdbcCall.withProcedureName("user").withoutProcedureColumnMetaDataAccess().useInParameterNames("in_id")
 				.declareParameters(new SqlParameter("in_id", Types.NUMERIC),
-						new SqlOutParameter("out_first_name", Types.VARCHAR),
-						new SqlOutParameter("out_last_name", Types.VARCHAR),
-						new SqlOutParameter("out_birth_date", Types.DATE));
+						new SqlOutParameter("out_name", Types.VARCHAR),
+						new SqlOutParameter("out_age", Types.VARCHAR),
+						new SqlOutParameter("out_birthday", Types.DATE));
 		Map<String, Object> out = simpleJdbcCall.execute(in);
 		User user = new User();
-		user.setName((String) out.get("out_first_name"));
-		user.setAge((int) out.get("age"));
+		user.setName((String) out.get("out_name"));
+		user.setAge((int) out.get("out_age"));
+		user.setBirthday((Date)out.get("out_birthday"));
 	}
 
 	public void createTable() {
