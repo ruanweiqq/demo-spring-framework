@@ -7,6 +7,7 @@
 - demo-springframework-dataAccess模块：对应Spring官方文档。
 - demo-springframework-web模块：对应Spring官方文档。
 - demo-springframework-integration模块：对应Spring官方文档。
+- demo-springframework-temp模块：临时项目，准备删除。
 
 每个项目均同时支持基于XML的和Java的配置元数据。除第一个项目外，均开启了基于注解的配置元数据，即：
 
