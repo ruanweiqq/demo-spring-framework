@@ -74,27 +74,27 @@ none  | none | @PersistenceContext
 spring-framework
 	pom.xml
 spring-boot
-	pom.xml    spring-boot-build:pom
+	-spring-boot-build:pom
 	spring-boot-project
-		pom.xml    spring-boot-project:pom  spring-boot-build
+		-spring-boot-project:pom  spring-boot-build:pom
 		spring-boot-dependencies
-			pom.xml    spring-boot-dependencies:pom  spring-boot-build
+			-spring-boot-dependencies:pom  spring-boot-build:pom
 		spring-boot-parent
-			pom.xml    spring-boot-parent:pom  spring-boot-dependencies
+			-spring-boot-parent:pom  spring-boot-dependencies:pom
 		spring-boot-starters
-		    pom.xml    spring-boot-starters:pom  spring-boot-parent
+		    -spring-boot-starters:pom  spring-boot-parent:pom
 		    spring-boot-starter-parent
-		        pom.xml    spring-boot-starter-parent:pom  spring-boot-dependencies
+		        -spring-boot-starter-parent:pom  spring-boot-dependencies:pom
 		    spring-boot-starter
-		    	pom.xml    spring-boot-starter:pom  spring-boot-starters
-			spring-boot-starter-web
-			    pom.xml    spring-boot-starter-web:jar  spring-boot-starters
-			spring-boot-starter-webflux
-				pom.xml    spring-boot-starter-webflux:jar  spring-boot-starters
+		    	 -spring-boot-starter:jar  spring-boot-starters:pom
+			 spring-boot-starter-web
+			    -spring-boot-starter-web:jar  spring-boot-starters:pom
+			 spring-boot-starter-webflux
+				 -spring-boot-starter-webflux:jar  spring-boot-starters:pom
 		spring-boot
-			pom.xml    spring-boot:jar  spring-boot-parent
+			 -spring-boot:jar  spring-boot-parent
 		spring-boot-actuator
-			pom.xml    spring-boot-actuator:jar  spring-boot-parent
+			 -spring-boot-actuator:jar  spring-boot-parent
 		spring-boot-autoconfigure
 		spring-boot-devtools		
 		spring-boot-cli
@@ -137,6 +137,7 @@ demo-projects
 		demo-spring-boot-nonweb
 ------------------------------------------
 </pre>
+
 
 
 ### TODO:
