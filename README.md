@@ -1,13 +1,16 @@
 # demo-spring-framework
 
 ### demo-spring-framework项目包含如下模块：
-- demo-springframework-starter模块：对应于Spring Boot Starter。
-- demo-spring-framework-withoutAnnotation模块：未开启基于注解的配置元数据。
-- demo-springframework-core模块：对应Spring官方文档。
-- demo-springframework-dataAccess模块：对应Spring官方文档。
-- demo-springframework-web模块：对应Spring官方文档。
-- demo-springframework-integration模块：对应Spring官方文档。
-- demo-springframework-temp模块：临时项目，准备删除。
+- demo-spring-framework-dependencies模块：依赖声明。
+- demo-spring-framework-parent模块：所有项目的父模块，包含构建参数。
+- demo-springframework-starters模块：父模块为demo-springframework-parent。
+- demo-spring-framework-commons模块：父模块为demo-springframework-parent。
+- demo-springframework-core模块：父模块为demo-springframework-starter-parent。
+- demo-springframework-dataAccess模块：父模块为demo-springframework-starter-parent。
+- demo-springframework-web模块：父模块为demo-springframework-starter-parent。
+- demo-springframework-integration模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-withoutAnnotation模块：父模块为demo-springframework-starter-parent。未开启基于注解的配置元数据。
+- demo-springframework-temp模块：父模块为demo-springframework-starter-parent。临时项目，准备删除。
 
 每个项目均同时支持基于XML的和Java的配置元数据。除第一个项目外，均开启了基于注解的配置元数据，即：
 
@@ -137,6 +140,8 @@ demo-spring-framework
 	    -demo-spring-framework-dataAccess:pom  demo-spring-framework-starter-parent:pom
 	demo-spring-framework-integration
 	    -demo-spring-framework-integration:pom  demo-spring-framework-starter-parent:pom
+	demo-spring-framework-withoutAnnotation
+	    -demo-spring-framework-withoutAnnotation:pom  demo-spring-framework-starter-parent:pom
 ------------------------------------------
 </pre>
 
