@@ -71,8 +71,6 @@ none  | none | @PersistenceContext
 
 # 项目结构
 <pre>
-spring-framework
-	pom.xml
 spring-boot
 	-spring-boot-build:pom
 	spring-boot-project
