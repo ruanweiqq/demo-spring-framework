@@ -107,32 +107,31 @@ spring-boot
 	spring-boot-samples
 		pom.xml    spring-boot-samples:pom  spring-boot-starter-parent
 ------------------------------------------
-demo-projects
-	demo-spring-framework
-		demo-spring-framework-nonweb
-			demo-spring-framework-nonweb-dependencies
-			demo-spring-framework-nonweb-parent
-			demo-spring-framework-nonweb-starters
-			demo-spring-framework-nonweb-xml
-			demo-spring-framework-nonweb-ann
-		demo-spring-framework-web	
-			demo-spring-framework-web-dependencies
-			demo-spring-framework-web-parent
-			demo-spring-framework-web-starters
-			demo-spring-framework-webmvc
-			demo-spring-framework-webflux
-			demo-spring-framework-service
-			demo-spring-framework-remoting
-	demo-spring-boot
-		demo-spring-boot-web
-			demo-spring-boot-web-dependencies
-			demo-spring-boot-web-parent
-			demo-spring-boot-web-starters
-			demo-spring-boot-webmvc
-			demo-spring-boot-webflux
-			demo-spring-boot-service
-			demo-spring-boot-remoting
-		demo-spring-boot-nonweb
+demo-spring-framework
+	demo-spring-framework-nonweb
+		demo-spring-framework-nonweb-dependencies
+		demo-spring-framework-nonweb-parent
+		demo-spring-framework-nonweb-starters
+		demo-spring-framework-nonweb-xml
+		demo-spring-framework-nonweb-ann
+	demo-spring-framework-web	
+		demo-spring-framework-web-dependencies
+		demo-spring-framework-web-parent
+		demo-spring-framework-web-starters
+		demo-spring-framework-webmvc
+		demo-spring-framework-webflux
+		demo-spring-framework-service
+		demo-spring-framework-remoting
+demo-spring-boot
+	demo-spring-boot-web
+		demo-spring-boot-web-dependencies
+		demo-spring-boot-web-parent
+		demo-spring-boot-web-starters
+		demo-spring-boot-webmvc
+		demo-spring-boot-webflux
+		demo-spring-boot-service
+		demo-spring-boot-remoting
+	demo-spring-boot-nonweb
 ------------------------------------------
 </pre>
 
