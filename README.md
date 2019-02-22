@@ -85,14 +85,14 @@ spring-boot
 		        -spring-boot-starter-parent:pom  spring-boot-dependencies:pom
 		    spring-boot-starter
 		    	 -spring-boot-starter:jar  spring-boot-starters:pom
-			 spring-boot-starter-web
-			    -spring-boot-starter-web:jar  spring-boot-starters:pom
-			 spring-boot-starter-webflux
-				 -spring-boot-starter-webflux:jar  spring-boot-starters:pom
+		    spring-boot-starter-web
+			 -spring-boot-starter-web:jar  spring-boot-starters:pom
+	            spring-boot-starter-webflux
+	                 -spring-boot-starter-webflux:jar  spring-boot-starters:pom
 		spring-boot
-			 -spring-boot:jar  spring-boot-parent
+		    -spring-boot:jar  spring-boot-parent
 		spring-boot-actuator
-			 -spring-boot-actuator:jar  spring-boot-parent
+		    -spring-boot-actuator:jar  spring-boot-parent
 		spring-boot-autoconfigure
 		spring-boot-devtools		
 		spring-boot-cli
@@ -128,15 +128,15 @@ demo-spring-framework
 	    demo-spring-framework-starter-integration
 		-demo-spring-framework-starter-integration:jar demo-spring-framework-starters:pom
 	demo-spring-framework-commons
-		-demo-spring-framework-commons  demo-spring-framework-parent:pom
+	    -demo-spring-framework-commons  demo-spring-framework-parent:pom
 	demo-spring-framework-core
-		-demo-spring-framework-core:pom  demo-spring-framework-starter-parent:pom
+	    -demo-spring-framework-core:pom  demo-spring-framework-starter-parent:pom
 	demo-spring-framework-web
-		-demo-spring-framework-web:pom  demo-spring-framework-starter-parent:pom
+	    -demo-spring-framework-web:pom  demo-spring-framework-starter-parent:pom
 	demo-spring-framework-dataAccess
-		-demo-spring-framework-dataAccess:pom  demo-spring-framework-starter-parent:pom
+	    -demo-spring-framework-dataAccess:pom  demo-spring-framework-starter-parent:pom
 	demo-spring-framework-integration
-		-demo-spring-framework-integration:pom  demo-spring-framework-starter-parent:pom
+	    -demo-spring-framework-integration:pom  demo-spring-framework-starter-parent:pom
 ------------------------------------------
 </pre>
 
