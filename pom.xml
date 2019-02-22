@@ -32,16 +32,15 @@
 	</properties>
 
 	<modules>
+	    <module>demo-spring-framework-dependencies</module>
+	    <module>demo-spring-framework-parent</module>
 		<module>demo-spring-framework-starters</module>
 		<module>demo-spring-framework-withoutAnnotation</module>
 		<module>demo-spring-framework-core</module>
 		<module>demo-spring-framework-web</module>
+		<module>demo-spring-framework-commons</module>
 		<module>demo-spring-framework-temp</module>
 	</modules>
-
-	<build>
-		<finalName>demo-spring-framework</finalName>
-	</build>
 
 	<profiles>
 		<profile>
@@ -119,4 +118,7 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+	<build>
+		<finalName>demo-spring-framework</finalName>
+	</build>
 </project>

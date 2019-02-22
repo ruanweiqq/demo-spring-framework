@@ -7,7 +7,6 @@
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-starters</artifactId>
 		<version>2019.02.21</version>
-		<!-- <relativePath/> -->
 	</parent>
 
 	<artifactId>demo-spring-framework-starter-all</artifactId>
@@ -18,26 +17,8 @@
 	<name>Demo:Spring Framework Starter All</name>
 
 	<properties>
-		<demo-spring-framework-starter-bom.version>2019.02.21</demo-spring-framework-starter-bom.version>
 		<demo-spring-framework-starter-commons.version>2019.02.21</demo-spring-framework-starter-commons.version>
 	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.ruanwei.demo</groupId>
-				<artifactId>demo-spring-framework-starter-bom</artifactId>
-				<version>${demo-spring-framework-starter-bom.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.ruanwei.demo</groupId>
-				<artifactId>demo-spring-framework-starter-commons</artifactId>
-				<version>${demo-spring-framework-starter-commons.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<dependencies>
 		<!-- ========== A.Common Start ========== -->
@@ -522,85 +503,6 @@
 
 	<build>
 		<finalName>demo-spring-framework-starter-all</finalName>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.7.0</version>
-					<configuration>
-						<source>1.8</source>
-						<target>1.8</target>
-						<encoding>utf8</encoding>
-						<!-- <compilerArgument>-XDignore.symbol.file</compilerArgument> -->
-						<compilerArgument>-parameters</compilerArgument>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.21.0</version>
-					<configuration>
-						<testFailureIgnore>false</testFailureIgnore>
-						<skip>false</skip>
-					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>org.junit.platform</groupId>
-							<artifactId>junit-platform-surefire-provider</artifactId>
-							<version>1.2.0</version>
-						</dependency>
-						<dependency>
-							<groupId>org.junit.jupiter</groupId>
-							<artifactId>junit-jupiter-engine</artifactId>
-							<version>5.2.0</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-maven-plugin</artifactId>
-					<version>9.4.8.v20171121</version>
-					<configuration>
-						<webAppConfig>
-							<contextPath>/spring-web</contextPath>
-						</webAppConfig>
-						<systemProperties>
-							<systemProperty>
-								<name>org.eclipse.jetty.server.Request.queryEncoding</name>
-								<value>UTF-8</value>
-							</systemProperty>
-							<systemProperty>
-								<name>org.apache.jasper.compiler.disablejsr199</name>
-								<value>true</value>
-							</systemProperty>
-						</systemProperties>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.tomcat.maven</groupId>
-					<artifactId>tomcat7-maven-plugin</artifactId>
-					<version>2.2</version>
-					<configuration>
-						<url>http://dragon:8080/manager/html</url>
-						<path>/dragon-boss</path>
-						<server>dragon-server</server>
-						<port>8080</port>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-			</plugin>
-		</plugins>
 	</build>
 
 </project>

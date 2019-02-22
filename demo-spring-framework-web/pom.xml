@@ -4,8 +4,8 @@
 
     <parent>
         <groupId>org.ruanwei.demo</groupId>
-        <artifactId>demo-spring-framework</artifactId>
-        <version>2019.02.19</version>
+        <artifactId>demo-spring-framework-starter-parent</artifactId>
+        <version>2019.02.21</version>
     </parent>
 
     <artifactId>demo-spring-framework-web</artifactId>
@@ -24,7 +24,7 @@
         <module>demo-spring-framework-web-webflux</module>
     </modules>
 
-    <dependencyManagement>
+    <!-- <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.hsqldb</groupId>
@@ -32,9 +32,13 @@
                 <version>2.3.1</version>
             </dependency>
         </dependencies>
-    </dependencyManagement>
+    </dependencyManagement>-->
 
     <dependencies>
+        <dependency>
+            <groupId>org.ruanwei.demo</groupId>
+            <artifactId>demo-spring-framework-starter-all</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

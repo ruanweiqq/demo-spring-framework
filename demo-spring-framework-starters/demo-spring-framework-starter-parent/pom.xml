@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.ruanwei.demo</groupId>
+		<artifactId>demo-spring-framework-dependencies</artifactId>
+		<version>2019.02.19</version>
+		<relativePath>../../demo-spring-framework-dependencies</relativePath>
+	</parent>
+
+	<artifactId>demo-spring-framework-starter-parent</artifactId>
+	<version>2019.02.19</version>
+	<packaging>pom</packaging>
+
+	<name>Demo:Spring Framework Starter Parent</name>
+
+	<properties>
+	</properties>
+
+	<build>
+		<finalName>demo-spring-framework-starter-parent</finalName>
+	</build>
+</project>

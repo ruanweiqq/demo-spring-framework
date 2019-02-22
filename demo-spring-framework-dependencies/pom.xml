@@ -5,15 +5,15 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-starters</artifactId>
-		<version>2019.02.21</version>
+		<artifactId>demo-spring-framework</artifactId>
+		<version>2019.02.19</version>
 	</parent>
 
-	<artifactId>demo-spring-framework-starter-bom</artifactId>
-	<version>2019.02.21</version>
+	<artifactId>demo-spring-framework-dependencies</artifactId>
+	<version>2019.02.19</version>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Framework Starter BOM</name>
+	<name>Demo:Spring Framework Dependencies(BOM)</name>
 
 	<properties>
 		<log4j.version>2.10.0</log4j.version>
@@ -406,6 +406,20 @@
 			</dependency>
 			<!-- ========== F.Other End ========== -->
 
+			<!-- ========== G.Starter Start ========== -->
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter</artifactId>
+				<version>2019.02.19</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-all</artifactId>
+				<version>2019.02.19</version>
+			</dependency>
+			<!-- ========== G.Starter End ========== -->
+
+
 			<!-- ========== Unknow Start ========== -->
 			<dependency>
 				<groupId>org.codehaus.castor</groupId>
@@ -449,6 +463,6 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>demo-spring-framework-starter-bom</finalName>
+		<finalName>demo-spring-framework-dependencies</finalName>
 	</build>
 </project>

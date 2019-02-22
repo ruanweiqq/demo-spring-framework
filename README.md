@@ -111,20 +111,32 @@ demo-spring-framework
 	-demo-spring-framework-build:pom
 	demo-spring-framework-dependencies
 	    -demo-spring-framework-dependencies:pom  demo-spring-framework-build:pom
+	demo-spring-framework-parent
+	    -demo-spring-framework-parent:pom  demo-spring-framework-dependencies:pom
 	demo-spring-framework-starters
-	    -demo-spring-framework-starters:pom  demo-spring-framework-dependencies:pom
-		 demo-spring-framework-starter-core
-		         -demo-spring-framework-starter-core:jar demo-spring-framework-starters:pom
-		 demo-spring-framework-starter-dataAccess
-		         -demo-spring-framework-starter-dataAccess:jar demo-spring-framework-starters:pom
-		 demo-spring-framework-starter-web
-			      -demo-spring-framework-starter-web:jar  demo-spring-framework-starters:pom
-		 demo-spring-framework-starter-integration
-		         -demo-spring-framework-starter-integration:jar demo-spring-framework-starters:pom
+	    -demo-spring-framework-starters:pom  demo-spring-framework-parent:pom
+	    demo-spring-framework-starter-parent
+	        -demo-spring-framework-starter-parent:pom  demo-spring-framework-dependencies:pom
+		demo-spring-framework-starter
+			-demo-spring-framework-starter:pom  demo-spring-framework-starters:pom
+		demo-spring-framework-starter-core
+		    -demo-spring-framework-starter-core:jar demo-spring-framework-starters:pom
+		demo-spring-framework-starter-dataAccess
+		    -demo-spring-framework-starter-dataAccess:jar demo-spring-framework-starters:pom
+		demo-spring-framework-starter-web
+			-demo-spring-framework-starter-web:jar  demo-spring-framework-starters:pom
+		demo-spring-framework-starter-integration
+		    -demo-spring-framework-starter-integration:jar demo-spring-framework-starters:pom
+	demo-spring-framework-commons
+		-demo-spring-framework-commons  demo-spring-framework-parent:pom
 	demo-spring-framework-core
+		-demo-spring-framework-core:pom  demo-spring-framework-starter-parent:pom
 	demo-spring-framework-web
+		-demo-spring-framework-web:pom  demo-spring-framework-starter-parent:pom
 	demo-spring-framework-dataAccess
+		-demo-spring-framework-dataAccess:pom  demo-spring-framework-starter-parent:pom
 	demo-spring-framework-integration
+		-demo-spring-framework-integration:pom  demo-spring-framework-starter-parent:pom
 ------------------------------------------
 </pre>
 

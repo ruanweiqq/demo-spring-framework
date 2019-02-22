@@ -10,19 +10,16 @@
 		<relativePath>../demo-spring-framework-parent</relativePath>
 	</parent>
 
-	<artifactId>demo-spring-framework-starters</artifactId>
+	<artifactId>demo-spring-framework-commons</artifactId>
 	<version>2019.02.21</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Starters</name>
+	<name>Demo:Spring Framework Commons</name>
 
-	<modules>
-		<module>demo-spring-framework-starter-parent</module>
-		<module>demo-spring-framework-starter</module>
-		<module>demo-spring-framework-starter-all</module>
-	</modules>
+	<dependencies>
+	</dependencies>
 
 	<build>
-		<finalName>demo-spring-framework-starters</finalName>
+		<finalName>demo-spring-framework-commons</finalName>
 	</build>
 </project>
