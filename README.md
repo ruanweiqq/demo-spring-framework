@@ -69,6 +69,76 @@ none  | none | @PersistenceContext
 <p>注意：对于AOP配置，没有与基于XML相对应的基于Java的配置元数据.
 <p>注意：对于事务配置，没有与基于XML相对应的基于Java的配置元数据.
 
+# 项目结构
+<pre>
+spring-framework
+	pom.xml
+spring-boot
+	pom.xml    spring-boot-build:pom
+	spring-boot-project
+		pom.xml    spring-boot-project:pom  spring-boot-build
+		spring-boot-dependencies
+			pom.xml    spring-boot-dependencies:pom  spring-boot-build
+		spring-boot-parent
+			pom.xml    spring-boot-parent:pom  spring-boot-dependencies
+		spring-boot-starters
+		    pom.xml    spring-boot-starters:pom  spring-boot-parent
+		    spring-boot-starter-parent
+		        pom.xml    spring-boot-starter-parent:pom  spring-boot-dependencies
+		    spring-boot-starter
+		    	pom.xml    spring-boot-starter:pom  spring-boot-starters
+			spring-boot-starter-web
+			    pom.xml    spring-boot-starter-web:jar  spring-boot-starters
+			spring-boot-starter-webflux
+				pom.xml    spring-boot-starter-webflux:jar  spring-boot-starters
+		spring-boot
+			pom.xml    spring-boot:jar  spring-boot-parent
+		spring-boot-actuator
+			pom.xml    spring-boot-actuator:jar  spring-boot-parent
+		spring-boot-autoconfigure
+		spring-boot-devtools		
+		spring-boot-cli
+	spring-boot-tests
+		pom.xml    spring-boot-tests:pom  spring-boot-parent
+		spring-boot-integration-tests
+			pom.xml    spring-boot-deployment-tests:pom  spring-boot-tests
+			spring-boot-deployment-test-glassfish
+				pom.xml spring-boot-deployment-test-tomcat:war  spring-boot-deployment-tests
+			spring-boot-deployment-test-tomcat
+		spring-boot-deployment-tests
+	spring-boot-samples
+		pom.xml    spring-boot-samples:pom  spring-boot-starter-parent
+------------------------------------------
+demo-projects
+	demo-spring-framework
+		demo-spring-framework-nonweb
+			demo-spring-framework-nonweb-dependencies
+			demo-spring-framework-nonweb-parent
+			demo-spring-framework-nonweb-starters
+			demo-spring-framework-nonweb-xml
+			demo-spring-framework-nonweb-ann
+		demo-spring-framework-web	
+			demo-spring-framework-web-dependencies
+			demo-spring-framework-web-parent
+			demo-spring-framework-web-starters
+			demo-spring-framework-webmvc
+			demo-spring-framework-webflux
+			demo-spring-framework-service
+			demo-spring-framework-remoting
+	demo-spring-boot
+		demo-spring-boot-web
+			demo-spring-boot-web-dependencies
+			demo-spring-boot-web-parent
+			demo-spring-boot-web-starters
+			demo-spring-boot-webmvc
+			demo-spring-boot-webflux
+			demo-spring-boot-service
+			demo-spring-boot-remoting
+		demo-spring-boot-nonweb
+------------------------------------------
+</pre>
+
+
 ### TODO:
 1. 补充@Valid支持分组验证
 2. 补充@Valid支持bean validation2.0

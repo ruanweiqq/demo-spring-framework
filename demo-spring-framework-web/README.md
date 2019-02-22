@@ -1,21 +1,20 @@
 # Quick Start
-- 这个项目依赖`demo-share`项目
-- `git clone git@github.com:ruanweiqq/demo-share.git`
-- `cd demo-share`
+- 这个项目依赖`demo-spring-framework-starter`项目
+- `git clone git@github.com:ruanweiqq/demo-spring-framework-starter.git`
+- `cd demo-spring-framework-starter`
 - `mvn clean install`
 - `cd ..`
 - 拉取本项目代码
-- `git clone git@github.com:ruanweiqq/demo-springweb.git`
+- `git clone git@github.com:ruanweiqq/demo-spring-framework-web.git`
 - `cd demo-springweb`
-- demo-springweb-web中的doc有一份db.sql，执行这份SQL，TODO或内存数据库
+- demo-spring-framework-web中的doc有一份db.sql，执行这份SQL，TODO或内存数据库
 - 默认的配置环境是dev，需要确认dev.properties中的配置信息是否正确，特别是数据库的配置
 - 执行下面三个命令
 - `mvn clean compile`
-- `mvn -pl .,demo-springweb-remoting install`
-- `cd demo-springweb-webmvc`
+- `mvn -pl .,demo-spring-framework-web-remoting install`
+- `cd demo-spring-framework-web-webmvc`
 - `mvn jetty:run`
 - 用户管理页面 http://127.0.0.1:8080/springweb-web/user/list.html
-
 
 # 关于日志
 - 本项目用的日志框架是log4j2
@@ -228,72 +227,3 @@ ResourceUrlEncodingFilter
 - 自动扫描的inclued和exclude
 - @ConvertGroup、@GroupSequence、@ScriptAssert、@SupportedValidationTarget、EL表达式${validatedValue}
 - 打包成tomcat的运行用的包，一次性打包两个项目
-
-# 项目结构
-<pre>
-spring-framework
-	pom.xml
-spring-boot
-	pom.xml    spring-boot-build:pom
-	spring-boot-project
-		pom.xml    spring-boot-project:pom  spring-boot-build
-		spring-boot-dependencies
-			pom.xml    spring-boot-dependencies:pom  spring-boot-build
-		spring-boot-parent
-			pom.xml    spring-boot-parent:pom  spring-boot-dependencies
-		spring-boot-starters
-		    pom.xml    spring-boot-starters:pom  spring-boot-parent
-		    spring-boot-starter-parent
-		        pom.xml    spring-boot-starter-parent:pom  spring-boot-dependencies
-		    spring-boot-starter
-		    	pom.xml    spring-boot-starter:pom  spring-boot-starters
-			spring-boot-starter-web
-			    pom.xml    spring-boot-starter-web:jar  spring-boot-starters
-			spring-boot-starter-webflux
-				pom.xml    spring-boot-starter-webflux:jar  spring-boot-starters
-		spring-boot
-			pom.xml    spring-boot:jar  spring-boot-parent
-		spring-boot-actuator
-			pom.xml    spring-boot-actuator:jar  spring-boot-parent
-		spring-boot-autoconfigure
-		spring-boot-devtools		
-		spring-boot-cli
-	spring-boot-tests
-		pom.xml    spring-boot-tests:pom  spring-boot-parent
-		spring-boot-integration-tests
-			pom.xml    spring-boot-deployment-tests:pom  spring-boot-tests
-			spring-boot-deployment-test-glassfish
-				pom.xml spring-boot-deployment-test-tomcat:war  spring-boot-deployment-tests
-			spring-boot-deployment-test-tomcat
-		spring-boot-deployment-tests
-	spring-boot-samples
-		pom.xml    spring-boot-samples:pom  spring-boot-starter-parent
-------------------------------------------
-demo-projects
-	demo-spring-framework
-		demo-spring-framework-nonweb
-			demo-spring-framework-nonweb-dependencies
-			demo-spring-framework-nonweb-parent
-			demo-spring-framework-nonweb-starters
-			demo-spring-framework-nonweb-xml
-			demo-spring-framework-nonweb-ann
-		demo-spring-framework-web	
-			demo-spring-framework-web-dependencies
-			demo-spring-framework-web-parent
-			demo-spring-framework-web-starters
-			demo-spring-framework-webmvc
-			demo-spring-framework-webflux
-			demo-spring-framework-service
-			demo-spring-framework-remoting
-	demo-spring-boot
-		demo-spring-boot-web
-			demo-spring-boot-web-dependencies
-			demo-spring-boot-web-parent
-			demo-spring-boot-web-starters
-			demo-spring-boot-webmvc
-			demo-spring-boot-webflux
-			demo-spring-boot-service
-			demo-spring-boot-remoting
-		demo-spring-boot-nonweb
-------------------------------------------
-</pre>
