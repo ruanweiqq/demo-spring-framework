@@ -108,30 +108,23 @@ spring-boot
 		pom.xml    spring-boot-samples:pom  spring-boot-starter-parent
 ------------------------------------------
 demo-spring-framework
-	demo-spring-framework-nonweb
-		demo-spring-framework-nonweb-dependencies
-		demo-spring-framework-nonweb-parent
-		demo-spring-framework-nonweb-starters
-		demo-spring-framework-nonweb-xml
-		demo-spring-framework-nonweb-ann
-	demo-spring-framework-web	
-		demo-spring-framework-web-dependencies
-		demo-spring-framework-web-parent
-		demo-spring-framework-web-starters
-		demo-spring-framework-webmvc
-		demo-spring-framework-webflux
-		demo-spring-framework-service
-		demo-spring-framework-remoting
-demo-spring-boot
-	demo-spring-boot-web
-		demo-spring-boot-web-dependencies
-		demo-spring-boot-web-parent
-		demo-spring-boot-web-starters
-		demo-spring-boot-webmvc
-		demo-spring-boot-webflux
-		demo-spring-boot-service
-		demo-spring-boot-remoting
-	demo-spring-boot-nonweb
+	-demo-spring-framework-build:pom
+	demo-spring-framework-dependencies
+	    -demo-spring-framework-dependencies:pom  demo-spring-framework-build:pom
+	demo-spring-framework-starters
+	    -demo-spring-framework-starters:pom  demo-spring-framework-dependencies:pom
+		 demo-spring-framework-starter-core
+		         -demo-spring-framework-starter-core:jar demo-spring-framework-starters:pom
+		 demo-spring-framework-starter-dataAccess
+		         -demo-spring-framework-starter-dataAccess:jar demo-spring-framework-starters:pom
+		 demo-spring-framework-starter-web
+			      -demo-spring-framework-starter-web:jar  demo-spring-framework-starters:pom
+		 demo-spring-framework-starter-integration
+		         -demo-spring-framework-starter-integration:jar demo-spring-framework-starters:pom
+	demo-spring-framework-core
+	demo-spring-framework-web
+	demo-spring-framework-dataAccess
+	demo-spring-framework-integration
 ------------------------------------------
 </pre>
 
