@@ -458,6 +458,12 @@
 				<artifactId>bcprov-jdk15</artifactId>
 				<version>1.46</version>
 			</dependency>
+
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-commons</artifactId>
+				<version>2019.02.19</version>
+			</dependency>
 			<!-- ========== Unknow End ========== -->
 		</dependencies>
 	</dependencyManagement>

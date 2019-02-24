@@ -145,6 +145,18 @@ demo-spring-framework
 ------------------------------------------
 </pre>
 
+### 运行方式：
+cd demo-spring-framework  
+cd demo-spring-framework-parent  
+mvn clean install  
+cd ../demo-spring-framework-commons  
+mvn clean install  
+cd ../demo-springframework-starters  
+mvn clean install  
+cd ../demo-springframework-core  
+mvn clean test
+
+
 ### TODO:
 1. 补充@Valid支持分组验证
 2. 补充@Valid支持bean validation2.0

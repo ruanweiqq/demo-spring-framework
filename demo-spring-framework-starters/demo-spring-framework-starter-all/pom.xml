@@ -17,7 +17,6 @@
 	<name>Demo:Spring Framework Starter All</name>
 
 	<properties>
-		<demo-spring-framework-starter-commons.version>2019.02.21</demo-spring-framework-starter-commons.version>
 	</properties>
 
 	<dependencies>
@@ -107,10 +106,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-indexer</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
 		<dependency>
@@ -131,10 +126,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>spring-jms</artifactId>
 		</dependency>
 		<dependency>
@@ -147,10 +138,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-oxm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 		</dependency>
 		<dependency>
@@ -160,14 +147,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webflux</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -312,11 +291,6 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>5.3.5.Final</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-redis</artifactId>
-		</dependency>
 			
 			<!-- C.2.MyBatis -->
 		<dependency>
@@ -329,10 +303,6 @@
 		</dependency>
 			
 			<!-- C.3.Redis -->
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-		</dependency>
 			<!-- ========== C.Spring Data End ========== -->
 
 			<!-- ========== D.Spring Framework Integration Start ========== -->
@@ -495,10 +465,10 @@
 		</dependency>
 		<!-- ========== Unknow End ========== -->
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.ruanwei.demo</groupId>
-			<artifactId>demo-spring-framework-starter-commons</artifactId>
-		</dependency>
+			<artifactId>demo-spring-framework-commons</artifactId>
+		</dependency> -->
 	</dependencies>
 
 	<build>
