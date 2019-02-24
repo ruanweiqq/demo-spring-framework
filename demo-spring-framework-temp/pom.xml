@@ -7,6 +7,7 @@
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-starter-parent</artifactId>
 		<version>2019.02.21</version>
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<artifactId>demo-spring-framework-temp</artifactId>
