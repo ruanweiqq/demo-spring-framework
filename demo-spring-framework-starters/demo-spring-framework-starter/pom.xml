@@ -11,7 +11,6 @@
 
 	<artifactId>demo-spring-framework-starter</artifactId>
 	<version>2019.02.21</version>
-	<!-- <packaging>pom</packaging> -->
 	<packaging>jar</packaging>
 
 	<name>Demo:Spring Framework Starter</name>

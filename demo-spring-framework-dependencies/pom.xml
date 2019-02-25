@@ -31,10 +31,10 @@
 	</properties>
 
 	<dependencyManagement>
-		<dependencies>
+		<dependencies> 
 			<!-- ========== A.Common Start ========== -->
 			<!-- A.1.Logging -->
-			<!-- A.1.1.Log4j2 -->
+			<!-- A.1.1.Log4j2 BOM -->
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-bom</artifactId>
@@ -78,7 +78,7 @@
 			</dependency>
 
 			<!-- A.2.Testing -->
-			<!-- JUnit -->
+			<!-- A.2.1.JUnit BOM -->
 			<dependency>
 				<groupId>org.junit</groupId>
 				<artifactId>junit-bom</artifactId>
@@ -89,7 +89,7 @@
 			<!-- ========== A.Common End ========== -->
 
 			<!-- ========== B.Spring Framework Start ========== -->
-			<!-- B.0.Spring Framework -->
+			<!-- B.0.Spring Framework BOM -->
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-framework-bom</artifactId>
@@ -154,7 +154,7 @@
 				<version>1.2.29</version>
 			</dependency>
 
-			<!-- B.1.4.Spring AOP -->
+			<!-- B.1.4.AOP -->
 			<!-- cglib-based proxy -->
 			<dependency>
 				<groupId>cglib</groupId>
@@ -175,6 +175,7 @@
 				<version>8.0.12</version>
 				<scope>runtime</scope>
 			</dependency>
+			
 			<!-- JDBC DataSource -->
 			<dependency>
 				<groupId>com.zaxxer</groupId>
@@ -197,6 +198,7 @@
 				<artifactId>c3p0</artifactId>
 				<version>0.9.5.2</version>
 			</dependency>
+			
 			<!-- EnbeddedDataSource:HyperSQL/H2/Derby -->
 			<dependency>
 				<groupId>org.hsqldb</groupId>
@@ -219,6 +221,7 @@
 				<version>5.3.5.Final</version>
 				<type>pom</type>
 			</dependency>
+			<!-- ========== B.Spring Framework End ========== -->
 			
 			<!-- ========== C.Spring Data Start ========== -->
 			<!-- C.0.Spring Data -->
@@ -259,30 +262,33 @@
 
 			<!-- ========== D.Spring Framework Integration Start ========== -->
 			<!-- D.1.Remoting -->
-			<!-- Hessian -->
+			<!-- D.1.1.Hessian -->
 			<dependency>
 				<groupId>com.caucho</groupId>
 				<artifactId>hessian</artifactId>
 				<version>4.0.7</version>
 			</dependency>
-			<!-- Dubbo -->
+			<!-- D.1.2.Dubbo -->
 			<dependency>
 				<groupId>com.alibaba</groupId>
 				<artifactId>dubbo</artifactId>
 				<version>2.6.0</version>
 			</dependency>
+			
 			<!-- D.2.JMS -->
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-all</artifactId>
 				<version>5.13.0</version>
 			</dependency>
+			
 			<!-- D.3.Scheduler -->
 			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
 				<artifactId>quartz</artifactId>
 				<version>2.2.3</version>
 			</dependency>
+			
 			<!-- D.4.Mail -->
 			<dependency>
 				<groupId>com.sun.mail</groupId>
@@ -418,7 +424,6 @@
 				<version>2019.02.21</version>
 			</dependency>
 			<!-- ========== G.Starter End ========== -->
-
 
 			<!-- ========== Unknow Start ========== -->
 			<dependency>
