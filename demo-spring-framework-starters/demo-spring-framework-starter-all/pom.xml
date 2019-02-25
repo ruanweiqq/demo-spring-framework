@@ -465,10 +465,10 @@
 		</dependency>
 		<!-- ========== Unknow End ========== -->
 
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
 			<artifactId>demo-spring-framework-commons</artifactId>
-		</dependency> -->
+		</dependency>
 	</dependencies>
 
 	<build>
