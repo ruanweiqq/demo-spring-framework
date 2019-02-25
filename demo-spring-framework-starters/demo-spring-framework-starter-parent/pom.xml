@@ -11,13 +11,9 @@
 	</parent>
 
 	<artifactId>demo-spring-framework-starter-parent</artifactId>
-	<version>2019.02.21</version>
 	<packaging>pom</packaging>
 
 	<name>Demo:Spring Framework Starter Parent</name>
-
-	<properties>
-	</properties>
 
 	<build>
 		<finalName>demo-spring-framework-starter-parent</finalName>

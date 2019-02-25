@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.ruanwei.demo</groupId>
         <artifactId>demo-spring-framework-starter-parent</artifactId>
-        <version>2019.02.21</version>
+        <version>2019.02.19</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <artifactId>demo-spring-framework-web</artifactId>
-    <version>2019.02.19</version>
+    <version>2019.02.25</version>
     <packaging>pom</packaging>
 
     <name>Demo:Spring Framework Web</name>
@@ -24,16 +24,6 @@
         <module>demo-spring-framework-web-webmvc</module>
         <module>demo-spring-framework-web-webflux</module>
     </modules>
-
-    <!-- <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>2.3.1</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>-->
 
     <dependencies>
         <dependency>

@@ -6,11 +6,10 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-starters</artifactId>
-		<version>2019.02.21</version>
+		<version>2019.02.19</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-starter</artifactId>
-	<version>2019.02.21</version>
 	<packaging>jar</packaging>
 
 	<name>Demo:Spring Framework Starter</name>

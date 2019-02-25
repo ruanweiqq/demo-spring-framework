@@ -6,11 +6,10 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-web</artifactId>
-		<version>2019.02.19</version>
+		<version>2019.02.25</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-web-webmvc</artifactId>
-	<version>2019.02.19</version>
 	<packaging>war</packaging>
 
 	<name>Demo:Spring Framework Web WebMVC</name>
@@ -19,13 +18,12 @@
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
 			<artifactId>demo-spring-framework-starter-all</artifactId>
-			<version>2019.02.21</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
 			<artifactId>demo-spring-framework-web-remoting</artifactId>
-			<version>2019.02.19</version>
+			<version>2019.02.25</version>
 		</dependency>
 	</dependencies>
 

@@ -10,6 +10,10 @@
 
 	<name>Demo:Spring Framework</name>
 
+	<scm>
+		<url>https://github.com/ruanweiqq/demo-spring-framework</url>
+	</scm>
+	
 	<developers>
 		<developer>
 			<id>ruanwei</id>
@@ -29,13 +33,19 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+		
+		<internal.revision>2019.02.19</internal.revision>
+		<external.revision>2019.02.21</external.revision>
 	</properties>
 
 	<modules>
+		<!-- for internal -->
 	    <module>demo-spring-framework-dependencies</module>
 	    <module>demo-spring-framework-parent</module>
 	    <module>demo-spring-framework-commons</module>
 		<module>demo-spring-framework-starters</module>
+		
+		<!-- for external -->
 		<module>demo-spring-framework-withoutAnnotation</module>
 		<module>demo-spring-framework-core</module>
 		<module>demo-spring-framework-web</module>
