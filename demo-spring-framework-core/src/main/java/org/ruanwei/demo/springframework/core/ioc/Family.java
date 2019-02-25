@@ -160,4 +160,5 @@ public class Family implements BeanNameAware, BeanClassLoaderAware, LoadTimeWeav
 				+ mother + ", son=" + son + ", daughter=" + daughter + ", guest=" + guest + "]";
 	}
 
+
 }
