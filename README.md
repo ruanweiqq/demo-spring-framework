@@ -158,7 +158,6 @@ mvn clean install
 cd ../demo-springframework-core  
 mvn clean test
 
-
 ### TODO:
 1. 补充@Valid支持分组验证
 2. 补充@Valid支持bean validation2.0
@@ -169,3 +168,66 @@ mvn clean test
 7. 补充在Spring中使用AspectJ；
 8. 解析自定义配置xml标签
 9. demo-springframework-temp为临时项目，准备删除yayaaaaaa
+
+### Git:
+#### 开始一个工作区(working area)  
+git init  
+git remote add origin git@github.com:ruanweiqq/hello.git   // local repository(master) <--> remote repository origin(master)   
+git clone git@github.com:ruanweiqq/hello.git   // remote repository(master) origin <--> local repository(master)   
+
+#### 本地仓库(local repository)
+git add <file>    // working area --> local repository(index/stage)  
+git rm <file>     // working area --> index  
+git mv <file>     // working area --> index  
+git reset HEAD <file>  // index --> working area  HEAD指向当前分支(master)  
+git checkout -- <file>  // 撤销working area的变更  
+git diff     // index vs working area  
+
+#### 历史和状态  
+git log --graph  
+git reflog  
+git status  
+git show v0.9   // tag  
+
+#### 默认分支(master)  
+git commit -m "message"    // local repository(index) --> local repository(branch)    
+git reset --hard <commit_id>   // 版本回退。HEAD当前版本，HEAD^上一个版本等  
+git diff HEAD -- <file>  // branch vs working area  HEAD指向当前分支(master)  
+git diff --cached     // branch vs index   
+
+#### 临时保存
+git stash  
+git stash pop  
+git stash list  
+git stash apply  
+git stash drop  
+
+#### 新建分支  
+git branch  // 查看分支  
+git branch dev   // 创建分支dev     
+git checkout dev  // 切换到分支dev  
+git checkout -b dev   // 创建并切换到分支dev    
+git merge dev --no-ff  // 合并dev到当前分支(master)，禁用Fast forward模式  
+git branch -d dev // 删除分支dev  
+
+#### 新建标签
+git tag   // 查看标签  
+git tag v1.0   // 以当前commit_id创建标签v1.0  
+git tag v0.9 <commit_id>   // 以指定commit_id创建标签v1.0  
+git tag -a v0.1 -m "version 0.1 released" <commit_id>  
+git tag -d v0.1   // 删除本地标签v0.1  
+
+#### 远程仓库(origin)
+git remote -v  
+git branch --set-upstream-to=origin/<branch> <branch>  // 当前分支与远程分支建立联系  
+git pull   // origin branch -->  local branch   
+git rebase  // 统一基线方便push   
+git push origin <branch>   // local branch --> origin branch   
+git push origin <tag>   // local tag --> origin tag   
+git push origin --tags  // local all tags --> origin tag  
+git push origin :refs/tags/<tagname>  // 删除远程tag  
+
+git checkout -b dev origin/dev  
+
+#### 配置
+git config --global color.ui true  
