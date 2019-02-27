@@ -222,8 +222,8 @@ git remote -v
 git branch --set-upstream-to=origin/<branch> <branch>  // 当前分支与远程分支建立联系  
 git pull   // origin branch -->  local branch   
 git rebase  // 统一基线方便push   
-git push origin <branch>   // local branch --> origin branch   
-git push origin <tag>   // local tag --> origin tag   
+git push origin < branch>   // local branch --> origin branch   
+git push origin < tag>   // local tag --> origin tag   
 git push origin --tags  // local all tags --> origin tag  
 git push origin :refs/tags/<tagname>  // 删除远程tag  
 
