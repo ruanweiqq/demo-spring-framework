@@ -1,6 +1,6 @@
 # demo-spring-framework
 
-feature20190227
+this is the feature20190227 branch.
 
 ### demo-spring-framework项目包含如下模块：
 - demo-spring-framework-dependencies模块：依赖声明。
