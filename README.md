@@ -184,7 +184,7 @@ git checkout -- <file>  // 撤销working area的变更
 git diff     // index vs working area  
 
 #### 历史和状态  
-git log --graph  
+git log --graph --pretty=oneline 
 git reflog  
 git status  
 git show v0.9   // tag  
@@ -206,7 +206,8 @@ git stash drop
 git branch  // 查看分支  
 git branch dev   // 创建分支dev     
 git checkout dev  // 切换到分支dev  
-git checkout -b dev   // 创建并切换到分支dev    
+git checkout -b dev   // 创建并切换到分支dev
+git diff < source_branch> < target_branch>       
 git merge dev --no-ff  // 合并dev到当前分支(master)，禁用Fast forward模式  
 git branch -d dev // 删除分支dev  
 
@@ -220,7 +221,8 @@ git tag -d v0.1   // 删除本地标签v0.1
 #### 远程仓库(origin)
 git remote -v  
 git branch --set-upstream-to=origin/<branch> <branch>  // 当前分支与远程分支建立联系  
-git pull   // origin branch -->  local branch   
+git pull   // origin branch -->  local branch, will merge  
+git fetch origin  // origin branch -->  local branch, will not merge 
 git rebase  // 统一基线方便push   
 git push origin < branch>   // local branch --> origin branch   
 git push origin < tag>   // local tag --> origin tag   
@@ -231,3 +233,4 @@ git checkout -b dev origin/dev
 
 #### 配置
 git config --global color.ui true  
+git config format.pretty oneline   
