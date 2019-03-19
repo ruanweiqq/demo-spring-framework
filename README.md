@@ -5,7 +5,7 @@ this is the master branch
 ### demo-spring-framework项目包含如下模块：
 - demo-spring-framework-dependencies模块：依赖声明。
 - demo-spring-framework-parent模块：所有项目的父模块，包含构建参数。
-- demo-springframework-starters模块：父模块为demo-springframework-parent。
+- demo-spring-framework-starters模块：父模块为demo-springframework-parent。
 - demo-spring-framework-commons模块：父模块为demo-springframework-parent。
 - demo-spring-framework-core模块：父模块为demo-springframework-starter-parent。
 - demo-spring-framework-dataAccess模块：父模块为demo-springframework-starter-parent。
