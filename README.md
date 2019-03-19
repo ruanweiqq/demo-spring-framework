@@ -147,7 +147,7 @@ demo-spring-framework
 ------------------------------------------
 </pre>
 
-### 运行方式：
+### 运行方式：TODO
 cd demo-spring-framework  
 cd demo-spring-framework-parent  
 mvn clean install  
