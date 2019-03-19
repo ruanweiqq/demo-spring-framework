@@ -7,12 +7,12 @@ this is the master branch
 - demo-spring-framework-parent模块：所有项目的父模块，包含构建参数。
 - demo-springframework-starters模块：父模块为demo-springframework-parent。
 - demo-spring-framework-commons模块：父模块为demo-springframework-parent。
-- demo-springframework-core模块：父模块为demo-springframework-starter-parent。
-- demo-springframework-dataAccess模块：父模块为demo-springframework-starter-parent。
-- demo-springframework-web模块：父模块为demo-springframework-starter-parent。
-- demo-springframework-integration模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-core模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-dataAccess模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-web模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-integration模块：父模块为demo-springframework-starter-parent。
 - demo-spring-framework-withoutAnnotation模块：父模块为demo-springframework-starter-parent。未开启基于注解的配置元数据。
-- demo-springframework-temp模块：父模块为demo-springframework-starter-parent。临时项目，准备删除。
+- demo-spring-framework-temp模块：父模块为demo-springframework-starter-parent。临时项目，准备删除。
 
 每个项目均同时支持基于XML的和Java的配置元数据。除第一个项目外，均开启了基于注解的配置元数据，即：
 
