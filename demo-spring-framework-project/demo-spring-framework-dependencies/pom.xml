@@ -5,7 +5,7 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework</artifactId>
+		<artifactId>demo-spring-framework-build</artifactId>
 		<version>2019.02.19</version>
 		<relativePath>../..</relativePath>
 		<!-- why not? <version>${internal.revision}</version> -->
@@ -421,7 +421,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.ruanwei.demo</groupId>
-				<artifactId>demo-spring-framework-starter-all</artifactId>
+				<artifactId>demo-spring-framework-starter-core</artifactId>
 				<version>2019.02.19</version>
 			</dependency>
 			<!-- ========== G.Starter End ========== -->

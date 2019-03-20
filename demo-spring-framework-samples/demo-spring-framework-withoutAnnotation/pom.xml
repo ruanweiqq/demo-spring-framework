@@ -5,7 +5,7 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-starter-parent</artifactId>
+		<artifactId>demo-spring-framework-samples</artifactId>
 		<version>2019.02.19</version>
 		<!-- <relativePath/> --> <!-- lookup parent from repository -->
 	</parent>
