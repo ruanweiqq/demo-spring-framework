@@ -5,14 +5,14 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-web</artifactId>
+		<artifactId>demo-spring-framework-samples-web</artifactId>
 		<version>2019.02.25</version>
 	</parent>
 
-	<artifactId>demo-spring-framework-web-webflux</artifactId>
-	<packaging>jar</packaging>
+	<artifactId>demo-spring-framework-samples-web-webmvc</artifactId>
+	<packaging>war</packaging>
 
-	<name>Demo:Spring Framework Web WebFlux</name>
+	<name>Demo:Spring Framework Samples Web WebMVC</name>
 
 	<dependencies>
 		<dependency>
@@ -22,13 +22,13 @@
 
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
-			<artifactId>demo-spring-framework-web-remoting</artifactId>
+			<artifactId>demo-spring-framework-samples-web-remoting</artifactId>
 			<version>2019.02.25</version>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-framework-web-webflux</finalName>
+		<finalName>demo-spring-framework-samples-web-webmvc</finalName>
 		<filters>
 			<filter>src/main/filters/${env}.properties</filter>
 		</filters>

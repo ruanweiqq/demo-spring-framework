@@ -9,20 +9,20 @@
         <!-- <relativePath/> --> <!-- lookup parent from repository -->
     </parent>
 
-    <artifactId>demo-spring-framework-web</artifactId>
+    <artifactId>demo-spring-framework-samples-web</artifactId>
     <version>2019.02.25</version>
     <packaging>pom</packaging>
 
-    <name>Demo:Spring Framework Web</name>
+    <name>Demo:Spring Framework Samples Web</name>
 
     <properties>
     </properties>
 
     <modules>
-        <module>demo-spring-framework-web-remoting</module>
-        <module>demo-spring-framework-web-service</module>
-        <module>demo-spring-framework-web-webmvc</module>
-        <module>demo-spring-framework-web-webflux</module>
+        <module>demo-spring-framework-samples-web-remoting</module>
+        <module>demo-spring-framework-samples-web-service</module>
+        <module>demo-spring-framework-samples-web-webmvc</module>
+        <module>demo-spring-framework-samples-web-webflux</module>
     </modules>
 
     <dependencies>
@@ -33,7 +33,7 @@
     </dependencies>
 
     <build>
-        <finalName>demo-spring-framework-web</finalName>
+        <finalName>demo-spring-framework-samples-web</finalName>
     </build>
 
 </project>

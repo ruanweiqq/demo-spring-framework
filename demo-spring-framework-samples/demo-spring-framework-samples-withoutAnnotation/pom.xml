@@ -5,16 +5,16 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-starter-parent</artifactId>
+		<artifactId>demo-spring-framework-samples</artifactId>
 		<version>2019.02.19</version>
 		<!-- <relativePath/> --> <!-- lookup parent from repository -->
 	</parent>
 
-	<artifactId>demo-spring-framework-temp</artifactId>
+	<artifactId>demo-spring-framework-samples-withoutAnnotation</artifactId>
 	<version>2019.02.25</version>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Temp(will remove)</name>
+	<name>Demo:Spring Framework Samples without Annotation</name>
 
 	<dependencies>
 		<dependency>
@@ -24,7 +24,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-framework-temp</finalName>
+		<finalName>demo-spring-framework-samples-withoutAnnotation</finalName>
 	</build>
 
 </project>

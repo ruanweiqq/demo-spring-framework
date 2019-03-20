@@ -5,13 +5,13 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-web</artifactId>
+		<artifactId>demo-spring-framework-samples-web</artifactId>
 		<version>2019.02.25</version>
 	</parent>
 
-	<artifactId>demo-spring-framework-web-remoting</artifactId>
+	<artifactId>demo-spring-framework-samples-web-remoting</artifactId>
 	<packaging>jar</packaging>
-	<name>Demo:Spring Framework Web Remoting</name>
+	<name>Demo:Spring Framework Samples Web Remoting</name>
 	<url>http://www.ruanwei.org</url>
 
 	<properties>
@@ -25,6 +25,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-framework-web-remoting</finalName>
+		<finalName>demo-spring-framework-samples-web-remoting</finalName>
 	</build>
 </project>

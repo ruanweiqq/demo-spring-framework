@@ -10,11 +10,11 @@
 		<!-- <relativePath/> --> <!-- lookup parent from repository -->
 	</parent>
 
-	<artifactId>demo-spring-framework-core</artifactId>
+	<artifactId>demo-spring-framework-samples-temp</artifactId>
 	<version>2019.02.25</version>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Core</name>
+	<name>Demo:Spring Framework Samples Temp(will remove)</name>
 
 	<dependencies>
 		<dependency>
@@ -24,7 +24,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-framework-core</finalName>
+		<finalName>demo-spring-framework-samples-temp</finalName>
 	</build>
 
 </project>
