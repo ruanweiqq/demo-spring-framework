@@ -42,13 +42,13 @@ spring-boot
     spring-boot-project
 	-spring-boot-project:pom  spring-boot-build:pom
 	spring-boot-dependencies
-			-spring-boot-dependencies:pom  spring-boot-build:pom
+	    -spring-boot-dependencies:pom  ../..(spring-boot-build:pom)
 	spring-boot-parent
-			-spring-boot-parent:pom  spring-boot-dependencies:pom
+	    -spring-boot-parent:pom  ../spring-boot-dependencies:pom
 	spring-boot-starters
-	    -spring-boot-starters:pom  spring-boot-parent:pom
+	    -spring-boot-starters:pom  ../spring-boot-parent:pom
 	    spring-boot-starter-parent
-		-spring-boot-starter-parent:pom  spring-boot-dependencies:pom
+		-spring-boot-starter-parent:pom  ../../spring-boot-dependencies:pom
 	    spring-boot-starter
 		-spring-boot-starter:jar  spring-boot-starters:pom
 	    spring-boot-starter-web
@@ -63,15 +63,23 @@ spring-boot
 	spring-boot-devtools		
 	spring-boot-cli
     spring-boot-tests
-	pom.xml    spring-boot-tests:pom  ../spring-boot-project/spring-boot-parent
+	-spring-boot-tests:pom  ../spring-boot-project/spring-boot-parent
 	spring-boot-integration-tests
-	    pom.xml    spring-boot-deployment-tests:pom  spring-boot-tests
-	    spring-boot-deployment-test-glassfish
-		pom.xml spring-boot-deployment-test-tomcat:war  spring-boot-deployment-tests
-	    spring-boot-deployment-test-tomcat
+	    -spring-boot-integration-tests:pom  spring-boot-tests:pom
+	    spring-boot-configuration-processor-tests
+	        -spring-boot-configuration-processor-tests:pom  spring-boot-integration-tests:pom
+	    spring-boot-devtools-tests
+	        -spring-boot-devtools-tests   spring-boot-integration-tests:pom
 	spring-boot-deployment-tests
+	    -spring-boot-deployment-tests:pom  spring-boot-tests:pom
+	    spring-boot-deployment-test-glassfish
+	        -spring-boot-deployment-test-glassfish:war  spring-boot-deployment-tests:pom
+	    spring-boot-deployment-test-tomcat
+		-spring-boot-deployment-test-tomcat:war  spring-boot-deployment-tests:pom
     spring-boot-samples
-	pom.xml    spring-boot-samples:pom  ../spring-boot-project/spring-boot-starters/spring-boot-starter-parent
+	-spring-boot-samples:pom  ../spring-boot-project/spring-boot-starters/spring-boot-starter-parent
+    spring-boot-samples-invoker
+        -spring-boot-samples-invoker:pom  ../spring-boot-project/spring-boot-parent
 ------------------------------------------
 </pre>
 
