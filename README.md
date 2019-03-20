@@ -3,6 +3,7 @@
 this is the master branch
 
 ### 项目结构
+<pre>
 demo-spring-framework
 	-demo-spring-framework-build:pom
 	demo-spring-framework-dependencies
@@ -36,7 +37,6 @@ demo-spring-framework
 	demo-spring-framework-withoutAnnotation
 	    -demo-spring-framework-withoutAnnotation:pom  demo-spring-framework-starter-parent:pom
 ------------------------------------------
-<pre>
 spring-boot
 	-spring-boot-build:pom
 	spring-boot-project
