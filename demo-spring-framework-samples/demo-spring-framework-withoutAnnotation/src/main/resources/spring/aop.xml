@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd 
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd 
+        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
+	default-init-method="init" default-destroy-method="destroy">
+
+	<!-- ==========B.AOP and Instrumentation========== -->
+	<bean id="myAspect"
+		class="org.ruanwei.demo.springframework.core.aop.MyAspect" />
+	<bean id="good"
+		class="org.ruanwei.demo.springframework.core.aop.GoodImpl" />
+	<!-- To force the use of CGLIB(against JDK dynamic) proxies set the value 
+		of the proxy-target-class attribute of the <aop:config> element to true. -->
+	<aop:config>
+		<aop:pointcut id="myPointcut"
+			expression="within(org.ruanwei.demo.springframework.core.ioc.*) and execution(* *..Family.say*(..)) and args(message)" />
+		<!-- <aop:advisor advice-ref="myAspect"
+			pointcut-ref="myPointcut" order="0" /> -->
+		<aop:aspect id="myAspect1" ref="myAspect" order="1">
+			<aop:pointcut id="myPointcut1"
+				expression="within(org.ruanwei.demo.springframework.core.ioc.*) and execution(* *..Family.say*(..)) and this(t) and args(message)" />
+			<aop:before pointcut-ref="myPointcut1" method="before" />
+			<aop:after pointcut-ref="myPointcut1" method="after" />
+		</aop:aspect>
+		<aop:aspect id="myAspect2" ref="myAspect" order="2">
+			<aop:pointcut id="myPointcut2"
+				expression="within(org.ruanwei.demo.springframework.core.ioc.*) and execution(* *..Family.say*(..)) and this(t) and args(message)" />
+			<aop:after-returning pointcut-ref="myPointcut2"
+				method="afterReturning" returning="ret" />
+			<aop:after-throwing pointcut-ref="myPointcut2"
+				method="afterThrowing" throwing="e" />
+		</aop:aspect>
+		<aop:aspect id="myAspect3" ref="myAspect" order="3">
+			<aop:pointcut id="myPointcut3"
+				expression="within(org.ruanwei.demo.springframework.core.ioc.*) and execution(* *..Family.say*(..)) and args(message)" />
+			<aop:around pointcut-ref="myPointcut3" method="around" />
+		</aop:aspect>
+		<aop:aspect id="myAspect4" order="4">
+			<aop:declare-parents
+				types-matching="org.ruanwei.demo.springframework.core.aop.GoodImpl"
+				implement-interface="org.ruanwei.demo.springframework.core.aop.Happy"
+				default-impl="org.ruanwei.demo.springframework.core.aop.HappyImpl" />
+		</aop:aspect>
+	</aop:config>
+</beans>

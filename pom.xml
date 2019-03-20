@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.ruanwei.demo</groupId>
-	<artifactId>demo-spring-framework</artifactId>
+	<artifactId>demo-spring-framework-build</artifactId>
 	<version>2019.02.19</version>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Framework</name>
+	<name>Demo:Spring Framework Build</name>
 
 	<scm>
 		<url>https://github.com/ruanweiqq/demo-spring-framework</url>
@@ -39,17 +39,9 @@
 	</properties>
 
 	<modules>
-		<!-- for internal -->
-	    <module>demo-spring-framework-dependencies</module>
-	    <module>demo-spring-framework-parent</module>
-	    <module>demo-spring-framework-commons</module>
-		<module>demo-spring-framework-starters</module>
-		
-		<!-- for external -->
-		<module>demo-spring-framework-withoutAnnotation</module>
-		<module>demo-spring-framework-core</module>
-		<module>demo-spring-framework-web</module>
-		<module>demo-spring-framework-temp</module>
+		<module>demo-spring-framework-project</module>
+		<module>demo-spring-framework-tests</module>
+		<module>demo-spring-framework-samples</module>
 	</modules>
 
 	<profiles>
@@ -129,6 +121,6 @@
 	</pluginRepositories>
 
 	<build>
-		<finalName>demo-spring-framework</finalName>
+		<finalName>demo-spring-framework-build</finalName>
 	</build>
 </project>
