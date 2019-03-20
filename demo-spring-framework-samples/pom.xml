@@ -20,10 +20,10 @@
 	</properties>
 
 	<modules>
-		<module>demo-spring-framework-withoutAnnotation</module>
-	    <module>demo-spring-framework-core</module>
-	    <module>demo-spring-framework-web</module>   
-		<module>demo-spring-framework-temp</module>
+		<module>demo-spring-framework-samples-withoutAnnotation</module>
+	    <module>demo-spring-framework-samples-core</module>
+	    <module>demo-spring-framework-samples-web</module>   
+		<module>demo-spring-framework-samples-temp</module>
 	</modules>
 
 	<build>
