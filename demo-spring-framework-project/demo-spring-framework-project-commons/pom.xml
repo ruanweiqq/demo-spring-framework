@@ -5,14 +5,15 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-starters</artifactId>
+		<artifactId>demo-spring-framework-project-parent</artifactId>
 		<version>2019.02.19</version>
+		<relativePath>../demo-spring-framework-project-parent</relativePath>
 	</parent>
 
-	<artifactId>demo-spring-framework-starter-core</artifactId>
+	<artifactId>demo-spring-framework-project-commons</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Starter Core（To be split）</name>
+	<name>Demo:Spring Framework Project Commons</name>
 
 	<dependencies>
 		<!-- ========== A.Common Start ========== -->
@@ -467,16 +468,9 @@
 			<artifactId>bcprov-jdk15</artifactId>
 		</dependency>
 		<!-- ========== Unknow End ========== -->
-
-		<!-- 会导致构建不成功why -->
-		<dependency>
-			<groupId>org.ruanwei.demo</groupId>
-			<artifactId>demo-spring-framework-commons</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-framework-starter-core</finalName>
+		<finalName>demo-spring-framework-project-commons</finalName>
 	</build>
-
 </project>

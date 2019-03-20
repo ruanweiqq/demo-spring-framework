@@ -11,10 +11,10 @@
 		<!-- why not? <version>${internal.revision}</version> -->
 	</parent>
 
-	<artifactId>demo-spring-framework-dependencies</artifactId>
+	<artifactId>demo-spring-framework-project-dependencies</artifactId>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Framework Dependencies(BOM)</name>
+	<name>Demo:Spring Framework Project Dependencies(BOM)</name>
 
 	<properties>
 		<log4j.version>2.10.0</log4j.version>
@@ -416,12 +416,12 @@
 			<!-- ========== G.Starter Start ========== -->
 			<dependency>
 				<groupId>org.ruanwei.demo</groupId>
-				<artifactId>demo-spring-framework-starter</artifactId>
+				<artifactId>demo-spring-framework-project-starter</artifactId>
 				<version>2019.02.19</version>
 			</dependency>
 			<dependency>
 				<groupId>org.ruanwei.demo</groupId>
-				<artifactId>demo-spring-framework-starter-core</artifactId>
+				<artifactId>demo-spring-framework-project-starter-core</artifactId>
 				<version>2019.02.19</version>
 			</dependency>
 			<!-- ========== G.Starter End ========== -->
@@ -467,7 +467,7 @@
 
 			<dependency>
 				<groupId>org.ruanwei.demo</groupId>
-				<artifactId>demo-spring-framework-commons</artifactId>
+				<artifactId>demo-spring-framework-project-commons</artifactId>
 				<version>2019.02.19</version>
 			</dependency>
 			<!-- ========== Unknow End ========== -->
@@ -475,7 +475,7 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>demo-spring-framework-dependencies</finalName>
+		<finalName>demo-spring-framework-project-dependencies</finalName>
 
 		<pluginManagement>
 			<plugins>

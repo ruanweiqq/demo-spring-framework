@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
-			<artifactId>demo-spring-framework-starter-core</artifactId>
+			<artifactId>demo-spring-framework-project-starter-core</artifactId>
 		</dependency>
 	</dependencies>
 

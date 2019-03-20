@@ -19,10 +19,10 @@
 	</properties>
 
 	<modules>
-	    <module>demo-spring-framework-dependencies</module>
-	    <module>demo-spring-framework-parent</module>
-	    <module>demo-spring-framework-commons</module>
-		<module>demo-spring-framework-starters</module>
+	    <module>demo-spring-framework-project-dependencies</module>
+	    <module>demo-spring-framework-project-parent</module>
+	    <module>demo-spring-framework-project-commons</module>
+		<module>demo-spring-framework-project-starters</module>
 	</modules>
 
 	<build>

@@ -5,17 +5,17 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-dependencies</artifactId>
+		<artifactId>demo-spring-framework-project-dependencies</artifactId>
 		<version>2019.02.19</version>
-		<relativePath>../../demo-spring-framework-dependencies</relativePath>
+		<relativePath>../../demo-spring-framework-project-dependencies</relativePath>
 	</parent>
 
-	<artifactId>demo-spring-framework-starter-parent</artifactId>
+	<artifactId>demo-spring-framework-project-starter-parent</artifactId>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Framework Starter Parent</name>
+	<name>Demo:Spring Framework Project Starter Parent</name>
 
 	<build>
-		<finalName>demo-spring-framework-starter-parent</finalName>
+		<finalName>demo-spring-framework-project-starter-parent</finalName>
 	</build>
 </project>

@@ -5,20 +5,20 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-starters</artifactId>
+		<artifactId>demo-spring-framework-project-starters</artifactId>
 		<version>2019.02.19</version>
 	</parent>
 
-	<artifactId>demo-spring-framework-starter</artifactId>
+	<artifactId>demo-spring-framework-project-starter</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Starter</name>
+	<name>Demo:Spring Framework Project Starter</name>
 
 	<dependencies>
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-framework-starter</finalName>
+		<finalName>demo-spring-framework-project-starter</finalName>
 	</build>
 
 </project>
