@@ -8,40 +8,40 @@ demo-spring-framework
     -demo-spring-framework-build:pom
     demo-spring-framework-project
         -demo-spring-framework-project:pom  demo-spring-framework-build:pom
-        demo-spring-framework-dependencies
-	    -demo-spring-framework-dependencies:pom  ../..(demo-spring-framework-build:pom)
-        demo-spring-framework-parent
-	    -demo-spring-framework-parent:pom  ../demo-spring-framework-dependencies:pom
-        demo-spring-framework-starters
-	    -demo-spring-framework-starters:pom  ../demo-spring-framework-parent:pom
-	    demo-spring-framework-starter-parent
-	        -demo-spring-framework-starter-parent:pom  ../../demo-spring-framework-dependencies:pom
-	    demo-spring-framework-starter
-	        -demo-spring-framework-starter:jar  demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-core
-	        -demo-spring-framework-starter-core:jar demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-dataAccess
-	        -demo-spring-framework-starter-dataAccess:jar demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-web
-	        -demo-spring-framework-starter-web:jar  demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-integration
-	        -demo-spring-framework-starter-integration:jar demo-spring-framework-starters:pom
-        demo-spring-framework-commons
-	    -demo-spring-framework-commons:jar  ../demo-spring-framework-parent:pom
+        demo-spring-framework-project-dependencies
+	    -demo-spring-framework-project-dependencies:pom  ../..(demo-spring-framework-build:pom)
+        demo-spring-framework-project-parent
+	    -demo-spring-framework-project-parent:pom  ../demo-spring-framework-project-dependencies:pom
+        demo-spring-framework-project-starters
+	    -demo-spring-framework-project-starters:pom  ../demo-spring-framework-project-parent:pom
+	    demo-spring-framework-project-starter-parent
+	        -demo-spring-framework-project-starter-parent:pom  ../../demo-spring-framework-project-dependencies:pom
+	    demo-spring-framework-project-starter
+	        -demo-spring-framework-project-starter:jar  demo-spring-framework-project-starters:pom
+	    demo-spring-framework-project-starter-core
+	        -demo-spring-framework-project-starter-core:jar demo-spring-framework-project-starters:pom
+	    demo-spring-framework-project-starter-dataAccess
+	        -demo-spring-framework-project-starter-dataAccess:jar demo-spring-framework-project-starters:pom
+	    demo-spring-framework-project-starter-web
+	        -demo-spring-framework-project-starter-web:jar  demo-spring-framework-project-starters:pom
+	    demo-spring-framework-project-starter-integration
+	        -demo-spring-framework-project-starter-integration:jar demo-spring-framework-project-starters:pom
+        demo-spring-framework-project-commons
+	    -demo-spring-framework-project-commons:jar  ../demo-spring-framework-project-parent:pom
     demo-spring-framework-tests
-        -demo-spring-framework-tests:pom  ../demo-spring-framework-project/demo-spring-framework-parent
+        -demo-spring-framework-tests:pom  ../demo-spring-framework-project-project/demo-spring-framework-project-parent
     demo-spring-framework-samples
-        -demo-spring-framework-samples:pom  ../demo-spring-framework-project/demo-spring-framework-starters/demo-spring-framework-starter-parent
-        demo-spring-framework-core
-	    -demo-spring-framework-core:jar  demo-spring-samples:pom
-        demo-spring-framework-web
-	    -demo-spring-framework-web:war  demo-spring-samples:pom
-        demo-spring-framework-dataAccess
-	    -demo-spring-framework-dataAccess:jar  demo-spring-samples:pom
-        demo-spring-framework-integration
-	    -demo-spring-framework-integration:jar  demo-spring-samples:pom
-        demo-spring-framework-withoutAnnotation
-	    -demo-spring-framework-withoutAnnotation:jar  demo-spring-samples:pom
+        -demo-spring-framework-samples:pom  ../demo-spring-framework-project/demo-spring-framework-project-starters/demo-spring-framework-project-starter-parent
+        demo-spring-framework-samples-core
+	    -demo-spring-framework-samples-core:jar  demo-spring-framework-samples:pom
+        demo-spring-framework-samples-web
+	    -demo-spring-framework-samples-web:war  demo-spring-framework-samples:pom
+        demo-spring-framework-samples-dataAccess
+	    -demo-spring-framework-samples-dataAccess:jar  demo-spring-framework-samples:pom
+        demo-spring-framework-samples-integration
+	    -demo-spring-framework-samples-integration:jar  demo-spring-framework-samples:pom
+        demo-spring-framework-samples-withoutAnnotation
+	    -demo-spring-framework-samples-withoutAnnotation:jar  demo-spring-framework-samples:pom
 ------------------------------------------
 spring-boot
     -spring-boot-build:pom
