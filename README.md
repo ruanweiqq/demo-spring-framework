@@ -56,9 +56,9 @@ spring-boot
 	    spring-boot-starter-webflux
 	        -spring-boot-starter-webflux:jar  spring-boot-starters:pom
 	spring-boot
-	    -spring-boot:jar  spring-boot-parent
+	    -spring-boot:jar  ../spring-boot-parent:pom
 	spring-boot-actuator
-	    -spring-boot-actuator:jar  spring-boot-parent
+	    -spring-boot-actuator:jar  ../spring-boot-parent:pom
 	spring-boot-autoconfigure
 	spring-boot-devtools		
 	spring-boot-cli
