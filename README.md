@@ -60,8 +60,7 @@ spring-boot
 	    spring-boot-starter-web
 		-spring-boot-starter-web:jar  spring-boot-starters:pom
 	    spring-boot-starter-webflux
-	        -spring-boot-starter-webflux:jar  spring-boot-starters:pom
-	
+	        -spring-boot-starter-webflux:jar  spring-boot-starters:pom	
 	spring-boot
 	    -spring-boot:jar  ../spring-boot-parent:pom
 	spring-boot-actuator
@@ -93,16 +92,19 @@ spring-boot
 </pre>
 
 ### 项目模块：
-- demo-spring-framework-dependencies模块：依赖声明。
-- demo-spring-framework-parent模块：所有项目的父模块，包含构建参数。
-- demo-spring-framework-starters模块：父模块为demo-springframework-parent。
-- demo-spring-framework-commons模块：父模块为demo-springframework-parent。
-- demo-spring-framework-core模块：父模块为demo-springframework-starter-parent。
-- demo-spring-framework-dataAccess模块：父模块为demo-springframework-starter-parent。
-- demo-spring-framework-web模块：父模块为demo-springframework-starter-parent。
-- demo-spring-framework-integration模块：父模块为demo-springframework-starter-parent。
-- demo-spring-framework-withoutAnnotation模块：父模块为demo-springframework-starter-parent。未开启基于注解的配置元数据。
-- demo-spring-framework-temp模块：父模块为demo-springframework-starter-parent。临时项目，准备删除。
+- demo-spring-framework-project模块：定义parent和starter。
+  - demo-spring-framework-project-dependencies模块：依赖声明(BOM)。
+  - demo-spring-framework-project-parent模块：内部项目的父模块，包含构建参数。
+  - demo-spring-framework-project-starters模块：父模块为demo-spring-framework-project-parent。
+  - demo-spring-framework-project-commons模块：父模块为demo-spring-framework-project-parent。
+- demo-spring-framework-tests模块：测试继承于demo-spring-framework-project-parent的模块。
+- demo-spring-framework-samples模块：测试继承于demo-spring-framework-project-starter-parent的模块。
+  - demo-spring-framework-samples-core模块：父模块为demo-spring-framework-project-starter-parent。
+  - demo-spring-framework-samples-dataAccess模块：父模块为demo-spring-framework-project-starter-parent。
+  - demo-spring-framework-samples-web模块：父模块为demo-spring-framework-project-starter-parent。
+  - demo-spring-framework-samples-integration模块：父模块为demo-spring-framework-project-starter-parent。
+  - demo-spring-framework-samples-withoutAnnotation模块：父模块为demo-spring-framework-project-starter-parent。未开启基于注解的配置元数据。
+  - demo-spring-framework-samples-temp模块：父模块为demo-spring-framework-project-starter-parent。临时项目，准备删除。
 
 ### 运行方式：TODO
 cd demo-spring-framework  
