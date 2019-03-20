@@ -2,17 +2,118 @@
 
 this is the master branch
 
-### demo-spring-framework项目包含如下模块：
+### 项目结构
+<pre>
+demo-spring-framework
+    -demo-spring-framework-build:pom
+    demo-spring-framework-project
+        -demo-spring-framework-project:pom  demo-spring-framework-build:pom
+        demo-spring-framework-dependencies
+	    -demo-spring-framework-dependencies:pom  ../..(demo-spring-framework-build:pom)
+        demo-spring-framework-parent
+	    -demo-spring-framework-parent:pom  ../demo-spring-framework-dependencies:pom
+        demo-spring-framework-starters
+	    -demo-spring-framework-starters:pom  ../demo-spring-framework-parent:pom
+	    demo-spring-framework-starter-parent
+	        -demo-spring-framework-starter-parent:pom  ../../demo-spring-framework-dependencies:pom
+	    demo-spring-framework-starter
+	        -demo-spring-framework-starter:jar  demo-spring-framework-starters:pom
+	    demo-spring-framework-starter-core
+	        -demo-spring-framework-starter-core:jar demo-spring-framework-starters:pom
+	    demo-spring-framework-starter-dataAccess
+	        -demo-spring-framework-starter-dataAccess:jar demo-spring-framework-starters:pom
+	    demo-spring-framework-starter-web
+	        -demo-spring-framework-starter-web:jar  demo-spring-framework-starters:pom
+	    demo-spring-framework-starter-integration
+	        -demo-spring-framework-starter-integration:jar demo-spring-framework-starters:pom
+        demo-spring-framework-commons
+	    -demo-spring-framework-commons:jar  ../demo-spring-framework-parent:pom
+    demo-spring-framework-tests
+        -demo-spring-framework-tests:pom  ../demo-spring-framework-project/demo-spring-framework-parent
+    demo-spring-framework-samples
+        -demo-spring-framework-samples:pom  ../demo-spring-framework-project/demo-spring-framework-starters/demo-spring-framework-starter-parent
+        demo-spring-framework-core
+	    -demo-spring-framework-core:jar  demo-spring-samples:pom
+        demo-spring-framework-web
+	    -demo-spring-framework-web:war  demo-spring-samples:pom
+        demo-spring-framework-dataAccess
+	    -demo-spring-framework-dataAccess:jar  demo-spring-samples:pom
+        demo-spring-framework-integration
+	    -demo-spring-framework-integration:jar  demo-spring-samples:pom
+        demo-spring-framework-withoutAnnotation
+	    -demo-spring-framework-withoutAnnotation:jar  demo-spring-samples:pom
+------------------------------------------
+spring-boot
+    -spring-boot-build:pom
+    spring-boot-project
+	-spring-boot-project:pom  spring-boot-build:pom
+	spring-boot-dependencies
+	    -spring-boot-dependencies:pom  ../..(spring-boot-build:pom)
+	spring-boot-parent
+	    -spring-boot-parent:pom  ../spring-boot-dependencies:pom
+	spring-boot-starters
+	    -spring-boot-starters:pom  ../spring-boot-parent:pom
+	    spring-boot-starter-parent
+		-spring-boot-starter-parent:pom  ../../spring-boot-dependencies:pom
+	    spring-boot-starter
+		-spring-boot-starter:jar  spring-boot-starters:pom
+	    spring-boot-starter-web
+		-spring-boot-starter-web:jar  spring-boot-starters:pom
+	    spring-boot-starter-webflux
+	        -spring-boot-starter-webflux:jar  spring-boot-starters:pom
+	
+	spring-boot
+	    -spring-boot:jar  ../spring-boot-parent:pom
+	spring-boot-actuator
+	    -spring-boot-actuator:jar  ../spring-boot-parent:pom
+	spring-boot-autoconfigure
+	spring-boot-devtools		
+	spring-boot-cli
+    spring-boot-tests
+	-spring-boot-tests:pom  ../spring-boot-project/spring-boot-parent
+	spring-boot-integration-tests
+	    -spring-boot-integration-tests:pom  spring-boot-tests:pom
+	    spring-boot-configuration-processor-tests
+	        -spring-boot-configuration-processor-tests:pom  spring-boot-integration-tests:pom
+	    spring-boot-devtools-tests
+	        -spring-boot-devtools-tests   spring-boot-integration-tests:pom
+	spring-boot-deployment-tests
+	    -spring-boot-deployment-tests:pom  spring-boot-tests:pom
+	    spring-boot-deployment-test-glassfish
+	        -spring-boot-deployment-test-glassfish:war  spring-boot-deployment-tests:pom
+	    spring-boot-deployment-test-tomcat
+		-spring-boot-deployment-test-tomcat:war  spring-boot-deployment-tests:pom
+    spring-boot-samples
+	-spring-boot-samples:pom  ../spring-boot-project/spring-boot-starters/spring-boot-starter-parent:pom
+	spring-boot-sample-simple
+	    -spring-boot-sample-simple:jar  spring-boot-samples:pom
+    spring-boot-samples-invoker
+        -spring-boot-samples-invoker:pom  ../spring-boot-project/spring-boot-parent:pom
+------------------------------------------
+</pre>
+
+### 项目模块：
 - demo-spring-framework-dependencies模块：依赖声明。
 - demo-spring-framework-parent模块：所有项目的父模块，包含构建参数。
-- demo-springframework-starters模块：父模块为demo-springframework-parent。
+- demo-spring-framework-starters模块：父模块为demo-springframework-parent。
 - demo-spring-framework-commons模块：父模块为demo-springframework-parent。
-- demo-springframework-core模块：父模块为demo-springframework-starter-parent。
-- demo-springframework-dataAccess模块：父模块为demo-springframework-starter-parent。
-- demo-springframework-web模块：父模块为demo-springframework-starter-parent。
-- demo-springframework-integration模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-core模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-dataAccess模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-web模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-integration模块：父模块为demo-springframework-starter-parent。
 - demo-spring-framework-withoutAnnotation模块：父模块为demo-springframework-starter-parent。未开启基于注解的配置元数据。
-- demo-springframework-temp模块：父模块为demo-springframework-starter-parent。临时项目，准备删除。
+- demo-spring-framework-temp模块：父模块为demo-springframework-starter-parent。临时项目，准备删除。
+
+### 运行方式：TODO
+cd demo-spring-framework  
+cd demo-spring-framework-parent  
+mvn clean install  
+cd ../demo-spring-framework-commons  
+mvn clean install  
+cd ../demo-springframework-starters  
+mvn clean install  
+cd ../demo-springframework-core  
+mvn clean test
 
 每个项目均同时支持基于XML的和Java的配置元数据。除第一个项目外，均开启了基于注解的配置元数据，即：
 
@@ -73,90 +174,6 @@ none  | none | @PersistenceContext
 <p>注意：基于XML的配置元数据需要使用&lt;context:annotation-config/>开启@Configuration注解支持.
 <p>注意：对于AOP配置，没有与基于XML相对应的基于Java的配置元数据.
 <p>注意：对于事务配置，没有与基于XML相对应的基于Java的配置元数据.
-
-# 项目结构
-<pre>
-spring-boot
-	-spring-boot-build:pom
-	spring-boot-project
-		-spring-boot-project:pom  spring-boot-build:pom
-		spring-boot-dependencies
-			-spring-boot-dependencies:pom  spring-boot-build:pom
-		spring-boot-parent
-			-spring-boot-parent:pom  spring-boot-dependencies:pom
-		spring-boot-starters
-		    -spring-boot-starters:pom  spring-boot-parent:pom
-		    spring-boot-starter-parent
-		        -spring-boot-starter-parent:pom  spring-boot-dependencies:pom
-		    spring-boot-starter
-		    	 -spring-boot-starter:jar  spring-boot-starters:pom
-		    spring-boot-starter-web
-			 -spring-boot-starter-web:jar  spring-boot-starters:pom
-	            spring-boot-starter-webflux
-	                 -spring-boot-starter-webflux:jar  spring-boot-starters:pom
-		spring-boot
-		    -spring-boot:jar  spring-boot-parent
-		spring-boot-actuator
-		    -spring-boot-actuator:jar  spring-boot-parent
-		spring-boot-autoconfigure
-		spring-boot-devtools		
-		spring-boot-cli
-	spring-boot-tests
-		pom.xml    spring-boot-tests:pom  spring-boot-parent
-		spring-boot-integration-tests
-			pom.xml    spring-boot-deployment-tests:pom  spring-boot-tests
-			spring-boot-deployment-test-glassfish
-				pom.xml spring-boot-deployment-test-tomcat:war  spring-boot-deployment-tests
-			spring-boot-deployment-test-tomcat
-		spring-boot-deployment-tests
-	spring-boot-samples
-		pom.xml    spring-boot-samples:pom  spring-boot-starter-parent
-------------------------------------------
-demo-spring-framework
-	-demo-spring-framework-build:pom
-	demo-spring-framework-dependencies
-	    -demo-spring-framework-dependencies:pom  demo-spring-framework-build:pom
-	demo-spring-framework-parent
-	    -demo-spring-framework-parent:pom  demo-spring-framework-dependencies:pom
-	demo-spring-framework-starters
-	    -demo-spring-framework-starters:pom  demo-spring-framework-parent:pom
-	    demo-spring-framework-starter-parent
-	        -demo-spring-framework-starter-parent:pom  demo-spring-framework-dependencies:pom
-	    demo-spring-framework-starter
-		-demo-spring-framework-starter:pom  demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-core
-		-demo-spring-framework-starter-core:jar demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-dataAccess
-		-demo-spring-framework-starter-dataAccess:jar demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-web
-	        -demo-spring-framework-starter-web:jar  demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-integration
-		-demo-spring-framework-starter-integration:jar demo-spring-framework-starters:pom
-	demo-spring-framework-commons
-	    -demo-spring-framework-commons  demo-spring-framework-parent:pom
-	demo-spring-framework-core
-	    -demo-spring-framework-core:pom  demo-spring-framework-starter-parent:pom
-	demo-spring-framework-web
-	    -demo-spring-framework-web:pom  demo-spring-framework-starter-parent:pom
-	demo-spring-framework-dataAccess
-	    -demo-spring-framework-dataAccess:pom  demo-spring-framework-starter-parent:pom
-	demo-spring-framework-integration
-	    -demo-spring-framework-integration:pom  demo-spring-framework-starter-parent:pom
-	demo-spring-framework-withoutAnnotation
-	    -demo-spring-framework-withoutAnnotation:pom  demo-spring-framework-starter-parent:pom
-------------------------------------------
-</pre>
-
-### 运行方式：
-cd demo-spring-framework  
-cd demo-spring-framework-parent  
-mvn clean install  
-cd ../demo-spring-framework-commons  
-mvn clean install  
-cd ../demo-springframework-starters  
-mvn clean install  
-cd ../demo-springframework-core  
-mvn clean test
 
 ### TODO:
 1. 补充@Valid支持分组验证
