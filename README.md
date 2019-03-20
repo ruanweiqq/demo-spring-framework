@@ -2,19 +2,40 @@
 
 this is the master branch
 
-### demo-spring-framework项目包含如下模块：
-- demo-spring-framework-dependencies模块：依赖声明。
-- demo-spring-framework-parent模块：所有项目的父模块，包含构建参数。
-- demo-spring-framework-starters模块：父模块为demo-springframework-parent。
-- demo-spring-framework-commons模块：父模块为demo-springframework-parent。
-- demo-spring-framework-core模块：父模块为demo-springframework-starter-parent。
-- demo-spring-framework-dataAccess模块：父模块为demo-springframework-starter-parent。
-- demo-spring-framework-web模块：父模块为demo-springframework-starter-parent。
-- demo-spring-framework-integration模块：父模块为demo-springframework-starter-parent。
-- demo-spring-framework-withoutAnnotation模块：父模块为demo-springframework-starter-parent。未开启基于注解的配置元数据。
-- demo-spring-framework-temp模块：父模块为demo-springframework-starter-parent。临时项目，准备删除。
-
 ### 项目结构
+demo-spring-framework
+	-demo-spring-framework-build:pom
+	demo-spring-framework-dependencies
+	    -demo-spring-framework-dependencies:pom  demo-spring-framework-build:pom
+	demo-spring-framework-parent
+	    -demo-spring-framework-parent:pom  demo-spring-framework-dependencies:pom
+	demo-spring-framework-starters
+	    -demo-spring-framework-starters:pom  demo-spring-framework-parent:pom
+	    demo-spring-framework-starter-parent
+	        -demo-spring-framework-starter-parent:pom  demo-spring-framework-dependencies:pom
+	    demo-spring-framework-starter
+		-demo-spring-framework-starter:pom  demo-spring-framework-starters:pom
+	    demo-spring-framework-starter-core
+		-demo-spring-framework-starter-core:jar demo-spring-framework-starters:pom
+	    demo-spring-framework-starter-dataAccess
+		-demo-spring-framework-starter-dataAccess:jar demo-spring-framework-starters:pom
+	    demo-spring-framework-starter-web
+	        -demo-spring-framework-starter-web:jar  demo-spring-framework-starters:pom
+	    demo-spring-framework-starter-integration
+		-demo-spring-framework-starter-integration:jar demo-spring-framework-starters:pom
+	demo-spring-framework-commons
+	    -demo-spring-framework-commons  demo-spring-framework-parent:pom
+	demo-spring-framework-core
+	    -demo-spring-framework-core:pom  demo-spring-framework-starter-parent:pom
+	demo-spring-framework-web
+	    -demo-spring-framework-web:pom  demo-spring-framework-starter-parent:pom
+	demo-spring-framework-dataAccess
+	    -demo-spring-framework-dataAccess:pom  demo-spring-framework-starter-parent:pom
+	demo-spring-framework-integration
+	    -demo-spring-framework-integration:pom  demo-spring-framework-starter-parent:pom
+	demo-spring-framework-withoutAnnotation
+	    -demo-spring-framework-withoutAnnotation:pom  demo-spring-framework-starter-parent:pom
+------------------------------------------
 <pre>
 spring-boot
 	-spring-boot-build:pom
@@ -52,40 +73,19 @@ spring-boot
 	spring-boot-samples
 		pom.xml    spring-boot-samples:pom  spring-boot-starter-parent
 ------------------------------------------
-demo-spring-framework
-	-demo-spring-framework-build:pom
-	demo-spring-framework-dependencies
-	    -demo-spring-framework-dependencies:pom  demo-spring-framework-build:pom
-	demo-spring-framework-parent
-	    -demo-spring-framework-parent:pom  demo-spring-framework-dependencies:pom
-	demo-spring-framework-starters
-	    -demo-spring-framework-starters:pom  demo-spring-framework-parent:pom
-	    demo-spring-framework-starter-parent
-	        -demo-spring-framework-starter-parent:pom  demo-spring-framework-dependencies:pom
-	    demo-spring-framework-starter
-		-demo-spring-framework-starter:pom  demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-core
-		-demo-spring-framework-starter-core:jar demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-dataAccess
-		-demo-spring-framework-starter-dataAccess:jar demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-web
-	        -demo-spring-framework-starter-web:jar  demo-spring-framework-starters:pom
-	    demo-spring-framework-starter-integration
-		-demo-spring-framework-starter-integration:jar demo-spring-framework-starters:pom
-	demo-spring-framework-commons
-	    -demo-spring-framework-commons  demo-spring-framework-parent:pom
-	demo-spring-framework-core
-	    -demo-spring-framework-core:pom  demo-spring-framework-starter-parent:pom
-	demo-spring-framework-web
-	    -demo-spring-framework-web:pom  demo-spring-framework-starter-parent:pom
-	demo-spring-framework-dataAccess
-	    -demo-spring-framework-dataAccess:pom  demo-spring-framework-starter-parent:pom
-	demo-spring-framework-integration
-	    -demo-spring-framework-integration:pom  demo-spring-framework-starter-parent:pom
-	demo-spring-framework-withoutAnnotation
-	    -demo-spring-framework-withoutAnnotation:pom  demo-spring-framework-starter-parent:pom
-------------------------------------------
 </pre>
+
+### 项目模块：
+- demo-spring-framework-dependencies模块：依赖声明。
+- demo-spring-framework-parent模块：所有项目的父模块，包含构建参数。
+- demo-spring-framework-starters模块：父模块为demo-springframework-parent。
+- demo-spring-framework-commons模块：父模块为demo-springframework-parent。
+- demo-spring-framework-core模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-dataAccess模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-web模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-integration模块：父模块为demo-springframework-starter-parent。
+- demo-spring-framework-withoutAnnotation模块：父模块为demo-springframework-starter-parent。未开启基于注解的配置元数据。
+- demo-spring-framework-temp模块：父模块为demo-springframework-starter-parent。临时项目，准备删除。
 
 ### 运行方式：TODO
 cd demo-spring-framework  
