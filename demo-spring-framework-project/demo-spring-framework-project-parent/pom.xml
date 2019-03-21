@@ -13,7 +13,7 @@
 	<artifactId>demo-spring-framework-project-parent</artifactId>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Framework Parent</name>
+	<name>Demo:Spring Framework Project Parent</name>
 
 	<build>
 		<finalName>demo-spring-framework-project-parent</finalName>

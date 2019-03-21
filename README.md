@@ -108,13 +108,9 @@ spring-boot
 
 ### 运行方式：TODO
 cd demo-spring-framework  
-cd demo-spring-framework-parent  
+cd demo-spring-framework-project
 mvn clean install  
-cd ../demo-spring-framework-commons  
-mvn clean install  
-cd ../demo-springframework-starters  
-mvn clean install  
-cd ../demo-springframework-core  
+cd ../demo-spring-framework-samples  
 mvn clean test
 
 每个项目均同时支持基于XML的和Java的配置元数据。除第一个项目外，均开启了基于注解的配置元数据，即：
