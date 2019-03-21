@@ -29,7 +29,7 @@ demo-spring-framework
         demo-spring-framework-project-commons
 	    -demo-spring-framework-project-commons:jar  ../demo-spring-framework-project-parent:pom
     demo-spring-framework-tests
-        -demo-spring-framework-tests:pom  ../demo-spring-framework-project-project/demo-spring-framework-project-parent
+        -demo-spring-framework-tests:pom  ../demo-spring-framework-project/demo-spring-framework-project-parent
     demo-spring-framework-samples
         -demo-spring-framework-samples:pom  ../demo-spring-framework-project/demo-spring-framework-project-starters/demo-spring-framework-project-starter-parent
         demo-spring-framework-samples-core
@@ -108,9 +108,7 @@ spring-boot
 
 ### 运行方式：TODO
 cd demo-spring-framework  
-cd demo-spring-framework-project
-mvn clean install  
-cd ../demo-spring-framework-samples  
+mvn clean install -P prepare
 mvn clean test
 
 每个项目均同时支持基于XML的和Java的配置元数据。除第一个项目外，均开启了基于注解的配置元数据，即：

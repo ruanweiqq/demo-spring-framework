@@ -13,7 +13,7 @@
 	<scm>
 		<url>https://github.com/ruanweiqq/demo-spring-framework</url>
 	</scm>
-	
+
 	<developers>
 		<developer>
 			<id>ruanwei</id>
@@ -33,18 +33,19 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
-		
+
 		<internal.revision>2019.02.19</internal.revision>
 		<external.revision>2019.02.21</external.revision>
 	</properties>
 
-	<modules>
-		<module>demo-spring-framework-project</module>
-		<module>demo-spring-framework-tests</module>
-		<module>demo-spring-framework-samples</module>
-	</modules>
-
 	<profiles>
+		<profile>
+			<id>prepare</id>
+			<modules>
+				<module>demo-spring-framework-project</module>
+			</modules>
+		</profile>
+		
 		<profile>
 			<id>dev</id>
 			<properties>
@@ -53,13 +54,23 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
+			<modules>
+				<module>demo-spring-framework-project</module>
+				<module>demo-spring-framework-tests</module>
+				<module>demo-spring-framework-samples</module>
+			</modules>
 		</profile>
-
+		
 		<profile>
 			<id>prod</id>
 			<properties>
 				<env>production</env>
 			</properties>
+			<modules>
+				<module>demo-spring-framework-project</module>
+				<module>demo-spring-framework-tests</module>
+				<module>demo-spring-framework-samples</module>
+			</modules>
 		</profile>
 	</profiles>
 
