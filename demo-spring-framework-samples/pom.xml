@@ -6,23 +6,26 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-project-starter-parent</artifactId>
-		<version>2019.02.19</version>
+		<version>${revision}</version>
 		<relativePath>../demo-spring-framework-project/demo-spring-framework-project-starters/demo-spring-framework-project-starter-parent</relativePath>
+		<!-- <relativePath/> --> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>org.ruanwei.demo</groupId>
 	<artifactId>demo-spring-framework-samples</artifactId>
+	<version>${samples.revision}</version>
 	<packaging>pom</packaging>
 
 	<name>Demo:Spring Framework Samples</name>
 
 	<properties>
+		<starters.revision>2019.03.15</starters.revision>
+		<samples.revision>2019.02.25</samples.revision>
 	</properties>
 
 	<modules>
 		<module>demo-spring-framework-samples-withoutAnnotation</module>
-	    <module>demo-spring-framework-samples-core</module>
-	    <module>demo-spring-framework-samples-web</module>   
+		<module>demo-spring-framework-samples-core</module>
+		<module>demo-spring-framework-samples-web</module>
 		<module>demo-spring-framework-samples-temp</module>
 	</modules>
 

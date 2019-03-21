@@ -6,16 +6,13 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-samples-web</artifactId>
-		<version>2019.02.25</version>
+		<version>${samples.revision}</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-samples-web-remoting</artifactId>
 	<packaging>jar</packaging>
+	
 	<name>Demo:Spring Framework Samples Web Remoting</name>
-	<url>http://www.ruanwei.org</url>
-
-	<properties>
-	</properties>
 
 	<dependencies>
 		<dependency>

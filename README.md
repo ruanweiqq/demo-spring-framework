@@ -108,7 +108,7 @@ spring-boot
 
 ### 运行方式：TODO
 cd demo-spring-framework  
-mvn clean install -P prepare
+mvn clean install -P prepare  
 mvn clean test
 
 每个项目均同时支持基于XML的和Java的配置元数据。除第一个项目外，均开启了基于注解的配置元数据，即：

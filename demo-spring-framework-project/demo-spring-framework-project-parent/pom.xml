@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-project-dependencies</artifactId>
-		<version>2019.02.19</version>
+		<version>${revision}</version>
 		<relativePath>../demo-spring-framework-project-dependencies</relativePath>
 	</parent>
 
@@ -14,19 +14,11 @@
 	<packaging>pom</packaging>
 
 	<name>Demo:Spring Framework Project Parent</name>
+	<description>Demo:Spring Framework Project Parent</description>
+	
+	<!-- 增加通用的依赖，例如测试和日志 -->
 
 	<build>
 		<finalName>demo-spring-framework-project-parent</finalName>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-			</plugin>
-		</plugins>
 	</build>
 </project>

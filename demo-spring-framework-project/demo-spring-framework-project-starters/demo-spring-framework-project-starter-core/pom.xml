@@ -6,15 +6,21 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-project-starters</artifactId>
-		<version>2019.02.19</version>
+		<version>${revision}</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-project-starter-core</artifactId>
 	<packaging>jar</packaging>
 
 	<name>Demo:Spring Framework Project Starter Core（To be split）</name>
+	<description>Demo:Spring Framework Project Starter Core（To be split）</description>
 
 	<dependencies>
+		<!-- 可以把公共的依赖移到 demo-spring-framework-project-starter -->
+		<dependency>
+			<groupId>org.ruanwei.demo</groupId>
+			<artifactId>demo-spring-framework-project-starter</artifactId>
+		</dependency>
 		<!-- ========== A.Common Start ========== -->
 		<!-- A.1.Logging -->
 		<!-- A.1.1.Log4j2 -->

@@ -6,15 +6,17 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-project-starters</artifactId>
-		<version>2019.02.19</version>
+		<version>${revision}</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-project-starter</artifactId>
 	<packaging>jar</packaging>
 
 	<name>Demo:Spring Framework Project Starter</name>
+	<description>Demo:Spring Framework Project Starter</description>
 
 	<dependencies>
+	<!-- 可以把公共的依赖放在这里，例如日志和测试 -->
 	</dependencies>
 
 	<build>

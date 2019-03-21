@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-project-parent</artifactId>
-		<version>2019.02.19</version>
+		<version>${revision}</version>
 		<relativePath>../demo-spring-framework-project-parent</relativePath>
 	</parent>
 

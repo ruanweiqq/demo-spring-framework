@@ -5,10 +5,11 @@
 
 	<groupId>org.ruanwei.demo</groupId>
 	<artifactId>demo-spring-framework-build</artifactId>
-	<version>2019.02.19</version>
+	<version>${revision}</version>
 	<packaging>pom</packaging>
 
 	<name>Demo:Spring Framework Build</name>
+	<description>Demo:Spring Framework Build</description>
 
 	<scm>
 		<url>https://github.com/ruanweiqq/demo-spring-framework</url>
@@ -30,12 +31,15 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		
+		<java.version>1.8</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.compilerVersion>${java.version}</maven.compiler.compilerVersion>
 
-		<internal.revision>2019.02.19</internal.revision>
-		<external.revision>2019.02.21</external.revision>
+		<revision>2019.03.15</revision>
 	</properties>
 
 	<profiles>
@@ -45,7 +49,7 @@
 				<module>demo-spring-framework-project</module>
 			</modules>
 		</profile>
-		
+
 		<profile>
 			<id>dev</id>
 			<properties>
@@ -60,7 +64,7 @@
 				<module>demo-spring-framework-samples</module>
 			</modules>
 		</profile>
-		
+
 		<profile>
 			<id>prod</id>
 			<properties>
@@ -126,7 +130,24 @@
 
 	<pluginRepositories>
 		<pluginRepository>
+			<id>spring-milestone</id>
+			<name>Spring Milestone</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-snapshot</id>
+			<name>Spring Snapshot</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
 			<id>spring-releases</id>
+			<name>Spring Releases</name>
 			<url>https://repo.spring.io/libs-release</url>
 		</pluginRepository>
 	</pluginRepositories>

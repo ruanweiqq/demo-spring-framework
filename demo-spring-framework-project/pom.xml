@@ -6,17 +6,14 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-build</artifactId>
-		<version>2019.02.19</version>
+		<version>${revision}</version>
 	</parent>
 
-	<groupId>org.ruanwei.demo</groupId>
 	<artifactId>demo-spring-framework-project</artifactId>
 	<packaging>pom</packaging>
 
 	<name>Demo:Spring Framework Project</name>
-
-	<properties>
-	</properties>
+	<description>Demo:Spring Framework Project</description>
 
 	<modules>
 	    <module>demo-spring-framework-project-dependencies</module>

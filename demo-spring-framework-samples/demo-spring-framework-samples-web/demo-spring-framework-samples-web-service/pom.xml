@@ -5,16 +5,13 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-samples-web</artifactId>
-		<version>2019.02.25</version>
+		<version>${samples.revision}</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-samples-web-service</artifactId>
 	<packaging>war</packaging>
+	
 	<name>Demo:Spring Framework Samples Web Service</name>
-	<url>http://www.ruanwei.org</url>
-
-	<properties>
-	</properties>
 
 	<dependencies>
 	    <dependency>
@@ -25,12 +22,13 @@
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
 			<artifactId>demo-spring-framework-samples-web-remoting</artifactId>
-			<version>2019.02.25</version>
+			<version>${samples.revision}</version>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<finalName>demo-spring-framework-samples-web-service</finalName>
+		
 		<filters>
 			<filter>src/main/filters/${env}.properties</filter>
 		</filters>
@@ -40,15 +38,5 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
 	</build>
 </project>

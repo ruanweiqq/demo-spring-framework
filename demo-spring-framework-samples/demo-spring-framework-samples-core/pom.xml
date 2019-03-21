@@ -5,16 +5,15 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-project-starter-parent</artifactId>
-		<version>2019.02.19</version>
-		<!-- <relativePath/> --> <!-- lookup parent from repository -->
+		<artifactId>demo-spring-framework-samples</artifactId>
+		<version>${samples.revision}</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-samples-core</artifactId>
-	<version>2019.02.25</version>
 	<packaging>jar</packaging>
 
 	<name>Demo:Spring Framework Samples Core</name>
+	<description>Demo:Spring Framework Samples Core</description>
 
 	<dependencies>
 		<dependency>

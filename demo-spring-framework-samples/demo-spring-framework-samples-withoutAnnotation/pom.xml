@@ -6,15 +6,14 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-samples</artifactId>
-		<version>2019.02.19</version>
-		<!-- <relativePath/> --> <!-- lookup parent from repository -->
+		<version>${samples.revision}</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-samples-withoutAnnotation</artifactId>
-	<version>2019.02.25</version>
 	<packaging>jar</packaging>
 
 	<name>Demo:Spring Framework Samples without Annotation</name>
+	<description>Demo:Spring Framework Samples without Annotation</description>
 
 	<dependencies>
 		<dependency>

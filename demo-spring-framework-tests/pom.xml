@@ -5,16 +5,16 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-project-starter-parent</artifactId>
-		<version>2019.02.19</version>
+		<artifactId>demo-spring-framework-project-parent</artifactId>
+		<version>${revision}</version>
 		<relativePath>../demo-spring-framework-project/demo-spring-framework-project-parent</relativePath>
 	</parent>
 
-	<groupId>org.ruanwei.demo</groupId>
 	<artifactId>demo-spring-framework-tests</artifactId>
 	<packaging>pom</packaging>
 
 	<name>Demo:Spring Framework Tests</name>
+	<description>Demo:Spring Framework Tests</description>
 
 	<properties>
 	</properties>
