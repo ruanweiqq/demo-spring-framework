@@ -19,7 +19,7 @@
 
 	<properties>
 		<starters.revision>2019.03.15</starters.revision>
-		<samples.revision>2019.02.25</samples.revision>
+		<samples.revision>2019.03.21</samples.revision>
 	</properties>
 
 	<modules>
