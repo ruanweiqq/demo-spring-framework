@@ -190,7 +190,7 @@ git clone git@github.com:ruanweiqq/hello.git   // remote repository(master) orig
 
 git init  // Create an empty Git repository or reinitialize an existing one
 
-#### 操作当前变更 index <--> working area
+#### 跟踪当前变更 working area <--> index
 git add <file>    // Add file contents to the index  
 git rm <file>     // Remove files from the working tree and from the index  
 git mv <file>     // Move or rename a file, a directory, or a symlink  
@@ -200,14 +200,16 @@ git reset HEAD <file>  // Reset current HEAD to the specified state  // index --
 git commit -m "message"    // Record changes to the repository  
 git checkout -- <file>  // restore working tree files 
 
-git diff     // index vs working area  
+// Show changes between commits, commit and working tree, etc
+git diff  // working area vs index     
+git diff --staged/cached   // index vs repository(默认HEAD指向的commit)
 git reset --hard <commit_id>   // 版本回退。HEAD表示当前版本，HEAD^表示上一个版本等  
 git diff HEAD -- <file>  // branch vs working area  HEAD指向当前分支(master)  
-git diff --cached     // branch vs index   
+
  
 git log --graph --pretty=oneline 
 git reflog  
-git status  
+git status -s   // Show the working tree status
 git show v0.9   // tag  
 
 #### 本地分支(默认分支master)  
@@ -246,5 +248,9 @@ git push origin --tags  // local all tags --> origin tag
 git push origin :refs/tags/<tagname>  // 删除远程tag  
 
 #### 配置
-git config --global color.ui true  
-git config format.pretty oneline   
+git config --list
+git config --global user.name "John Doe"  // 读取~/.gitconfig 或 ~/.config/git/config
+git config --global user.email johndoe@example.com  // 读取~/.gitconfig 或 ~/.config/git/config
+git config --system color.ui true    // 读取/etc/gitconfig   
+git config format.pretty oneline   // 读取.git/config  
+git help config
