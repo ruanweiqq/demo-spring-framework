@@ -184,20 +184,23 @@ none  | none | @PersistenceContext
 
 ### Git:
 #### 开始一个工作区(working area)  
-git init  
+
 git remote add origin git@github.com:ruanweiqq/hello.git   // local repository(master) <--> remote repository origin(master)   
 git clone git@github.com:ruanweiqq/hello.git   // remote repository(master) origin <--> local repository(master)   
 
-#### 本地变更(本地仓库)
-git add <file>    // working area --> local repository(index/stage)  
-git rm <file>     // working area --> index  
-git mv <file>     // working area --> index  
-git reset HEAD <file>  // index --> working area  HEAD指向当前分支(master)  
+git init  // Create an empty Git repository or reinitialize an existing one
 
-git checkout -- <file>  // 撤销working area的变更  
+#### 操作当前变更 index <--> working area
+git add <file>    // Add file contents to the index  
+git rm <file>     // Remove files from the working tree and from the index  
+git mv <file>     // Move or rename a file, a directory, or a symlink  
+git reset HEAD <file>  // Reset current HEAD to the specified state  // index --> working area  HEAD指向当前分支(master)  
+
+#### 提交当前变更 index <--> repository(branch)
+git commit -m "message"    // Record changes to the repository  
+git checkout -- <file>  // restore working tree files 
+
 git diff     // index vs working area  
- 
-git commit -m "message"    // local repository(index) --> local repository(branch)    
 git reset --hard <commit_id>   // 版本回退。HEAD表示当前版本，HEAD^表示上一个版本等  
 git diff HEAD -- <file>  // branch vs working area  HEAD指向当前分支(master)  
 git diff --cached     // branch vs index   
