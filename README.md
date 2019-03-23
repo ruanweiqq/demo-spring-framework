@@ -183,31 +183,31 @@ none  | none | @PersistenceContext
 9. demo-springframework-temp为临时项目，准备删除yayaaaaaa
 
 ### Git:
-#### 开始一个工作区(working area)  
-
+#### 开始一个工作区(working directory)  
 git remote add origin git@github.com:ruanweiqq/hello.git   // local repository(master) <--> remote repository origin(master)   
 git clone git@github.com:ruanweiqq/hello.git   // remote repository(master) origin <--> local repository(master)   
 
-git init  // Create an empty Git repository or reinitialize an existing one
-
-#### 跟踪当前变更 working area <--> index
-git add <file>    // Add file contents to the index  
-git rm <file>     // Remove files from the working tree and from the index  
-git mv <file>     // Move or rename a file, a directory, or a symlink  
-git reset HEAD <file>  // Reset current HEAD to the specified state  // index --> working area  HEAD指向当前分支(master)  
-
-#### 提交当前变更 index <--> repository(branch)
-git commit -m "message"    // Record changes to the repository  
-git checkout -- <file>  // restore working tree files 
-
-// Show changes between commits, commit and working tree, etc
-git diff  // working area vs index     
-git diff --staged/cached   // index vs repository(默认HEAD指向的commit)
+#### 跟踪文件 working tree <--> index
+git init   // Create an empty Git repository or reinitialize an existing one.
+git add <file>    // Add file contents to the index.  
+git rm <file>     // Remove files from the working tree and index.
+git rm --cached <file>    // Remove files only from the index.
+git mv <file>     // Move or rename a file, a directory, or a symlink.  
+git reset HEAD <file>   // to unstage. index --> working tree.  HEAD指向当前分支(master)最后变更
+git checkout -- <file>   // to discard changes in working tree,restore working tree files.  
+git diff  // working tree vs index.   
+git diff HEAD -- <file>  // working tree vs repository.HEAD指向当前分支(master)最后变更. 
+	
+#### 提交变更 index <--> repository(branch)
+git commit -m "message"    // index --> repository.   
+git commit -a    // working tree --> repository.
+git diff --staged/cached   // index vs repository.HEAD指向当前分支(master)最后变更.
 git reset --hard <commit_id>   // 版本回退。HEAD表示当前版本，HEAD^表示上一个版本等  
-git diff HEAD -- <file>  // branch vs working area  HEAD指向当前分支(master)  
-
- 
+git log
+git log -p -2
+git log --stat
 git log --graph --pretty=oneline 
+git log --pretty=format:"%h - %an, %ar : %s"  
 git reflog  
 git status -s   // Show the working tree status
 git show v0.9   // tag  
@@ -254,3 +254,105 @@ git config --global user.email johndoe@example.com  // 读取~/.gitconfig 或 ~/
 git config --system color.ui true    // 读取/etc/gitconfig   
 git config format.pretty oneline   // 读取.git/config  
 git help config
+
+
+Table 1. git log --pretty=format 常用的选项
+选项	说明
+%H
+
+提交对象（commit）的完整哈希字串
+
+%h
+
+提交对象的简短哈希字串
+
+%T
+
+树对象（tree）的完整哈希字串
+
+%t
+
+树对象的简短哈希字串
+
+%P
+
+父对象（parent）的完整哈希字串
+
+%p
+
+父对象的简短哈希字串
+
+%an
+
+作者（author）的名字
+
+%ae
+
+作者的电子邮件地址
+
+%ad
+
+作者修订日期（可以用 --date= 选项定制格式）
+
+%ar
+
+作者修订日期，按多久以前的方式显示
+
+%cn
+
+提交者（committer）的名字
+
+%ce
+
+提交者的电子邮件地址
+
+%cd
+
+提交日期
+
+%cr
+
+提交日期，按多久以前的方式显示
+
+%s
+
+提交说明
+
+
+Table 2. git log 的常用选项
+选项	说明
+-p
+
+按补丁格式显示每个更新之间的差异。
+
+--stat
+
+显示每次更新的文件修改统计信息。
+
+--shortstat
+
+只显示 --stat 中最后的行数修改添加移除统计。
+
+--name-only
+
+仅在提交信息后显示已修改的文件清单。
+
+--name-status
+
+显示新增、修改、删除的文件清单。
+
+--abbrev-commit
+
+仅显示 SHA-1 的前几个字符，而非所有的 40 个字符。
+
+--relative-date
+
+使用较短的相对时间显示（比如，“2 weeks ago”）。
+
+--graph
+
+显示 ASCII 图形表示的分支合并历史。
+
+--pretty
+
+使用其他格式显示历史提交信息。可用的选项包括 oneline，short，full，fuller 和 format（后跟指定格式）。
