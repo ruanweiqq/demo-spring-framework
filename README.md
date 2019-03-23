@@ -183,37 +183,41 @@ none  | none | @PersistenceContext
 9. demo-springframework-temp为临时项目，准备删除yayaaaaaa
 
 ### Git:
-#### 开始一个工作区(working directory)  
-git remote add origin git@github.com:ruanweiqq/hello.git   // local repository(master) <--> remote repository origin(master)   
-git clone git@github.com:ruanweiqq/hello.git   // remote repository(master) origin <--> local repository(master)   
-
-#### 跟踪文件 working tree <--> index
+git status -s   // Show the working tree status
+#### 跟踪文件(working tree <--> index)
 git init   // Create an empty Git repository or reinitialize an existing one.
 git add <file>    // Add file contents to the index.  
 git rm <file>     // Remove files from the working tree and index.
 git rm --cached <file>    // Remove files only from the index.
 git mv <file>     // Move or rename a file, a directory, or a symlink.  
-git reset HEAD <file>   // to unstage. index --> working tree.  HEAD指向当前分支(master)最后变更
-git checkout -- <file>   // to discard changes in working tree,restore working tree files.  
+git reset HEAD <file>   // to unstage. index --> working tree.  HEAD指向当前分支
+git checkout -- <file>   // to discard changes in working tree,restore working tree files.repository -> working tree.   
 git diff  // working tree vs index.   
-git diff HEAD -- <file>  // working tree vs repository.HEAD指向当前分支(master)最后变更. 
+git diff HEAD -- <file>  // working tree vs repository.HEAD指向当前分支. 
 	
-#### 提交变更 index <--> repository(branch)
+#### 提交变更(index <--> repository)
 git commit -m "message"    // index --> repository.   
-git commit -a    // working tree --> repository.
-git diff --staged/cached   // index vs repository.HEAD指向当前分支(master)最后变更.
+git commit -a    // working tree --> repository.   
+git diff --staged/cached   // index vs repository.HEAD指向当前分支.   
 git reset --hard <commit_id>   // 版本回退。HEAD表示当前版本，HEAD^表示上一个版本等  
 git log
 git log -p -2
 git log --stat
-git log --graph --pretty=oneline 
+git log --graph --pretty=oneline --decorate
 git log --pretty=format:"%h - %an, %ar : %s"  
 git reflog  
-git status -s   // Show the working tree status
-git show v0.9   // tag  
 
-#### 本地分支(默认分支master)  
-git branch  // 查看分支  
+#### 标签
+git tag   // 查看标签  
+git tag v1.0   // 以当前commit_id创建标签v1.0  
+git tag v0.9 <commit_id>   // 以指定commit_id创建标签v1.0  
+git tag -a v0.1 -m "version 0.1 released" <commit_id>  
+git tag -d v0.1   // 删除本地标签v0.1  
+
+#### 分支(默认分支master)  
+git branch  // 查看分支
+git branch --merged   
+git branch --no-merged   
 git branch dev   // 创建分支dev     
 git checkout dev  // 切换到分支dev  
 git checkout -b dev   // 创建并切换到分支dev
@@ -222,12 +226,7 @@ git diff < source_branch> < target_branch>
 git merge dev --no-ff  // 合并dev到当前分支(master)，禁用Fast forward模式  
 git branch -d dev // 删除分支dev  
 
-#### 本地标签
-git tag   // 查看标签  
-git tag v1.0   // 以当前commit_id创建标签v1.0  
-git tag v0.9 <commit_id>   // 以指定commit_id创建标签v1.0  
-git tag -a v0.1 -m "version 0.1 released" <commit_id>  
-git tag -d v0.1   // 删除本地标签v0.1  
+git show v0.9   // tag 
 
 #### 本地临时保存
 git stash  
@@ -238,12 +237,18 @@ git stash drop
 
 #### 远程仓库(origin)
 git remote -v  
+git remote show origin
+git remote rename origin origin2
+git remote rm origin3
+git remote add origin git@github.com:ruanweiqq/hello.git   // repository(master) <--> remote origin(master)   
+git clone git@github.com:ruanweiqq/hello.git   // remote origin(master)  <--> repository(master)  
+git fetch origin  // remote origin -->  repository, will not merge.  
+git pull   // remote origin -->  working tree, will merge. 
+
 git branch --set-upstream-to=origin/<branch> <branch>  // 当前分支与远程分支建立联系  
-git pull   // origin branch -->  local branch, will merge  
-git fetch origin  // origin branch -->  local branch, will not merge 
 git rebase  // 统一基线方便push   
-git push origin < branch>   // local branch --> origin branch   
-git push origin < tag>   // local tag --> origin tag   
+git push origin master   // repository --> remote origin.   
+git push origin < tag>   // local tag --> remote origin tag   
 git push origin --tags  // local all tags --> origin tag  
 git push origin :refs/tags/<tagname>  // 删除远程tag  
 
