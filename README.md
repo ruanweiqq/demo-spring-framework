@@ -200,10 +200,10 @@ git commit -m "message"    // index --> repository.
 git commit -a    // working tree --> repository.   
 git diff --staged/cached   // index vs repository.   
 git reset --hard <commit_id>   // Reset current HEAD to the specified state(版本回退),HEAD指向当前分支的最新版本(commit)。HEAD表示当前版本(commit)，HEAD^表示上一个版本(commit)等。  
-git log
-git log -p -2
-git log --stat
-git log --graph --pretty=oneline --decorate
+git log  
+git log -p -2  
+git log --stat  
+git log --graph --pretty=oneline --decorate  
 git log --pretty=format:"%h - %an, %ar : %s"  
 git reflog  
 
