@@ -199,7 +199,7 @@ git diff HEAD -- <file>  // working tree vs repository.HEAD指向当前分支.
 git commit -m "message"    // index --> repository.   
 git commit -a    // working tree --> repository.   
 git diff --staged/cached   // index vs repository.HEAD指向当前分支.   
-git reset --hard <commit_id>   // 版本回退。HEAD表示当前版本，HEAD^表示上一个版本等  
+git reset --hard <commit_id>   // 版本回退(HEAD指针指向指定版本)。HEAD表示当前版本，HEAD^表示上一个版本等。  
 git log
 git log -p -2
 git log --stat
