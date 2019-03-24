@@ -185,12 +185,12 @@ none  | none | @PersistenceContext
 ### Git:
 git status -s   // Show the working tree status
 #### 跟踪文件(working tree <--> index)
-git init   // Create an empty Git repository or reinitialize an existing one.
+git init   // Create an empty Git repository or reinitialize an existing one.  
 git add <file>    // Add file contents to the index.  
-git rm <file>     // Remove files from the working tree and index.
-git rm --cached <file>    // Remove files only from the index.
+git rm <file>     // Remove files from the working tree and index.  
+git rm --cached <file>    // Remove files only from the index.  
 git mv <file>     // Move or rename a file, a directory, or a symlink.  
-git reset HEAD <file>   // to unstage. index --> working tree.  HEAD指向当前分支
+git reset HEAD <file>   // to unstage. index --> working tree.  HEAD指向当前分支  
 git checkout -- <file>   // to discard changes in working tree,restore working tree files.repository -> working tree.   
 git diff  // working tree vs index.   
 git diff HEAD -- <file>  // working tree vs repository.HEAD指向当前分支. 
