@@ -190,7 +190,7 @@ git add <file>    // Add file contents to the index.
 git rm <file>     // Remove files from the working tree and index.  
 git rm --cached <file>    // Remove files only from the index.  
 git mv <file>     // Move or rename a file, a directory, or a symlink.  
-git reset HEAD <file>   // to unstage. index --> working tree.  HEAD指向当前分支  
+git reset HEAD <file>   // to unstage. index --> working tree.    
 git checkout -- <file>   // to discard changes and restore working tree files.repository -> working tree.   
 git diff  // working tree vs index.   
 git diff HEAD -- <file>  // working tree vs repository.HEAD指向当前分支. 
@@ -198,8 +198,8 @@ git diff HEAD -- <file>  // working tree vs repository.HEAD指向当前分支.
 #### 提交变更(index <--> repository)
 git commit -m "message"    // index --> repository.   
 git commit -a    // working tree --> repository.   
-git diff --staged/cached   // index vs repository.HEAD指向当前分支.   
-git reset --hard <commit_id>   // 版本回退(HEAD指针指向指定版本)。HEAD表示当前版本，HEAD^表示上一个版本等。  
+git diff --staged/cached   // index vs repository.   
+git reset --hard <commit_id>   // Reset current HEAD to the specified state(版本回退),HEAD指向当前分支的最新版本(commit)。HEAD表示当前版本(commit)，HEAD^表示上一个版本(commit)等。  
 git log
 git log -p -2
 git log --stat
