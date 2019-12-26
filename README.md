@@ -53,7 +53,7 @@ spring-boot
 	    -spring-boot-parent:pom  ../spring-boot-dependencies:pom
 	spring-boot-starters
 	    -spring-boot-starters:pom  ../spring-boot-parent:pom
-	    spring-boot-starter-parent
+	    *spring-boot-starter-parent*
 		-spring-boot-starter-parent:pom  ../../spring-boot-dependencies:pom
 	    spring-boot-starter
 		-spring-boot-starter:jar  spring-boot-starters:pom
