@@ -1,1 +1,0 @@
-insert into user(name,age,birthday) values('ruanwei',28,'1983-07-06');
