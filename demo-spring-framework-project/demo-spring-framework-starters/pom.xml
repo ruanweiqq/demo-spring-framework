@@ -13,8 +13,8 @@
 	<artifactId>demo-spring-framework-starters</artifactId>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Framework Project Starters</name>
-	<description>Demo:Spring Framework Project Starters</description>
+	<name>Demo:Spring Framework Starters</name>
+	<description>Demo:Spring Framework Starters</description>
 
 	<modules>
 		<module>demo-spring-framework-starter-parent</module>

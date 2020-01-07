@@ -13,8 +13,10 @@
 	<artifactId>demo-spring-framework-commons</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Project Commons</name>
-
+	<name>Demo:Spring Framework Commons</name>
+	<description>Demo:Spring Framework Commons</description>
+	
+	<!-- remove redundant dependencies -->
 	<dependencies>
 		<!-- ========== A.Common Start ========== -->
 		<!-- A.1.Logging -->

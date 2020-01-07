@@ -12,14 +12,15 @@
 	</parent>
 
 	<artifactId>demo-spring-framework-smoke-tests</artifactId>
-	<version>${samples.revision}</version>
+	<version>${tests.revision}</version>
 	<packaging>pom</packaging>
 
 	<name>Demo:Spring Framework Smoke Tests</name>
+	<description>Demo:Spring Framework Smoke Tests</description>
 
 	<properties>
-		<starters.revision>2019.03.15</starters.revision>
-		<samples.revision>2019.03.21</samples.revision>
+		<starters.revision>2020.01.08</starters.revision>
+		<tests.revision>2020.01.08</tests.revision>
 	</properties>
 
 	<modules>

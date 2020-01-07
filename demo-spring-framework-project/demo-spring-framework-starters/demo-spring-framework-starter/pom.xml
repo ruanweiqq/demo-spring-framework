@@ -12,8 +12,8 @@
 	<artifactId>demo-spring-framework-starter</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Project Starter</name>
-	<description>Demo:Spring Framework Project Starter</description>
+	<name>Demo:Spring Framework Starter</name>
+	<description>Demo:Spring Framework Starter</description>
 
 	<dependencies>
 	<!-- 可以把公共的依赖放在这里，例如日志和测试 -->

@@ -31,15 +31,15 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		
+
 		<java.version>1.8</java.version>
+
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.compiler.compilerVersion>${java.version}</maven.compiler.compilerVersion>
 
-		<revision>2019.03.15</revision>
+		<revision>2020.01.07</revision>
 	</properties>
 
 	<profiles>
@@ -72,12 +72,18 @@
 			<modules>
 				<module>demo-spring-framework-project</module>
 				<module>demo-spring-framework-tests</module>
-				<module>demo-spring-framework-samples</module>
 			</modules>
 		</profile>
 	</profiles>
 
 	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 		<!-- 除了Maven Central仓库外，Spring自己提供了如下仓库 -->
 		<repository>
 			<id>io.spring.repo.maven.milestone</id>
@@ -129,6 +135,13 @@
 
 	<pluginRepositories>
 		<pluginRepository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
 			<id>spring-milestone</id>
 			<name>Spring Milestone</name>
 			<url>https://repo.spring.io/milestone</url>
@@ -145,9 +158,9 @@
 			</snapshots>
 		</pluginRepository>
 		<pluginRepository>
-			<id>spring-releases</id>
-			<name>Spring Releases</name>
-			<url>https://repo.spring.io/libs-release</url>
+			<id>spring-release</id>
+			<name>Spring Release</name>
+			<url>https://repo.spring.io/release</url>
 		</pluginRepository>
 	</pluginRepositories>
 

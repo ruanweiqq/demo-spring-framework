@@ -5,13 +5,14 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-smoke-test-web</artifactId>
-		<version>${samples.revision}</version>
+		<version>${tests.revision}</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-smoke-test-web-service</artifactId>
 	<packaging>war</packaging>
 	
-	<name>Demo:Spring Framework Samples Web Service</name>
+	<name>Demo:Spring Framework Smoke Test Web Service</name>
+	<description>Demo:Spring Framework Smoke Test Web Service</description>
 
 	<dependencies>
 	    <dependency>
@@ -22,7 +23,7 @@
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
 			<artifactId>demo-spring-framework-smoke-test-web-remoting</artifactId>
-			<version>${samples.revision}</version>
+			<version>${tests.revision}</version>
 		</dependency>
 	</dependencies>
 

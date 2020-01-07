@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
 		<artifactId>demo-spring-framework-smoke-tests</artifactId>
-		<version>${samples.revision}</version>
+		<version>${tests.revision}</version>
 	</parent>
 
 	<artifactId>demo-spring-framework-smoke-test-core</artifactId>
 	<packaging>jar</packaging>
 
 	<name>Demo:Spring Framework Smoke Test Core</name>
-	<description>Demo:Spring Framework Samples Core</description>
+	<description>Demo:Spring Framework Smoke Test Core</description>
 
 	<dependencies>
 		<dependency>

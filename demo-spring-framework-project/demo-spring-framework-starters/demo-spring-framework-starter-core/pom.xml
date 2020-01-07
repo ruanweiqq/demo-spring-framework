@@ -12,8 +12,8 @@
 	<artifactId>demo-spring-framework-starter-core</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Project Starter Core（To be split）</name>
-	<description>Demo:Spring Framework Project Starter Core（To be split）</description>
+	<name>Demo:Spring Framework Starter Core（To be split）</name>
+	<description>Demo:Spring Framework Starter Core（To be split）</description>
 
 	<dependencies>
 		<!-- 可以把公共的依赖移到 demo-spring-framework-starter -->

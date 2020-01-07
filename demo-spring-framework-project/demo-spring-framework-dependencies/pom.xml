@@ -13,8 +13,8 @@
 	<artifactId>demo-spring-framework-dependencies</artifactId>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Framework Project Dependencies(BOM)</name>
-	<description>Demo:Spring Framework Project Dependencies(BOM)</description>
+	<name>Demo:Spring Framework Dependencies(BOM)</name>
+	<description>Demo:Spring Framework Dependencies(BOM)</description>
 
 	<properties>
 		<log4j.version>2.10.0</log4j.version>
@@ -24,12 +24,14 @@
 		<junit.version>5.2.0</junit.version>
 
 		<spring-framework.version>5.0.12.RELEASE</spring-framework.version>
+		<!-- <spring-framework.version>5.2.2.RELEASE</spring-framework.version> -->
 		<spring-data-releasetrain.version>Kay-SR9</spring-data-releasetrain.version>
 		<spring-data-jdbc.version>1.0.0.RC2</spring-data-jdbc.version>
 
 		<mybatis.version>3.4.6</mybatis.version>
 		<mybatis-spring.version>1.3.2</mybatis-spring.version>
-
+		
+		<!-- move to demo-spring-framework-build -->
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<jetty-maven-plugin.version>9.4.15.v20190215</jetty-maven-plugin.version>

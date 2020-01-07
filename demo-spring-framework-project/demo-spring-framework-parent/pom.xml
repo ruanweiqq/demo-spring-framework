@@ -13,8 +13,8 @@
 	<artifactId>demo-spring-framework-parent</artifactId>
 	<packaging>pom</packaging>
 
-	<name>Demo:Spring Framework Project Parent</name>
-	<description>Demo:Spring Framework Project Parent</description>
+	<name>Demo:Spring Framework Parent</name>
+	<description>Demo:Spring Framework Parent</description>
 	
 	<!-- 增加通用的依赖，例如测试和日志 -->
 
