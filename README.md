@@ -12,36 +12,23 @@ demo-spring-framework
 	    -demo-spring-framework-project-dependencies:pom  ../..(demo-spring-framework-build:pom)
         demo-spring-framework-project-parent
 	    -demo-spring-framework-project-parent:pom  ../demo-spring-framework-project-dependencies:pom
+	demo-spring-framework-project-commons
+	    -demo-spring-framework-project-commons:jar  ../demo-spring-framework-project-parent:pom    
         demo-spring-framework-project-starters
 	    -demo-spring-framework-project-starters:pom  ../demo-spring-framework-project-parent:pom
 	    demo-spring-framework-project-starter-parent
 	        -demo-spring-framework-project-starter-parent:pom  ../../demo-spring-framework-project-dependencies:pom
 	    demo-spring-framework-project-starter
 	        -demo-spring-framework-project-starter:jar  demo-spring-framework-project-starters:pom
-	    demo-spring-framework-project-starter-core
-	        -demo-spring-framework-project-starter-core:jar demo-spring-framework-project-starters:pom
-	    demo-spring-framework-project-starter-dataAccess
-	        -demo-spring-framework-project-starter-dataAccess:jar demo-spring-framework-project-starters:pom
-	    demo-spring-framework-project-starter-web
-	        -demo-spring-framework-project-starter-web:jar  demo-spring-framework-project-starters:pom
-	    demo-spring-framework-project-starter-integration
-	        -demo-spring-framework-project-starter-integration:jar demo-spring-framework-project-starters:pom
-        demo-spring-framework-project-commons
-	    -demo-spring-framework-project-commons:jar  ../demo-spring-framework-project-parent:pom
+	    demo-spring-framework-project-starter-xxx
+	        -demo-spring-framework-project-starter-xxx:jar demo-spring-framework-project-starters:pom        
     demo-spring-framework-tests
         -demo-spring-framework-tests:pom  ../demo-spring-framework-project/demo-spring-framework-project-parent
-    demo-spring-framework-samples
-        -demo-spring-framework-samples:pom  ../demo-spring-framework-project/demo-spring-framework-project-starters/demo-spring-framework-project-starter-parent
-        demo-spring-framework-samples-core
-	    -demo-spring-framework-samples-core:jar  demo-spring-framework-samples:pom
-        demo-spring-framework-samples-web
-	    -demo-spring-framework-samples-web:war  demo-spring-framework-samples:pom
-        demo-spring-framework-samples-dataAccess
-	    -demo-spring-framework-samples-dataAccess:jar  demo-spring-framework-samples:pom
-        demo-spring-framework-samples-integration
-	    -demo-spring-framework-samples-integration:jar  demo-spring-framework-samples:pom
-        demo-spring-framework-samples-withoutAnnotation
-	    -demo-spring-framework-samples-withoutAnnotation:jar  demo-spring-framework-samples:pom
+        demo-spring-framework-smoke-tests
+            -demo-spring-framework-smoke-tests:pom  ../../demo-spring-framework-project/demo-spring-framework-project-starters/demo-spring-framework-project-starter-parent
+            demo-spring-framework-smoke-test-xxx
+	        -demo-spring-framework-smoke-test-xxx:jar  demo-spring-framework-smoke-tests:pom
+	demo-spring-framework-smoke-tests-invoker
 ------------------------------------------
 spring-boot
     -spring-boot-build:pom
@@ -50,44 +37,35 @@ spring-boot
 	spring-boot-dependencies
 	    -spring-boot-dependencies:pom  ../..(spring-boot-build:pom)
 	spring-boot-parent
-	    -spring-boot-parent:pom  ../spring-boot-dependencies:pom
+	    -spring-boot-parent:pom  ../spring-boot-dependencies:pom	
+	spring-boot
+	    -spring-boot:jar  ../spring-boot-parent:pom
+	spring-boot-xxx
+	    -spring-boot-xxx:jar  ../spring-boot-parent:pom
 	spring-boot-starters
 	    -spring-boot-starters:pom  ../spring-boot-parent:pom
 	    spring-boot-starter-parent
 		-spring-boot-starter-parent:pom  ../../spring-boot-dependencies:pom
 	    spring-boot-starter
 		-spring-boot-starter:jar  spring-boot-starters:pom
-	    spring-boot-starter-web
-		-spring-boot-starter-web:jar  spring-boot-starters:pom
-	    spring-boot-starter-webflux
-	        -spring-boot-starter-webflux:jar  spring-boot-starters:pom	
-	spring-boot
-	    -spring-boot:jar  ../spring-boot-parent:pom
-	spring-boot-actuator
-	    -spring-boot-actuator:jar  ../spring-boot-parent:pom
-	spring-boot-autoconfigure
-	spring-boot-devtools		
-	spring-boot-cli
+	    spring-boot-starter-xxx
+		-spring-boot-starter-xxx:jar  spring-boot-starters:pom
     spring-boot-tests
-	-spring-boot-tests:pom  ../spring-boot-project/spring-boot-parent
+        -spring-boot-tests:pom  ../spring-boot-project/spring-boot-parent
+        spring-boot-smoke-tests
+	    -spring-boot-smoke-tests:pom  ../../spring-boot-project/spring-boot-starters/spring-boot-starter-parent:pom
+	    spring-boot-smoke-test-xxx
+	        -spring-boot-smoke-test-xxx:jar  spring-boot-smoke-tests:pom
+        spring-boot-smoke-test-invoker
+            -spring-boot-smoke-test-invoker:pom  ../../spring-boot-project/spring-boot-parent:pom
 	spring-boot-integration-tests
 	    -spring-boot-integration-tests:pom  spring-boot-tests:pom
-	    spring-boot-configuration-processor-tests
-	        -spring-boot-configuration-processor-tests:pom  spring-boot-integration-tests:pom
-	    spring-boot-devtools-tests
-	        -spring-boot-devtools-tests   spring-boot-integration-tests:pom
+	    spring-boot-xxx-tests
+	        -spring-boot-xxx-tests   spring-boot-integration-tests:pom
 	spring-boot-deployment-tests
 	    -spring-boot-deployment-tests:pom  spring-boot-tests:pom
-	    spring-boot-deployment-test-glassfish
-	        -spring-boot-deployment-test-glassfish:war  spring-boot-deployment-tests:pom
-	    spring-boot-deployment-test-tomcat
-		-spring-boot-deployment-test-tomcat:war  spring-boot-deployment-tests:pom
-    spring-boot-samples
-	-spring-boot-samples:pom  ../spring-boot-project/spring-boot-starters/spring-boot-starter-parent:pom
-	spring-boot-sample-simple
-	    -spring-boot-sample-simple:jar  spring-boot-samples:pom
-    spring-boot-samples-invoker
-        -spring-boot-samples-invoker:pom  ../spring-boot-project/spring-boot-parent:pom
+	    spring-boot-deployment-test-xxx
+	        -spring-boot-deployment-test-xxx:war  spring-boot-deployment-tests:pom
 ------------------------------------------
 </pre>
 
