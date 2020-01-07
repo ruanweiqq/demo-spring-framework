@@ -9,23 +9,23 @@ demo-spring-framework
     demo-spring-framework-project
         -demo-spring-framework-project:pom  demo-spring-framework-build:pom
         demo-spring-framework-project-dependencies
-	    -demo-spring-framework-project-dependencies:pom  ../..(demo-spring-framework-build:pom)
-        demo-spring-framework-project-parent
-	    -demo-spring-framework-project-parent:pom  ../demo-spring-framework-project-dependencies:pom
-	demo-spring-framework-project-commons
-	    -demo-spring-framework-project-commons:jar  ../demo-spring-framework-project-parent:pom    
-        demo-spring-framework-project-starters
-	    -demo-spring-framework-project-starters:pom  ../demo-spring-framework-project-parent:pom
-	    demo-spring-framework-project-starter-parent
-	        -demo-spring-framework-project-starter-parent:pom  ../../demo-spring-framework-project-dependencies:pom
-	    demo-spring-framework-project-starter
-	        -demo-spring-framework-project-starter:jar  demo-spring-framework-project-starters:pom
-	    demo-spring-framework-project-starter-xxx
-	        -demo-spring-framework-project-starter-xxx:jar demo-spring-framework-project-starters:pom        
+	    -demo-spring-framework-dependencies:pom  ../..(demo-spring-framework-build:pom)
+        demo-spring-framework-parent
+	    -demo-spring-framework-parent:pom  ../demo-spring-framework-dependencies:pom
+	demo-spring-framework-commons
+	    -demo-spring-framework-commons:jar  ../demo-spring-framework-parent:pom    
+        demo-spring-framework-starters
+	    -demo-spring-framework-starters:pom  ../demo-spring-framework-parent:pom
+	    demo-spring-framework-starter-parent
+	        -demo-spring-framework-starter-parent:pom  ../../demo-spring-framework-dependencies:pom
+	    demo-spring-framework-starter
+	        -demo-spring-framework-starter:jar  demo-spring-framework-starters:pom
+	    demo-spring-framework-starter-xxx
+	        -demo-spring-framework-starter-xxx:jar demo-spring-framework-starters:pom        
     demo-spring-framework-tests
-        -demo-spring-framework-tests:pom  ../demo-spring-framework-project/demo-spring-framework-project-parent
+        -demo-spring-framework-tests:pom  ../demo-spring-framework-project/demo-spring-framework-parent
         demo-spring-framework-smoke-tests
-            -demo-spring-framework-smoke-tests:pom  ../../demo-spring-framework-project/demo-spring-framework-project-starters/demo-spring-framework-project-starter-parent
+            -demo-spring-framework-smoke-tests:pom  ../../demo-spring-framework-project/demo-spring-framework-starters/demo-spring-framework-starter-parent
             demo-spring-framework-smoke-test-xxx
 	        -demo-spring-framework-smoke-test-xxx:jar  demo-spring-framework-smoke-tests:pom
 	demo-spring-framework-smoke-tests-invoker
@@ -71,18 +71,19 @@ spring-boot
 
 ### 项目模块：
 - demo-spring-framework-project模块：定义parent和starter。
-  - demo-spring-framework-project-dependencies模块：依赖声明(BOM)。
-  - demo-spring-framework-project-parent模块：内部项目的父模块，包含构建参数。
-  - demo-spring-framework-project-starters模块：父模块为demo-spring-framework-project-parent。
-  - demo-spring-framework-project-commons模块：父模块为demo-spring-framework-project-parent。
-- demo-spring-framework-tests模块：测试继承于demo-spring-framework-project-parent的模块。
-- demo-spring-framework-samples模块：测试继承于demo-spring-framework-project-starter-parent的模块。
-  - demo-spring-framework-samples-core模块：父模块为demo-spring-framework-project-starter-parent。
-  - demo-spring-framework-samples-dataAccess模块：父模块为demo-spring-framework-project-starter-parent。
-  - demo-spring-framework-samples-web模块：父模块为demo-spring-framework-project-starter-parent。
-  - demo-spring-framework-samples-integration模块：父模块为demo-spring-framework-project-starter-parent。
-  - demo-spring-framework-samples-withoutAnnotation模块：父模块为demo-spring-framework-project-starter-parent。未开启基于注解的配置元数据。
-  - demo-spring-framework-samples-temp模块：父模块为demo-spring-framework-project-starter-parent。临时项目，准备删除。
+  - demo-spring-framework-dependencies模块：依赖声明(BOM)。
+  - demo-spring-framework-parent模块：内部项目的父模块，父模块为demo-spring-framework-dependencies。
+  - demo-spring-framework-starters模块：外部项目的父模块，父模块为demo-spring-framework-parent。
+  - demo-spring-framework-commons模块：父模块为demo-spring-framework-parent。
+- demo-spring-framework-tests模块：继承于demo-spring-framework-parent。
+  - demo-spring-framework-smoke-tests模块：继承于demo-spring-framework-starter-parent。
+    - demo-spring-framework-smoke-test-core模块：父模块为demo-spring-framework-smoke-tests。
+    - demo-spring-framework-smoke-test-dataAccess模块：父模块为demo-spring-framework-smoke-tests。
+    - demo-spring-framework-smoke-test-web模块：父模块为demo-spring-framework-smoke-tests。
+    - demo-spring-framework-smoke-test-integration模块：父模块为demo-spring-framework-smoke-tests。
+    - demo-spring-framework-smoke-test-withoutAnnotation模块：父模块为demo-spring-framework-smoke-tests。未开启基于注解的配置元数据。
+    - demo-spring-framework-smoke-test-temp模块：父模块为demo-spring-framework-smoke-tests。临时项目，准备删除。
+  - demo-spring-framework-smoke-tests-invoker模块：父模块为demo-spring-framework-parent。
 
 ### 运行方式：TODO
 cd demo-spring-framework  
