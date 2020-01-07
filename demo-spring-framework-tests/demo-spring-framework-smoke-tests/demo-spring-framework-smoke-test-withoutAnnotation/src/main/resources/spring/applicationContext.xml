@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd 
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd 
+        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
+	default-init-method="init" default-destroy-method="destroy">
+
+	<!-- ==========A.The IoC Container========== -->
+	<!-- A.1.Bean Definition and Dependency Injection -->
+	<!-- A.1.1.Bean instantiation with a constructor -->
+	<bean id="family"
+		class="org.ruanwei.demo.springframework.core.ioc.Family"
+		lazy-init="true" depends-on="house">
+		<!-- 1.Constructor-based dependency injection [(type|index|name)=(value|ref)] 
+			(byName with javac -g) -->
+		<constructor-arg type="java.lang.String"
+			value="${family.1.familyName}" />
+		<constructor-arg name="familyCount"
+			value="${family.familyCount}" />
+		<constructor-arg index="2" ref="father" />
+		<!-- 2.Setter-based dependency injection [name=(value|idref|ref)] -->
+		<property name="mother" ref="mother" />
+		<property name="son" value="${son.all}" />
+		<property name="daughter" value="${daughter.all}" />
+		<!-- Proxied scoped beans as dependencies -->
+		<property name="guest" ref="guest" />
+		<!-- 3.Method injection: Lookup method injection -->
+		<lookup-method name="createBueaty" bean="guest" />
+		<!-- 3.Method injection: Arbitrary method replacement -->
+		<replaced-method name="calc"
+			replacer="myMethodReplacer" />
+	</bean>
+	<bean id="myMethodReplacer"
+		class="org.ruanwei.demo.springframework.core.ioc.MyMethodReplacer" />
+
+	<!-- is equivalent to the bean family [c-namespace|p-namespace] -->
+	<bean id="family1"
+		class="org.ruanwei.demo.springframework.core.ioc.Family"
+		lazy-init="true" depends-on="house" c:_0="${family.1.familyName}"
+		c:familyCount="${family.familyCount}" c:_2-ref="father"
+		p:mother-ref="mother" p:son="${son.all}" p:daughter="${daughter.all}"
+		p:guest-ref="guest" />
+
+	<!-- A.1.2.Bean instantiation with a static factory method -->
+	<bean id="family2"
+		class="org.ruanwei.demo.springframework.core.ioc.FamilyFactory"
+		factory-method="createInstance1" lazy-init="true" depends-on="house">
+		<constructor-arg type="java.lang.String"
+			value="${family.2.familyName}" />
+		<constructor-arg type="int"
+			value="${family.familyCount}" />
+		<constructor-arg index="2" ref="father" />
+		<property name="mother" ref="mother" />
+		<property name="son" value="${son.all}" />
+		<property name="daughter" value="${daughter.all}" />
+		<property name="guest" ref="guest" />
+	</bean>
+
+	<!-- A.1.3.Bean instantiation using an instance factory method -->
+	<bean id="family3" factory-bean="familyFactory"
+		factory-method="createInstance2" lazy-init="true" depends-on="house">
+		<constructor-arg type="java.lang.String"
+			value="${family.3.familyName}" />
+		<constructor-arg type="int"
+			value="${family.familyCount}" />
+		<constructor-arg index="2" ref="father" />
+		<property name="mother" ref="mother" />
+		<property name="son" value="${son.all}" />
+		<property name="daughter" value="${daughter.all}" />
+		<property name="guest" ref="guest" />
+	</bean>
+	<bean id="familyFactory"
+		class="org.ruanwei.demo.springframework.core.ioc.FamilyFactory"
+		lazy-init="true" />
+
+	<bean id="father"
+		class="org.ruanwei.demo.springframework.core.ioc.People"
+		lazy-init="true" c:name="${father.name}" c:age="${father.age}" />
+
+	<bean id="mother"
+		class="org.ruanwei.demo.springframework.core.ioc.People"
+		lazy-init="true" c:name="${mother.name}" c:age="${mother.age}" />
+
+	<bean id="guest"
+		class="org.ruanwei.demo.springframework.core.ioc.People"
+		lazy-init="true" c:_0="${guest.name}"
+		c:_1="#{(new java.util.Random()).nextInt(100) ?: 8}" scope="prototype">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="absHouse" abstract="true">
+		<property name="houseName" value="${abshouse.name}" />
+		<!-- bean | ref | idref | list | set | map | props | value | null -->
+		<property name="someArray">
+			<list>
+				<value>1</value>
+				<value>2</value>
+			</list>
+		</property>
+		<property name="someList">
+			<list>
+				<value>3</value>
+				<value>4</value>
+			</list>
+		</property>
+		<property name="someSet">
+			<set>
+				<value>5</value>
+				<value>6</value>
+			</set>
+		</property>
+		<property name="someProperties">
+			<props>
+				<prop key="a">1</prop>
+				<prop key="b">2</prop>
+			</props>
+		</property>
+		<property name="someMap">
+			<map>
+				<entry key="c" value="3" />
+				<entry key="d" value="4" />
+			</map>
+		</property>
+		<property name="someList2" ref="someList2" />
+		<property name="someSet2" ref="someSet2" />
+		<property name="someProperties2" ref="someProperties2" />
+		<property name="someMap2" ref="someMap2" />
+		<property name="someField1" ref="someField1" />
+		<property name="someField2" ref="someField2" />
+		<property name="someField3" ref="someField3" />
+	</bean>
+
+	<!-- see ListFactoryBean -->
+	<util:list id="someList2" list-class="java.util.ArrayList"
+		value-type="java.lang.Integer">
+		<value>1</value>
+		<value>2</value>
+	</util:list>
+	<!-- see SetFactoryBean -->
+	<util:set id="someSet2" set-class="java.util.HashSet"
+		value-type="java.lang.Integer">
+		<value>3</value>
+		<value>4</value>
+	</util:set>
+	<!-- see PropertiesFactoryBean -->
+	<util:properties id="someProperties2"
+		location="classpath:family.properties" value-type="java.lang.Integer">
+		<prop key="a">1</prop>
+		<prop key="b">2</prop>
+	</util:properties>
+	<!-- see MapFactoryBean -->
+	<util:map id="someMap2" map-class="java.util.HashMap"
+		key-type="java.lang.String" value-type="java.lang.Integer">
+		<entry key="c" value="3" />
+		<entry key="d" value="4" />
+	</util:map>
+	<!-- see FieldRetrievingFactoryBean -->
+	<util:constant id="someField1"
+		static-field="java.lang.Math.PI" />
+	<!-- see PropertyPathFactoryBean -->
+	<util:property-path id="someField2"
+		path="father.name" />
+	<!-- see MethodInvokingFactoryBean -->
+	<bean id="someField3"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject" ref="sysProps" />
+		<property name="targetMethod" value="getProperty" />
+		<property name="arguments" value="java.version" />
+	</bean>
+	<bean id="sysProps"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass" value="java.lang.System" />
+		<property name="targetMethod" value="getProperties" />
+	</bean>
+
+	<!-- A.2.Data Binding -->
+	<!-- A.2.1.ConversionService-based Type Conversion and Formatting -->
+	<!-- If no ConversionService is registered with Spring, the original PropertyEditor-based 
+		system is used. -->
+	<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="registerDefaultFormatters" value="true" />
+		<!-- 方式一：单个指定Converter/ConverterFactory/GenericConverter S->T -->
+		<!-- <property name="converters">
+			<set>
+				<bean
+					class="org.ruanwei.demo.springframework.core.ioc.databinding.StringToPeopleConverter" />
+			</set>
+		</property> -->
+		<!-- 方式二：单个指定Formatter/AnnotationFormatterFactory String->T -->
+		<!-- <property name="formatters">
+			<set>
+				<bean
+					class="org.ruanwei.demo.springframework.core.ioc.databinding.PeopleFormatter" />
+				<bean
+					class="org.ruanwei.demo.springframework.core.ioc.databinding.PeopleFormatAnnotationFormatterFactory" />
+			</set>
+		</property> -->
+		<!-- 方式三：分组指定converters和formatters -->
+		<property name="formatterRegistrars">
+			<set>
+				<bean
+					class="org.ruanwei.demo.springframework.core.ioc.databinding.PeopleFormatterRegistrar" />
+				<bean
+					class="org.springframework.format.datetime.joda.JodaTimeFormatterRegistrar">
+					<property name="dateFormatter">
+						<bean
+							class="org.springframework.format.datetime.joda.DateTimeFormatterFactoryBean">
+							<property name="pattern" value="yyyy-MM-dd" />
+						</bean>
+					</property>
+				</bean>
+			</set>
+		</property>
+	</bean>
+
+	<!-- A.2.2.PropertyEditor-based Conversion -->
+	<!-- <bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		方式四：单个指定PropertyEditor
+		<property name="customEditors">
+			<map>
+				<entry key="org.ruanwei.demo.springframework.core.ioc.People"
+					value="org.ruanwei.demo.springframework.core.ioc.databinding.PeoplePropertyEditor" />
+			</map>
+		</property>
+		方式五：分组指定PropertyEditor
+		<property name="propertyEditorRegistrars">
+			<list>
+				<bean
+					class="org.ruanwei.demo.springframework.core.ioc.databinding.PeoplePropertyEditorRegistrar" />
+			</list>
+		</property>
+	</bean> -->
+
+	<!-- A.2.3.Validation JSR-303/JSR-349/JSR-380 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass"
+			value="org.hibernate.validator.HibernateValidator" />
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+
+	<!-- JSR-303:Bean Validation 1.0, see ValidationUtils in share-commons.jar -->
+	<bean
+		class="org.springframework.validation.beanvalidation.BeanValidationPostProcessor"
+		p:validator-ref="validator" />
+	<!-- JSR-349:Bean Validation 1.1, see @Validated -->
+	<bean
+		class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"
+		p:order="0" p:validator-ref="validator" />
+
+	<!-- building message codes from validation error codes,used by DataBinder -->
+	<bean id="messageCodesResolver"
+		class="org.springframework.validation.DefaultMessageCodesResolver" />
+
+	<!-- A.3.Internationalization:MessageSource/ResourceBundleMessageSource -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>exception</value>
+			</list>
+		</property>
+		<property name="cacheSeconds" value="10" />
+		<property name="defaultEncoding" value="utf-8" />
+	</bean>
+
+	<!-- A.4.Lifecycle:Initialization/Destruction/Startup/Shutdown callbacks -->
+	<!-- A.4.1.Bean lifecycle callbacks, see InitializingBean/DisposableBean -->
+	<bean
+		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyInitializingBean" />
+	<bean
+		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyDisposableBean" />
+
+	<!-- A.4.2.Context lifecycle callbacks, see SmartLifecycle -->
+	<bean
+		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyLifecycle" />
+	<bean
+		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MySmartLifecycle" />
+	<bean
+		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyLifecycleProcessor" />
+
+	<!-- A.5.Environment：Profile and PropertySource -->
+	<!-- A.5.1.PropertySource：供Environment访问，参考@PropertySource -->
+	<!-- A.5.2.Profile：参考 @Profile和<beans profile=""> -->
+
+	<!-- A.6.Extension Points -->
+	<!-- A.6.1.Customizing beans using a BeanPostProcessor -->
+	<!-- include:BeanValidationPostProcessor/MethodValidationPostProcessor/AutowiredAnnotationBeanPostProcessor -->
+	<!-- CommonAnnotationBeanPostProcessor/RequiredAnnotationBeanPostProcessor 
+		etc. -->
+	<bean
+		class="org.ruanwei.demo.springframework.core.ioc.extension.TraceBeanPostProcessor"
+		p:order="0" />
+
+	<!-- A.6.2.Customizing configuration metadata with a BeanFactoryPostProcessor -->
+	<!-- include:PropertyPlaceholderConfigurer/PropertyOverrideConfigurer/PropertySourcesPlaceholderConfigurer -->
+	<!-- PreferencesPlaceholderConfigurer/CustomEditorConfigurer/CustomScopeConfigurer/CustomAutowireConfigurer 
+		etc. -->
+	<bean
+		class="org.ruanwei.demo.springframework.core.ioc.extension.TraceBeanFactoryPostProcessor"
+		p:order="0" />
+	<!-- versions <= 3.0 default to org.springframework.beans.factory.config.PropertyPlaceholderConfigurer. -->
+	<!-- versions >= 3.1 default to org.springframework.context.support.PropertySourcesPlaceholderConfigurer. -->
+	<context:property-placeholder
+		location="classpath*:family.properties,classpath*:jdbc.properties"
+		file-encoding="UTF-8" order="0" />
+	<!-- see org.springframework.beans.factory.config.PropertyOverrideConfigurer -->
+	<!-- <context:property-override /> -->
+
+	<!-- A.6.3.Customizing instantiation logic with a FactoryBean -->
+	<!-- include:ListFactoryBean/SetFactoryBean/PropertiesFactoryBean/MapFactoryBean -->
+	<!-- FieldRetrievingFactoryBean/PropertyPathFactoryBean/MethodInvokingFactoryBean 
+		etc. -->
+	<bean id="familyx"
+		class="org.ruanwei.demo.springframework.core.ioc.extension.MyFamilyFactoryBean">
+		<constructor-arg type="java.lang.String"
+			value="${family.x.familyName}" />
+		<constructor-arg type="int"
+			value="${family.familyCount}" />
+		<constructor-arg index="2" ref="father" />
+	</bean>
+	
+	<!-- A.7 switches on the load-time weaving -->
+	<!-- <context:load-time-weaver/> -->
+	
+	<!-- <context:spring-configured /> -->
+
+	<!-- more bean definitions go here -->
+	<import resource="aop.xml" />
+	<import resource="dataAccess.xml" />
+	<import resource="springData.xml" />
+
+	<!-- A.5.2.Profile：必须放在配置文件最后 -->
+	<beans profile="development">
+		<bean id="house"
+			class="org.ruanwei.demo.springframework.core.ioc.House"
+			parent="absHouse">
+			<property name="houseName" value="${house.name}" />
+			<property name="hostName" value="${house.host.development}" />
+		</bean>
+	</beans>
+	<beans profile="production">
+		<bean id="house"
+			class="org.ruanwei.demo.springframework.core.ioc.House"
+			parent="absHouse">
+			<property name="houseName" value="${house.name}" />
+			<property name="hostName" value="${house.host.production}" />
+		</bean>
+	</beans>
+</beans>

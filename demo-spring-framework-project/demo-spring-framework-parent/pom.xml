@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.ruanwei.demo</groupId>
+		<artifactId>demo-spring-framework-dependencies</artifactId>
+		<version>${revision}</version>
+		<relativePath>../demo-spring-framework-dependencies</relativePath>
+	</parent>
+
+	<artifactId>demo-spring-framework-parent</artifactId>
+	<packaging>pom</packaging>
+
+	<name>Demo:Spring Framework Project Parent</name>
+	<description>Demo:Spring Framework Project Parent</description>
+	
+	<!-- 增加通用的依赖，例如测试和日志 -->
+
+	<build>
+		<finalName>demo-spring-framework-parent</finalName>
+	</build>
+</project>

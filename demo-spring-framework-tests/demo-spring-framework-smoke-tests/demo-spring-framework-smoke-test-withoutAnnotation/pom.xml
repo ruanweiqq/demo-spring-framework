@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.ruanwei.demo</groupId>
+		<artifactId>demo-spring-framework-smoke-tests</artifactId>
+		<version>${samples.revision}</version>
+	</parent>
+
+	<artifactId>demo-spring-framework-smoke-test-withoutAnnotation</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Demo:Spring Framework Samples without Annotation</name>
+	<description>Demo:Spring Framework Samples without Annotation</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.ruanwei.demo</groupId>
+			<artifactId>demo-spring-framework-starter-core</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>demo-spring-framework-smoke-test-withoutAnnotation</finalName>
+	</build>
+
+</project>

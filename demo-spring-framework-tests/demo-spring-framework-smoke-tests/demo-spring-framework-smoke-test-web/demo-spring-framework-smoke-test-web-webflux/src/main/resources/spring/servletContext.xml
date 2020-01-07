@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="       
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd       
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd       
+      http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd       
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd       
+      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd 
+      http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd  
+      http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+	default-autowire="default">
+
+	<!-- 扫描并识别具有@Controller和@RequestMapping注解的类 -->
+	<context:component-scan base-package="org.ruanwei.demo.user.web">
+		<context:include-filter type="annotation"
+			expression="org.springframework.validation.annotation.Validated" />
+		<!-- <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" 
+			/> -->
+	</context:component-scan>
+
+	<!-- mvc:annotation-driven registers a RequestMappingHandlerMapping, a RequestMappingHandlerAdapter, 
+		and an ExceptionHandlerExceptionResolver(@ExceptionHandler)/ResponseStatusExceptionResolver(@ResponseStatus). -->
+	<mvc:annotation-driven enable-matrix-variables="true"
+		ignore-default-model-on-redirect="true" content-negotiation-manager="contentNegotiationManager"
+		conversion-service="conversionService2" validator="validator"
+		message-codes-resolver="messageCodesResolver">
+
+		<mvc:async-support default-timeout="5000"
+			task-executor="myThreadPool">
+			<!-- org.springframework.web.context.request.async.DeferredResultProcessingInterceptor -->
+			<mvc:deferred-result-interceptors>
+				<!-- org.springframework.web.context.request.async.TimeoutDeferredResultProcessingInterceptor -->
+				<!-- org.springframework.web.context.request.async.ErrorDeferredResultProcessingInterceptor -->
+				<bean
+					class="org.ruanwei.demo.core.interceptor.MyDeferredResultProcessingInterceptor" />
+			</mvc:deferred-result-interceptors>
+			<!-- org.springframework.web.context.request.async.CallableProcessingInterceptor -->
+			<mvc:callable-interceptors>
+				<!-- org.springframework.web.context.request.async.TimeoutCallableProcessingInterceptor -->
+				<!-- org.springframework.web.context.request.async.ErrorCallableProcessingInterceptor -->
+				<bean
+					class="org.ruanwei.demo.core.interceptor.MyCallableProcessingInterceptor" />
+			</mvc:callable-interceptors>
+		</mvc:async-support>
+
+		<!-- HttpMessageConverter is responsible for converting from the HTTP request 
+			message to an object and converting from an object to the HTTP response body.HttpMessageConverter 
+			support for @RequestBody method parameters and @ResponseBody method return 
+			values from @RequestMapping or @ExceptionHandler methods. -->
+		<!-- org.springframework.http.converter.HttpMessageConverter -->
+		<mvc:message-converters register-defaults="true">
+			<bean class="org.ruanwei.core.http.MyHttpMessageConverter" />
+		</mvc:message-converters>
+
+		<!-- org.springframework.web.method.support.HandlerMethodArgumentResolver -->
+		<mvc:argument-resolvers>
+			<!-- <ref bean="jsonMethodArgumentResolver"/> -->
+			<bean class="org.ruanwei.core.databind.JsonMethodArgumentResolver" />
+		</mvc:argument-resolvers>
+
+		<!-- org.springframework.web.method.support.HandlerMethodReturnValueHandler -->
+		<mvc:return-value-handlers>
+			<!-- <ref bean="authorMethodReturnValueHandler"/> -->
+			<bean
+				class="org.ruanwei.core.databind.AuthorMethodReturnValueHandler" />
+		</mvc:return-value-handlers>
+
+		<!-- org.springframework.util.PathMatcher -->
+		<mvc:path-matching />
+	</mvc:annotation-driven>
+
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/user*/**" />
+			<mvc:exclude-mapping path="/admin/**" />
+			<bean class="org.ruanwei.demo.core.interceptor.MyHandlerInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/user*/**" />
+			<mvc:exclude-mapping path="/admin/**" />
+			<bean class="org.ruanwei.demo.core.interceptor.MyWebRequestInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	<!-- org.springframework.web.servlet.HandlerExceptionResolver -->
+
+	<!-- Using a MultipartResolver with Commons FileUpload -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="100000" />
+	</bean>
+
+	<!-- Using a MultipartResolver with Servlet 3.0 -->
+	<bean id="multipartResolver2"
+		class="org.springframework.web.multipart.support.StandardServletMultipartResolver" />
+
+	<!-- org.springframework.web.servlet.ViewResolver -->
+	<mvc:view-resolvers>
+		<!-- cnvr delegates to other view resolvers based on the content type to 
+			see 1) if it has a view with the right name and 2) if it has a view that 
+			it also generates the right content. -->
+		<!-- org.springframework.web.servlet.view.ContentNegotiatingViewResolver -->
+		<mvc:content-negotiation>
+			<mvc:default-views>
+				<bean
+					class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+				<!--<bean class="org.springframework.web.servlet.ViewResolver">
+					<replaced-method name="resolveViewName" replacer="xmlViewResolver">
+						<arg-type>org.springframework.web.servlet.view.xml.MappingJackson2XmlView</arg-type>
+					</replaced-method>
+				</bean>-->
+				<bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView" >
+					<property name="modelKey" value="data"></property>
+				</bean>
+				<bean class="org.ruanwei.core.viewresolver.MyPdfView" />
+				<bean class="org.ruanwei.core.viewresolver.MyXlsxView" />
+				<bean class="org.ruanwei.core.viewresolver.MyXlsView" />
+			</mvc:default-views>
+		</mvc:content-negotiation>
+
+		<!--<bean claorg.ruanwei.demo.core.viewresolverlver.MyJsonViewResolver" />
+		<bean claorg.ruanwei.demo.core.viewresolverlver.MyXmlViewResolver" />
+		<bean claorg.ruanwei.demo.core.viewresolverlver.MyXlsxViewResolver" />
+		<bean claorg.ruanwei.demo.core.viewresolverlver.MyPdfViewResolver" />-->
+
+		<!-- org.springframework.web.servlet.view.InternalResourceViewResolver -->
+		<mvc:jsp prefix="/WEB-INF/jsp/" suffix=".jsp"
+			view-class="org.springframework.web.servlet.view.JstlView"
+			cache-views="true" />
+		<!-- org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver -->
+		<!-- org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer -->
+		<!-- <mvc:freemarker/> -->
+		<!-- <mvc:groovy/> -->
+		<!-- <mvc:script-template/> -->
+		<!-- <mvc:tiles/> -->
+	</mvc:view-resolvers>
+	<!-- <mvc:freemarker-configurer /> -->
+	<!-- <mvc:groovy-configurer/> -->
+	<!-- <mvc:script-template-configurer render-function="" engine-name=""></mvc:script-template-configurer> -->
+	<!-- <mvc:tiles-configurer></mvc:tiles-configurer> -->
+
+	<!-- 由Servlet容器的默认处理器(而不是SpringMVC)处理静态资源 -->
+	<!-- org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler(HttpRequestHandler) -->
+	<mvc:default-servlet-handler />
+
+	<!-- 由SpringMVC框架自己处理静态资源(不会被Spring MVC拦截)，并添加一些有用的附加值功能和优化 -->
+	<!-- 与ConversionService配置有冲突，可以直接用mvc:default-servlet-handler取代mvc:resources，或者改名ConversionService -->
+	<!-- org.springframework.web.servlet.resource.ResourceHttpRequestHandler(HttpRequestHandler) -->
+	<mvc:resources mapping="/html/**" location="/html/" />
+	<mvc:resources mapping="/images/**" location="/images/" />
+	<mvc:resources mapping="/style/**" location="/style/"
+		cache-period="3600">
+		<!-- org.springframework.http.CacheControl -->
+		<mvc:cache-control max-age="36000" cache-public="true" />
+	</mvc:resources>
+	<!-- org.springframework.web.servlet.resource.PathResourceResolver -->
+	<mvc:resources mapping="/js/**" location="/js/">
+		<!-- org.springframework.web.servlet.resource.CachingResourceResolver -->
+		<mvc:resource-chain resource-cache="true">
+			<!-- org.springframework.web.servlet.resource.ResourceResolver -->
+			<mvc:resolvers>
+				<bean
+					class="org.springframework.web.servlet.resource.GzipResourceResolver" />
+				<mvc:version-resolver>
+					<mvc:content-version-strategy
+						patterns="/**" />
+				</mvc:version-resolver>
+			</mvc:resolvers>
+			<!-- org.springframework.web.servlet.resource.ResourceTransformer -->
+			<mvc:transformers>
+				<bean
+					class="org.springframework.web.servlet.resource.CssLinkResourceTransformer" />
+			</mvc:transformers>
+		</mvc:resource-chain>
+	</mvc:resources>
+
+	<!-- 请求不经过Controller逻辑直接访问视图 -->
+	<!-- org.springframework.web.servlet.mvc.ParameterizableViewController -->
+	<!-- org.springframework.web.servlet.handler.SimpleUrlHandlerMapping -->
+	<mvc:view-controller path="/test1" status-code="200"
+		view-name="test" />
+	<mvc:redirect-view-controller path="/test2"
+		status-code="302" redirect-url="test" />
+	<mvc:status-controller path="/status"
+		status-code="200" />
+
+	<!-- You can configure how Spring MVC determines the requested media types 
+		from the request. The available options are to check the URL path for a file 
+		extension, check the "Accept" header, a specific query parameter, or to fall 
+		back on a default content type when nothing is requested. By default the 
+		path extension in the request URI is checked first and the "Accept" header 
+		is checked second. The MVC Java config and the MVC namespace register json, 
+		xml, rss, atom by default if corresponding dependencies are on the classpath. -->
+	<bean id="contentNegotiationManager"
+		class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<!-- org.springframework.web.accept.PathExtensionContentNegotiationStrategy -->
+		<property name="favorPathExtension" value="true" />
+		<!-- org.springframework.web.accept.ParameterContentNegotiationStrategy -->
+		<property name="favorParameter" value="true" />
+		<property name="parameterName" value="format" />
+		<!-- org.springframework.web.accept.HeaderContentNegotiationStrategy -->
+		<property name="ignoreAcceptHeader" value="true" />
+		<property name="useJaf" value="false" />
+		<!-- 这里的MediaType不仅决定了ViewResolver，还决定了HandlerMethod的选择 -->
+		<property name="mediaTypes">
+			<value>
+				json=application/json
+				xml=application/xml
+				atom=application/atom+xml
+				rss=application/rss+xml
+				html=text/html
+				htm=text/html
+				pdf=application/pdf
+				xlsx=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+				xls=application/vnd.ms-excel
+			</value>
+		</property>
+		<!-- org.springframework.web.accept.FixedContentNegotiationStrategy -->
+		<property name="defaultContentType" value="text/html" />
+	</bean>
+</beans>

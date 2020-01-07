@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapping>
+	<description>Basic mapping example</description>
+	<class name="org.ruanwei.demo.springframework.integration.User" auto-complete="true">
+		<map-to xml="user" />
+		<field name="name">
+			<bind-xml name="name" node="attribute" />
+		</field>
+		<field name="age">
+			<bind-xml name="age" node="attribute" />
+		</field>
+	</class>
+</mapping>  
