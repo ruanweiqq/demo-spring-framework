@@ -5,9 +5,9 @@
 
 	<parent>
 		<groupId>org.ruanwei.demo</groupId>
-		<artifactId>demo-spring-framework-project-parent</artifactId>
+		<artifactId>demo-spring-framework-parent</artifactId>
 		<version>${revision}</version>
-		<relativePath>../demo-spring-framework-project/demo-spring-framework-project-parent</relativePath>
+		<relativePath>../demo-spring-framework-project/demo-spring-framework-parent</relativePath>
 	</parent>
 
 	<artifactId>demo-spring-framework-tests</artifactId>
@@ -20,6 +20,7 @@
 	</properties>
 
 	<modules>
+		<module>demo-spring-framework-smoke-tests</module>
 	</modules>
 
 	<build>
