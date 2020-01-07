@@ -59,8 +59,8 @@ public class SpringWebApplication {
 	private static void runWithNetty(HttpHandler httpHandler) {
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(
 				httpHandler);
-		HttpServer.create("localhost", 8081).newHandler(adapter)
-				.block(Duration.ofMinutes(1));
+//		HttpServer.create("localhost", 8081).newHandler(adapter)
+//				.block(Duration.ofMinutes(1));
 
 	}
 

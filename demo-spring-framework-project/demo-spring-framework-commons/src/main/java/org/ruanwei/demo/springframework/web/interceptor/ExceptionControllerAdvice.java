@@ -16,20 +16,18 @@ import org.ruanwei.demo.core.exception.InvalidLogicException;
 import org.ruanwei.demo.core.exception.ServiceException;
 import org.ruanwei.demo.springframework.web.core.ResponseCode;
 import org.ruanwei.demo.springframework.web.core.Result;
-import org.springframework.context.annotation.Bean;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
-import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpResponseBodyAdvice;
+//import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpResponseBodyAdvice;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**

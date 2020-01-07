@@ -198,6 +198,10 @@
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 		</dependency>
@@ -320,9 +324,13 @@
 		</dependency>
 		<!-- D.1.2.Dubbo -->
 		<dependency>
-			<groupId>com.alibaba</groupId>
+			<groupId>org.apache.dubbo</groupId>
 			<artifactId>dubbo</artifactId>
 		</dependency>
+		<!-- <dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+		</dependency> -->
 		
 		<!-- D.2.JMS -->
 		<dependency>
@@ -356,7 +364,7 @@
 			<!-- <scope>provided</scope> -->
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
+			<groupId>javax.servlet.jsp.jstl</groupId>
 			<artifactId>jstl</artifactId>
 		</dependency>
 		<dependency>
@@ -445,6 +453,7 @@
 		<dependency>
 			<groupId>org.codehaus.castor</groupId>
 			<artifactId>castor</artifactId>
+			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.castor</groupId>
@@ -453,14 +462,6 @@
 		<dependency>
 			<groupId>org.codehaus.woodstox</groupId>
 			<artifactId>woodstox-core-asl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
 		</dependency>
 
 		<dependency>

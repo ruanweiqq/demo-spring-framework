@@ -28,7 +28,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.oxm.castor.CastorMarshaller;
+// import org.springframework.oxm.castor.CastorMarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.oxm.jibx.JibxMarshaller;
 import org.springframework.oxm.xstream.XStreamMarshaller;
@@ -229,14 +229,14 @@ public class DataAccessConfig2 {// implements TransactionManagementConfigurer {
 
 	// C.4.OXM
 	// Castor project is not active.
-	@Lazy
+	/*@Lazy
 	@Qualifier("castorMarshaller")
 	@Bean
 	public CastorMarshaller castorMarshaller() {
 		CastorMarshaller castorMarshaller = new CastorMarshaller();
 		castorMarshaller.setMappingLocation(new ClassPathResource("mapping.xml"));
 		return castorMarshaller;
-	}
+	}*/
 
 	@Lazy
 	@Qualifier("jaxb2Marshaller")
