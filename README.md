@@ -29,6 +29,8 @@ demo-spring-framework
             demo-spring-framework-smoke-test-xxx
 	        -demo-spring-framework-smoke-test-xxx:jar  demo-spring-framework-smoke-tests:pom
 	demo-spring-framework-smoke-tests-invoker
+	spring-boot-integration-tests
+	spring-boot-deployment-tests
 ------------------------------------------
 spring-boot
     -spring-boot-build:pom
@@ -70,13 +72,13 @@ spring-boot
 </pre>
 
 ### 项目模块：
-- demo-spring-framework-project模块：定义parent和starter。
+- demo-spring-framework-project模块：定义parent和starter，父模块为demo-spring-framework-build。
   - demo-spring-framework-dependencies模块：依赖声明(BOM)。
   - demo-spring-framework-parent模块：内部项目的父模块，父模块为demo-spring-framework-dependencies。
   - demo-spring-framework-starters模块：外部项目的父模块，父模块为demo-spring-framework-parent。
   - demo-spring-framework-commons模块：父模块为demo-spring-framework-parent。
 - demo-spring-framework-tests模块：继承于demo-spring-framework-parent。
-  - demo-spring-framework-smoke-tests模块：继承于demo-spring-framework-starter-parent。
+  - demo-spring-framework-smoke-tests模块：父模块为demo-spring-framework-starter-parent。
     - demo-spring-framework-smoke-test-core模块：父模块为demo-spring-framework-smoke-tests。
     - demo-spring-framework-smoke-test-dataAccess模块：父模块为demo-spring-framework-smoke-tests。
     - demo-spring-framework-smoke-test-web模块：父模块为demo-spring-framework-smoke-tests。
