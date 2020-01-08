@@ -442,7 +442,7 @@
 
 		<!-- F.4.reactor netty -->
 		<dependency>
-			<groupId>io.projectreactor.ipc</groupId>
+			<groupId>io.projectreactor.netty</groupId>
 			<artifactId>reactor-netty</artifactId>
 		</dependency>
 		<!-- ========== F.Other End ========== -->

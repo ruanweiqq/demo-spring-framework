@@ -450,11 +450,13 @@
 				<version>0.1</version>
 			</dependency>
 
-			<!-- F.4 Reactor Netty -->
+			<!-- F.4 Reactor Netty BOM -->
 			<dependency>
-				<groupId>io.projectreactor.ipc</groupId>
-				<artifactId>reactor-netty</artifactId>
-				<version>0.7.15.RELEASE</version>
+				<groupId>io.projectreactor</groupId>
+				<artifactId>reactor-bom</artifactId>
+				<version>Dysprosium-SR2</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 			<!-- ========== F Other End ========== -->
 

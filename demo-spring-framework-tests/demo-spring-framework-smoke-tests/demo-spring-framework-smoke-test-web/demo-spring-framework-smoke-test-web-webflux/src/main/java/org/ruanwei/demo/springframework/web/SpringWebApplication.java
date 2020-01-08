@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.WebHandler;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 
-import reactor.ipc.netty.http.server.HttpServer;
+import reactor.netty.http.server.HttpServer;
 
 public class SpringWebApplication {
 	private static final Logger logger = LogManager.getLogger();
@@ -59,8 +59,9 @@ public class SpringWebApplication {
 	private static void runWithNetty(HttpHandler httpHandler) {
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(
 				httpHandler);
-//		HttpServer.create("localhost", 8081).newHandler(adapter)
-//				.block(Duration.ofMinutes(1));
+		HttpServer.create().host("localhost").port(8081).bindNow(Duration.ofMinutes(1));
+		/*HttpServer.create("localhost", 8081).newHandler(adapter)
+				.block(Duration.ofMinutes(1));*/
 
 	}
 
