@@ -468,11 +468,6 @@
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15</artifactId>
-		</dependency>
 		<!-- ========== Unknow End ========== -->
 
 		<!-- 会导致构建不成功why -->
