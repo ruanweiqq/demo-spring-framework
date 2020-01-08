@@ -1,4 +1,4 @@
-package org.ruanwei.demo.util.winzip.impl;
+package org.ruanwei.demo.util;
 
 /**
  * byte[] functionality
