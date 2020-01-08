@@ -497,12 +497,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcprov-jdk15</artifactId>
-				<version>1.46</version>
-			</dependency>
-
-			<dependency>
 				<groupId>org.ruanwei.demo</groupId>
 				<artifactId>demo-spring-framework-commons</artifactId>
 				<version>${revision}</version>
