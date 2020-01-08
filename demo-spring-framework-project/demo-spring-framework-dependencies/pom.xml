@@ -146,17 +146,15 @@
 			</dependency>
 
 			<!-- B.1.3 DataBinding and Type Conversion -->
-			<!-- Joda Time -->
-			<dependency>
-				<groupId>joda-time</groupId>
-				<artifactId>joda-time</artifactId>
-				<version>2.10.5</version>
-			</dependency>
-			
 			<!-- Jackson Json -->
 			<dependency>
-				<groupId>com.fasterxml.jackson.dataformat</groupId>
-				<artifactId>jackson-dataformat-xml</artifactId>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jdk8</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
@@ -165,19 +163,82 @@
 				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-databind</artifactId>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-joda</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-core</artifactId>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>2.10.5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-money</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-protobuf</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-guava</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<!-- Google Json -->
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.8.6</version>
+			</dependency>
+			<!-- Alibaba Json -->
 			<dependency>
 				<groupId>com.alibaba</groupId>
 				<artifactId>fastjson</artifactId>
 				<version>1.2.62</version>
+			</dependency>
+			
+			<!-- Jackson Xml -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.dataformat</groupId>
+				<artifactId>jackson-dataformat-xml</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<!-- Woodstox Xml -->
+			<dependency>
+				<groupId>com.fasterxml.woodstox</groupId>
+				<artifactId>woodstox-core</artifactId>
+				<version>6.0.3</version>
+			</dependency>
+			<!-- Xerces Xml -->
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>2.12.0</version>
+			</dependency>
+	
+			<!-- Jackson other data formats -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.dataformat</groupId>
+				<artifactId>jackson-dataformat-protobuf</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.dataformat</groupId>
+				<artifactId>jackson-dataformat-avro</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.dataformat</groupId>
+				<artifactId>jackson-dataformat-yaml</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.dataformat</groupId>
+				<artifactId>jackson-dataformat-properties</artifactId>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<!-- B.1.4 AOP -->
@@ -299,6 +360,7 @@
 				<artifactId>hessian</artifactId>
 				<version>4.0.63</version>
 			</dependency>
+			
 			<!-- D.1.2 Dubbo -->
 			<dependency>
 				<groupId>org.apache.dubbo</groupId>
@@ -473,35 +535,13 @@
 			</dependency>
 			<!-- ========== G Starter End ========== -->
 
-			<!-- ========== Unsorted Start ========== -->
-			<dependency>
-				<groupId>org.codehaus.castor</groupId>
-				<artifactId>castor</artifactId>
-				<version>1.4.1</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>org.codehaus.castor</groupId>
-				<artifactId>castor-xml</artifactId>
-				<version>1.4.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.codehaus.woodstox</groupId>
-				<artifactId>woodstox-core-asl</artifactId>
-				<version>4.4.1</version>
-			</dependency>
-			<dependency>
-				<groupId>xerces</groupId>
-				<artifactId>xercesImpl</artifactId>
-				<version>2.12.0</version>
-			</dependency>
-
+			<!-- ========== Internal Module Start ========== -->
 			<dependency>
 				<groupId>org.ruanwei.demo</groupId>
 				<artifactId>demo-spring-framework-commons</artifactId>
 				<version>${revision}</version>
 			</dependency>
-			<!-- ========== Unsorted End ========== -->
+			<!-- ========== Internal Module End ========== -->
 		</dependencies>
 	</dependencyManagement>
 
