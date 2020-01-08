@@ -20,6 +20,20 @@
 		<module>demo-spring-framework-starter-parent</module>
 		<module>demo-spring-framework-starter</module>
 		<module>demo-spring-framework-starter-core</module>
+		<module>demo-spring-framework-starter-aop</module>
+		<module>demo-spring-framework-starter-jdbc</module>
+		<module>demo-spring-framework-starter-json</module>
+		<module>demo-spring-framework-starter-log4j</module>
+		<module>demo-spring-framework-starter-logging</module>
+		<module>demo-spring-framework-starter-test</module>
+		<module>demo-spring-framework-starter-validation</module>
+		<module>demo-spring-framework-starter-web</module>
+		<module>demo-spring-framework-starter-webflux</module>
+		<module>demo-spring-framework-starter-data-jdbc</module>
+		<module>demo-spring-framework-starter-data-jpa</module>
+		<module>demo-spring-framework-starter-data-redis</module>
+		<module>demo-spring-framework-starter-data-mongodb</module>
+		<module>demo-spring-framework-starter-legacy</module>
 	</modules>
 
 	<build>

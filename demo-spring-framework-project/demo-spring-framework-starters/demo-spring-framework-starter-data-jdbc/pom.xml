@@ -9,11 +9,11 @@
 		<version>${revision}</version>
 	</parent>
 
-	<artifactId>demo-spring-framework-starter-core</artifactId>
+	<artifactId>demo-spring-framework-starter-data-jdbc</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Starter Core</name>
-	<description>Demo:Spring Framework Starter Core</description>
+	<name>Demo:Spring Framework Starter Data Jdbc</name>
+	<description>Demo:Spring Framework Starter Data Jdbc</description>
 
 	<dependencies>
 		<!-- Testing and Logging -->
@@ -144,7 +144,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-framework-starter-core</finalName>
+		<finalName>demo-spring-framework-starter-data-jdbc</finalName>
 	</build>
 
 </project>

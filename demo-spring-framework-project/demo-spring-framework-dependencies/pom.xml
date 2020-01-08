@@ -533,6 +533,76 @@
 				<artifactId>demo-spring-framework-starter-core</artifactId>
 				<version>${revision}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-aop</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-jdbc</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-json</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-log4j</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-logging</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-test</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-validation</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-web</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-webflux</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-data-jdbc</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-data-jpa</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-data-redis</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-data-mongodb</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-legacy</artifactId>
+				<version>${revision}</version>
+			</dependency>
 			<!-- ========== G Starter End ========== -->
 
 			<!-- ========== Internal Module Start ========== -->

@@ -9,11 +9,11 @@
 		<version>${revision}</version>
 	</parent>
 
-	<artifactId>demo-spring-framework-starter-core</artifactId>
+	<artifactId>demo-spring-framework-starter-test</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Starter Core</name>
-	<description>Demo:Spring Framework Starter Core</description>
+	<name>Demo:Spring Framework Starter Test</name>
+	<description>Demo:Spring Framework Starter Test</description>
 
 	<dependencies>
 		<!-- Testing and Logging -->
@@ -144,7 +144,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-framework-starter-core</finalName>
+		<finalName>demo-spring-framework-starter-test</finalName>
 	</build>
 
 </project>
