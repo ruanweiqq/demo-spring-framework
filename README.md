@@ -73,19 +73,22 @@ spring-boot
 
 ### 项目模块：
 - demo-spring-framework-project模块：定义parent和starter，父模块为demo-spring-framework-build。
-  - demo-spring-framework-dependencies模块：依赖声明(BOM)。
+  - demo-spring-framework-dependencies模块：父模块为demo-spring-framework-project，依赖声明(BOM)。
   - demo-spring-framework-parent模块：内部项目的父模块，父模块为demo-spring-framework-dependencies。
   - demo-spring-framework-starters模块：外部项目的父模块，父模块为demo-spring-framework-parent。
+    - demo-spring-framework-starter-context模块：父模块为直接上级
   - demo-spring-framework-commons模块：父模块为demo-spring-framework-parent。
 - demo-spring-framework-tests模块：继承于demo-spring-framework-parent。
   - demo-spring-framework-smoke-tests模块：父模块为demo-spring-framework-starter-parent。
-    - demo-spring-framework-smoke-test-core模块：父模块为demo-spring-framework-smoke-tests。
-    - demo-spring-framework-smoke-test-dataAccess模块：父模块为demo-spring-framework-smoke-tests。
-    - demo-spring-framework-smoke-test-web模块：父模块为demo-spring-framework-smoke-tests。
-    - demo-spring-framework-smoke-test-integration模块：父模块为demo-spring-framework-smoke-tests。
-    - demo-spring-framework-smoke-test-withoutAnnotation模块：父模块为demo-spring-framework-smoke-tests。未开启基于注解的配置元数据。
-    - demo-spring-framework-smoke-test-temp模块：父模块为demo-spring-framework-smoke-tests。临时项目，准备删除。
+    - demo-spring-framework-smoke-test-core模块：父模块为直接上级。
+    - demo-spring-framework-smoke-test-dataAccess模块：父模块为直接上级。
+    - demo-spring-framework-smoke-test-web模块：父模块为直接上级。
+    - demo-spring-framework-smoke-test-integration模块：父模块为直接上级。
+    - demo-spring-framework-smoke-test-withoutAnnotation模块：父模块为直接上级。未开启基于注解的配置元数据。
+    - demo-spring-framework-smoke-test-temp模块：父模块为直接上级。临时项目，准备删除。
   - demo-spring-framework-smoke-tests-invoker模块：父模块为demo-spring-framework-parent。
+  - spring-boot-integration-tests模块：父模块为直接上级。
+  - spring-boot-deployment-tests模块：父模块为直接上级。
 
 ### 运行方式：TODO
 cd demo-spring-framework  
