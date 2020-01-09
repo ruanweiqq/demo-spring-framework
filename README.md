@@ -3,12 +3,12 @@
 this is the master branch
 
 ### 项目结构
-<pre>
-demo-spring-framework
-    -demo-spring-framework-build:pom
-    demo-spring-framework-project
-        -demo-spring-framework-project:pom  demo-spring-framework-build:pom
-        demo-spring-framework-project-dependencies
+
+- demo-spring-framework
+    - demo-spring-framework-build:pom
+    - demo-spring-framework-project
+        - -demo-spring-framework-project:pom  demo-spring-framework-build:pom
+<pre>        demo-spring-framework-project-dependencies
 	    -demo-spring-framework-dependencies:pom  ../..(demo-spring-framework-build:pom)
         demo-spring-framework-parent
 	    -demo-spring-framework-parent:pom  ../demo-spring-framework-dependencies:pom
