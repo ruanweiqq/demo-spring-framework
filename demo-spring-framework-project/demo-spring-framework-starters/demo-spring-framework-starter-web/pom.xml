@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
-			<artifactId>demo-spring-framework-starter-core</artifactId>
+			<artifactId>demo-spring-framework-starter-context</artifactId>
 		</dependency>
 	</dependencies>
 

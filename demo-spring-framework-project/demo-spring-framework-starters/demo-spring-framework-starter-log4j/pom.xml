@@ -22,7 +22,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
-			<artifactId>demo-spring-framework-starter-core</artifactId>
+			<artifactId>demo-spring-framework-starter-context</artifactId>
+		</dependency>
+		<!-- A.1.1.Log4j2 -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-to-slf4j</artifactId>
 		</dependency>
 	</dependencies>
 

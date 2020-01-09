@@ -19,10 +19,11 @@
 	<modules>
 		<module>demo-spring-framework-starter-parent</module>
 		<module>demo-spring-framework-starter</module>
-		<module>demo-spring-framework-starter-core</module>
+		<module>demo-spring-framework-starter-context</module>
 		<module>demo-spring-framework-starter-aop</module>
 		<module>demo-spring-framework-starter-jdbc</module>
 		<module>demo-spring-framework-starter-json</module>
+		<module>demo-spring-framework-starter-xml</module>
 		<module>demo-spring-framework-starter-log4j</module>
 		<module>demo-spring-framework-starter-logging</module>
 		<module>demo-spring-framework-starter-test</module>

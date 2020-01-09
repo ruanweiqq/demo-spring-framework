@@ -9,11 +9,11 @@
 		<version>${revision}</version>
 	</parent>
 
-	<artifactId>demo-spring-framework-starter-data-mongodb</artifactId>
+	<artifactId>demo-spring-framework-starter-xml</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Demo:Spring Framework Starter Data Mongodb</name>
-	<description>Demo:Spring Framework Starter Data Mongodb</description>
+	<name>Demo:Spring Framework Starter Xml</name>
+	<description>Demo:Spring Framework Starter Xml</description>
 
 	<dependencies>
 		<dependency>
@@ -24,10 +24,23 @@
 			<groupId>org.ruanwei.demo</groupId>
 			<artifactId>demo-spring-framework-starter-context</artifactId>
 		</dependency>
+		<!-- Xml -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.woodstox</groupId>
+			<artifactId>woodstox-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>demo-spring-framework-starter-data-mongodb</finalName>
+		<finalName>demo-spring-framework-starter-xml</finalName>
 	</build>
 
 </project>

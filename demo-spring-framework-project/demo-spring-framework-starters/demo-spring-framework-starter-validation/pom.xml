@@ -22,7 +22,20 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ruanwei.demo</groupId>
-			<artifactId>demo-spring-framework-starter-core</artifactId>
+			<artifactId>demo-spring-framework-starter-context</artifactId>
+		</dependency>
+		<!-- Bean Validation 2.0/1.1/1.0:JSR-380/JSR-349/JSR-303 -->
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>javax.el</artifactId>
 		</dependency>
 	</dependencies>
 

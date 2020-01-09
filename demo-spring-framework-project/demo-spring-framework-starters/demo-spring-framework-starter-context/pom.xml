@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.ruanwei.demo</groupId>
+		<artifactId>demo-spring-framework-starters</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+	<artifactId>demo-spring-framework-starter-context</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Demo:Spring Framework Starter Context</name>
+	<description>Demo:Spring Framework Starter Context</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.ruanwei.demo</groupId>
+			<artifactId>demo-spring-framework-starter</artifactId>
+		</dependency>
+
+		<!-- ========== B.Spring Framework Start ========== -->
+		<!-- B.0.Spring Framework Core -->
+		<!-- 这一部分应该分摊到下面去，之后应该拆分到不同的starer里面 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-indexer</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-expression</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-instrument</artifactId>
+		</dependency>
+		<!-- B.1.1.Dependency Injection:JSR-330 -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>demo-spring-framework-starter-context</finalName>
+	</build>
+</project>
