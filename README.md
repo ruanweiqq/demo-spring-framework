@@ -75,8 +75,9 @@ spring-boot
 - demo-spring-framework-project模块：定义parent和starter，父模块为demo-spring-framework-build。
   - demo-spring-framework-dependencies模块：父模块为demo-spring-framework-project，依赖声明(BOM)。
   - demo-spring-framework-parent模块：内部项目的父模块，父模块为demo-spring-framework-dependencies。
-  - demo-spring-framework-starters模块：外部项目的父模块，父模块为demo-spring-framework-parent。
-    - demo-spring-framework-starter-context模块：父模块为直接上级
+  - demo-spring-framework-starters模块：父模块为demo-spring-framework-parent。
+    - demo-spring-framework-starter-parent模块：外部项目的父模块，父模块为demo-spring-framework-dependencies。
+    - demo-spring-framework-starter-context模块：父模块为直接上级。
   - demo-spring-framework-commons模块：父模块为demo-spring-framework-parent。
 - demo-spring-framework-tests模块：继承于demo-spring-framework-parent。
   - demo-spring-framework-smoke-tests模块：父模块为demo-spring-framework-starter-parent。
