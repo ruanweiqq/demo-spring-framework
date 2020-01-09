@@ -29,7 +29,7 @@
 
 	<!-- ==========D.Spring Data:Redis========== -->
 	<bean id="redisClient"
-		class="org.ruanwei.demo.springframework.integration.redis.xml.RedisClient">
+		class="org.ruanwei.demo.springframework.data.redis.xml.RedisClient">
 		<property name="redisTemplate" ref="redisTemplate" />
 		<property name="stringRedisTemplate"
 			ref="stringRedisTemplate" />

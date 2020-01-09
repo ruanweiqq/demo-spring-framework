@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd 
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+	default-init-method="init" default-destroy-method="destroy">
+
+	<!-- ==========A.The IoC Container========== -->
+	<!-- A.1.Bean Definition and Dependency Injection -->
+	<!-- <context:component-scan> implicitly enables the <context:annotation-config>. -->
+	<!-- <context:annotation-config /> registers the below 6 BeanPostProcessor 
+		by default. -->
+	<!-- org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor 
+		for @Required. -->
+	<!-- org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor 
+		for @Autowired/@Value/@Lookup/JSR-330:@Inject. -->
+	<!-- org.springframework.context.annotation.CommonAnnotationBeanPostProcessor 
+		process JSR-250:@Resource/@PostConstruct/@PreDestroy -->
+	<!-- org.springframework.context.event.EventListenerMethodProcessor process 
+		@EventListener -->
+	<!-- org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor 
+		process @PersistenceContext -->
+	<!-- org.springframework.context.annotation.ConfigurationClassPostProcessor 
+		process @Configuration -->
+	<context:component-scan base-package="org.ruanwei.demo.springframework">
+		<!-- <context:exclude-filter/> <context:include-filter/> -->
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.context.annotation.Configuration" />
+	</context:component-scan>
+
+	<!-- ListFactoryBean -->
+	<util:list id="someList2" list-class="java.util.ArrayList"
+		value-type="java.lang.Integer">
+		<value>1</value>
+		<value>2</value>
+	</util:list>
+	<!-- SetFactoryBean -->
+	<util:set id="someSet2" set-class="java.util.HashSet"
+		value-type="java.lang.Integer">
+		<value>3</value>
+		<value>4</value>
+	</util:set>
+	<!-- PropertiesFactoryBean -->
+	<util:properties id="someProperties2" location="classpath:family.properties"
+		value-type="java.lang.Integer">
+		<prop key="a">1</prop>
+		<prop key="b">2</prop>
+	</util:properties>
+	<!-- MapFactoryBean -->
+	<util:map id="someMap2" map-class="java.util.HashMap"
+		key-type="java.lang.String" value-type="java.lang.Integer">
+		<entry key="c" value="3" />
+		<entry key="d" value="4" />
+	</util:map>
+
+	<!-- FieldRetrievingFactoryBean -->
+	<util:constant id="someField1" static-field="java.lang.Math.PI" />
+	<!-- PropertyPathFactoryBean -->
+	<util:property-path id="someField2" path="father.name" />
+	<!-- MethodInvokingFactoryBean -->
+	<bean id="someField3"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject" ref="sysProps" />
+		<property name="targetMethod" value="getProperty" />
+		<property name="arguments" value="java.version" />
+	</bean>
+	<bean id="sysProps"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass" value="java.lang.System" />
+		<property name="targetMethod" value="getProperties" />
+	</bean>
+
+	<!-- A.2.Data Binding -->
+	<!-- 一共有五种方式，参考withoutAnnotation项目 -->
+	<!-- A.2.1.ConversionService-based Type Conversion and Formatting -->
+	<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="registerDefaultFormatters" value="true" />
+		<property name="formatterRegistrars">
+			<set>
+				<bean
+					class="org.ruanwei.demo.springframework.core.ioc.databinding.PeopleFormatterRegistrar2" />
+			</set>
+		</property>
+	</bean>
+
+	<!-- A.2.2.PropertyEditor-based Conversion -->
+
+	<!-- A.2.3.Validation JSR-303/JSR-349/JSR-380 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+
+	<!-- JSR-303:Bean Validation 1.0, see ValidationUtils in share-commons.jar -->
+	<bean
+		class="org.springframework.validation.beanvalidation.BeanValidationPostProcessor"
+		p:validator-ref="validator" />
+
+	<!-- JSR-349:Bean Validation 1.1, see @Validated -->
+	<bean
+		class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"
+		p:order="0" p:validator-ref="validator" />
+
+	<!-- building message codes from validation error codes,used by DataBinder -->
+	<bean id="messageCodesResolver"
+		class="org.springframework.validation.DefaultMessageCodesResolver" />
+
+	<!-- A.3.Internationalization:MessageSource/ResourceBundleMessageSource -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>exception</value>
+			</list>
+		</property>
+		<property name="cacheSeconds" value="10" />
+		<property name="defaultEncoding" value="utf-8" />
+	</bean>
+
+	<!-- A.4.Lifecycle:Initialization/Destruction/Startup/Shutdown callbacks -->
+	<!-- A.4.1.Bean lifecycle callbacks, see @PostConstruct/@PreDestroy -->
+	<!-- A.4.2.Context lifecycle callbacks, see @SmartLifecycle/@Order -->
+
+	<!-- A.5.Environment：Profile and PropertySource -->
+	<!-- A.5.1.PropertySource：供Environment访问，参考@PropertySource -->
+	<!-- A.5.2.Profile：参考 @Profile和<beans profile=""> -->
+
+	<!-- A.6.Extension Points -->
+	<!-- A.6.1.Customizing beans using a BeanPostProcessor -->
+	<!-- include:BeanValidationPostProcessor/MethodValidationPostProcessor/AutowiredAnnotationBeanPostProcessor -->
+	<!-- CommonAnnotationBeanPostProcessor/RequiredAnnotationBeanPostProcessor 
+		etc. -->
+
+	<!-- A.6.2.Customizing configuration metadata with a BeanFactoryPostProcessor -->
+	<!-- include:PropertySourcesPlaceholderConfigurer/PropertyPlaceholderConfigurer/PropertyOverrideConfigurer -->
+	<!-- PreferencesPlaceholderConfigurer/CustomEditorConfigurer/CustomScopeConfigurer/CustomAutowireConfigurer 
+		etc. -->
+	<!-- versions <= 3.0 default to org.springframework.beans.factory.config.PropertyPlaceholderConfigurer. -->
+	<!-- versions >= 3.1 default to org.springframework.context.support.PropertySourcesPlaceholderConfigurer. -->
+	<!-- PropertySourcesPlaceholderConfigurer是将@PropertySource加入到属性的PropertyPlaceholderConfigurer，因此可以替换@Value中的占位符. -->
+	<context:property-placeholder
+		location="classpath*:family.properties,classpath*:jdbc.properties"
+		file-encoding="UTF-8" order="0" />
+	<!-- see org.springframework.beans.factory.config.PropertyOverrideConfigurer -->
+	<!-- <context:property-override /> -->
+
+	<!-- A.6.3.Customizing instantiation logic with a FactoryBean -->
+	<!-- include:ListFactoryBean/SetFactoryBean/PropertiesFactoryBean/MapFactoryBean -->
+	<!-- FieldRetrievingFactoryBean/PropertyPathFactoryBean/MethodInvokingFactoryBean -->
+	<!-- LocalValidatorFactoryBean/FormattingConversionServiceFactoryBean/Jackson2ObjectMapperFactoryBean -->
+	<!-- FreeMarkerConfigurationFactoryBean/ContentNegotiationManagerFactoryBean/ProxyFactoryBean 
+		etc. -->
+	<!-- 参考 @Component/@Order -->
+
+	<!-- A.7 Switches on the load-time weaving -->
+	<!-- <context:load-time-weaver/> -->
+
+	<!-- <context:spring-configured /> -->
+
+	<!-- more bean definitions for services go here -->
+    <import resource="aop2.xml" />
+	<import resource="dataAccess2.xml" />
+	<import resource="springData2.xml" />
+</beans>

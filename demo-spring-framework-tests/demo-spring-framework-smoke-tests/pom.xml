@@ -26,7 +26,9 @@
 	<modules>
 		<module>demo-spring-framework-smoke-test-withoutAnnotation</module>
 		<module>demo-spring-framework-smoke-test-core</module>
+		<module>demo-spring-framework-smoke-test-dataAccess</module>
 		<module>demo-spring-framework-smoke-test-web</module>
+		<module>demo-spring-framework-smoke-test-integration</module>
 		<module>demo-spring-framework-smoke-test-temp</module>
 	</modules>
 
