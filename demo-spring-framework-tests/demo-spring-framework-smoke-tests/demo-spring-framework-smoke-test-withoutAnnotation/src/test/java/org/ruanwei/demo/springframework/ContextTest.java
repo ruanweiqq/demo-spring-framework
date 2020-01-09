@@ -72,19 +72,19 @@ public class ContextTest {
 		env.setDefaultProfiles("production");
 		env.setProperty("foo", "bar");
 
-		MockPropertySource ps = new MockPropertySource();
-		ps.setProperty("foo1", "bar1");
+		MockPropertySource propertySource = new MockPropertySource();
+		propertySource.setProperty("foo1", "bar1");
 	}
 
 	@BeforeEach
 	void beforeEach() {
 		log.info("beforeEach()");
+		assertNotNull(context, "context is null++++++++++++++++++++++++++++");
 	}
 
 	@Disabled
 	@Test
 	void testEnvWithProfile() {
-		assertNotNull(context, "context is null++++++++++++++++++++++++++++");
 		log.info("1======================================================================================");
 
 		Environment env = context.getEnvironment();
@@ -109,7 +109,6 @@ public class ContextTest {
 
 	@Test
 	void testEnvWithPropertySource() {
-		assertNotNull(context, "context is null++++++++++++++++++++++++++++");
 		log.info("2======================================================================================");
 
 		// StandardEnvironment:MapPropertySource(systemProperties)/SystemEnvironmentPropertySource(systemEnvironment)
@@ -133,12 +132,10 @@ public class ContextTest {
 			propertySources.addLast(mapPropertySource);
 			log.info("PropertySources==========" + propertySources);
 		}
-
 	}
 
 	@Test
 	void testMessageSource() {
-		assertNotNull(context, "context is null++++++++++++++++++++++++++++");
 		log.info("3======================================================================================");
 
 		MessageSource messageSource = (MessageSource) context;
@@ -150,7 +147,6 @@ public class ContextTest {
 
 	@Test
 	void testResourceLoader() {
-		assertNotNull(context, "context is null++++++++++++++++++++++++++++");
 		log.info("4======================================================================================");
 
 		ResourceLoader resourceLoader = (ResourceLoader) context;
@@ -161,7 +157,6 @@ public class ContextTest {
 
 	@Test
 	void testApplicationEventPublisher() {
-		assertNotNull(context, "context is null++++++++++++++++++++++++++++");
 		log.info("5======================================================================================");
 
 		ApplicationEventPublisher applicationEventPublisher = (ApplicationEventPublisher) context;
@@ -173,7 +168,6 @@ public class ContextTest {
 
 	@Test
 	void testIoC() {
-		assertNotNull(context, "context is null++++++++++++++++++++++++++++");
 		log.info("6======================================================================================");
 
 		Family family = context.getBean("family", Family.class);
@@ -186,7 +180,6 @@ public class ContextTest {
 
 	@Test
 	void testApplicationEvent() {
-		assertNotNull(context, "context is null++++++++++++++++++++++++++++");
 		log.info("7======================================================================================");
 
 		log.info("context==========" + context);

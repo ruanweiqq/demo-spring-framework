@@ -26,7 +26,7 @@
 		<!-- 1.Constructor-based dependency injection [(type|index|name)=(value|ref)] 
 			(byName with javac -g) -->
 		<constructor-arg type="java.lang.String"
-			value="${family.1.familyName}" />
+			value="${family.familyName}" />
 		<constructor-arg name="familyCount"
 			value="${family.familyCount}" />
 		<constructor-arg index="2" ref="father" />
@@ -45,7 +45,7 @@
 	<bean id="myMethodReplacer"
 		class="org.ruanwei.demo.springframework.core.ioc.MyMethodReplacer" />
 
-	<!-- is equivalent to the bean family [c-namespace|p-namespace] -->
+	<!-- be equivalent to the above bean with c-namespace and p-namespace] -->
 	<bean id="family1"
 		class="org.ruanwei.demo.springframework.core.ioc.Family"
 		lazy-init="true" depends-on="house" c:_0="${family.1.familyName}"
@@ -101,7 +101,7 @@
 	</bean>
 
 	<bean id="absHouse" abstract="true">
-		<property name="houseName" value="${abshouse.name}" />
+		<property name="houseName" value="${house.name.abstract}" />
 		<!-- bean | ref | idref | list | set | map | props | value | null -->
 		<property name="someArray">
 			<list>
@@ -123,20 +123,21 @@
 		</property>
 		<property name="someProperties">
 			<props>
-				<prop key="a">1</prop>
-				<prop key="b">2</prop>
+				<prop key="a">7</prop>
+				<prop key="b">8</prop>
 			</props>
 		</property>
 		<property name="someMap">
 			<map>
-				<entry key="c" value="3" />
-				<entry key="d" value="4" />
+				<entry key="c" value="9" />
+				<entry key="d" value="10" />
 			</map>
 		</property>
 		<property name="someList2" ref="someList2" />
 		<property name="someSet2" ref="someSet2" />
 		<property name="someProperties2" ref="someProperties2" />
 		<property name="someMap2" ref="someMap2" />
+
 		<property name="someField1" ref="someField1" />
 		<property name="someField2" ref="someField2" />
 		<property name="someField3" ref="someField3" />
@@ -145,27 +146,28 @@
 	<!-- see ListFactoryBean -->
 	<util:list id="someList2" list-class="java.util.ArrayList"
 		value-type="java.lang.Integer">
-		<value>1</value>
-		<value>2</value>
+		<value>3</value>
+		<value>4</value>
 	</util:list>
 	<!-- see SetFactoryBean -->
 	<util:set id="someSet2" set-class="java.util.HashSet"
 		value-type="java.lang.Integer">
-		<value>3</value>
-		<value>4</value>
+		<value>5</value>
+		<value>6</value>
 	</util:set>
 	<!-- see PropertiesFactoryBean -->
 	<util:properties id="someProperties2"
 		location="classpath:family.properties" value-type="java.lang.Integer">
-		<prop key="a">1</prop>
-		<prop key="b">2</prop>
+		<prop key="a">7</prop>
+		<prop key="b">8</prop>
 	</util:properties>
 	<!-- see MapFactoryBean -->
 	<util:map id="someMap2" map-class="java.util.HashMap"
 		key-type="java.lang.String" value-type="java.lang.Integer">
-		<entry key="c" value="3" />
-		<entry key="d" value="4" />
+		<entry key="c" value="9" />
+		<entry key="d" value="10" />
 	</util:map>
+	
 	<!-- see FieldRetrievingFactoryBean -->
 	<util:constant id="someField1"
 		static-field="java.lang.Math.PI" />
@@ -244,14 +246,7 @@
 		</property>
 	</bean> -->
 
-	<!-- A.2.3.Validation JSR-303/JSR-349/JSR-380 -->
-	<bean id="validator"
-		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-		<property name="providerClass"
-			value="org.hibernate.validator.HibernateValidator" />
-		<property name="validationMessageSource" ref="messageSource" />
-	</bean>
-
+	<!-- A.2.3.Bean Validation 1.0/1.1/2.0 JSR-303/JSR-349/JSR-380 -->
 	<!-- JSR-303:Bean Validation 1.0, see ValidationUtils in share-commons.jar -->
 	<bean
 		class="org.springframework.validation.beanvalidation.BeanValidationPostProcessor"
@@ -261,10 +256,16 @@
 		class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"
 		p:order="0" p:validator-ref="validator" />
 
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass"
+			value="org.hibernate.validator.HibernateValidator" />
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
 	<!-- building message codes from validation error codes,used by DataBinder -->
 	<bean id="messageCodesResolver"
 		class="org.springframework.validation.DefaultMessageCodesResolver" />
-
+		
 	<!-- A.3.Internationalization:MessageSource/ResourceBundleMessageSource -->
 	<bean id="messageSource"
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
@@ -278,13 +279,13 @@
 	</bean>
 
 	<!-- A.4.Lifecycle:Initialization/Destruction/Startup/Shutdown callbacks -->
-	<!-- A.4.1.Bean lifecycle callbacks, see InitializingBean/DisposableBean -->
+	<!-- A.4.1.Bean life cycle callbacks, see InitializingBean/DisposableBean -->
 	<bean
 		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyInitializingBean" />
 	<bean
 		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyDisposableBean" />
 
-	<!-- A.4.2.Context lifecycle callbacks, see SmartLifecycle -->
+	<!-- A.4.2.Context life cycle callbacks, see SmartLifecycle -->
 	<bean
 		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyLifecycle" />
 	<bean
@@ -294,21 +295,20 @@
 
 	<!-- A.5.Environment：Profile and PropertySource -->
 	<!-- A.5.1.PropertySource：供Environment访问，参考@PropertySource -->
-	<!-- A.5.2.Profile：参考 @Profile和<beans profile=""> -->
+	<!-- A.5.2.Profile：参考@Profile和<beans profile=""> -->
 
 	<!-- A.6.Extension Points -->
 	<!-- A.6.1.Customizing beans using a BeanPostProcessor -->
 	<!-- include:BeanValidationPostProcessor/MethodValidationPostProcessor/AutowiredAnnotationBeanPostProcessor -->
-	<!-- CommonAnnotationBeanPostProcessor/RequiredAnnotationBeanPostProcessor 
-		etc. -->
+	<!-- CommonAnnotationBeanPostProcessor/RequiredAnnotationBeanPostProcessor etc. -->
 	<bean
 		class="org.ruanwei.demo.springframework.core.ioc.extension.TraceBeanPostProcessor"
 		p:order="0" />
 
 	<!-- A.6.2.Customizing configuration metadata with a BeanFactoryPostProcessor -->
-	<!-- include:PropertyPlaceholderConfigurer/PropertyOverrideConfigurer/PropertySourcesPlaceholderConfigurer -->
-	<!-- PreferencesPlaceholderConfigurer/CustomEditorConfigurer/CustomScopeConfigurer/CustomAutowireConfigurer 
-		etc. -->
+	<!-- include:PropertyOverrideConfigurer -->
+	<!-- PropertyPlaceholderConfigurer/PropertySourcesPlaceholderConfigurer/PreferencesPlaceholderConfigurer -->
+	<!-- CustomEditorConfigurer/CustomScopeConfigurer/CustomAutowireConfigurer etc. -->
 	<bean
 		class="org.ruanwei.demo.springframework.core.ioc.extension.TraceBeanFactoryPostProcessor"
 		p:order="0" />
@@ -322,8 +322,7 @@
 
 	<!-- A.6.3.Customizing instantiation logic with a FactoryBean -->
 	<!-- include:ListFactoryBean/SetFactoryBean/PropertiesFactoryBean/MapFactoryBean -->
-	<!-- FieldRetrievingFactoryBean/PropertyPathFactoryBean/MethodInvokingFactoryBean 
-		etc. -->
+	<!-- FieldRetrievingFactoryBean/PropertyPathFactoryBean/MethodInvokingFactoryBean etc. -->
 	<bean id="familyx"
 		class="org.ruanwei.demo.springframework.core.ioc.extension.MyFamilyFactoryBean">
 		<constructor-arg type="java.lang.String"
@@ -342,13 +341,14 @@
 	<import resource="aop.xml" />
 	<import resource="dataAccess.xml" />
 	<import resource="springData.xml" />
+	<!-- <import resource="integration.xml" /> -->
 
 	<!-- A.5.2.Profile：必须放在配置文件最后 -->
 	<beans profile="development">
 		<bean id="house"
 			class="org.ruanwei.demo.springframework.core.ioc.House"
 			parent="absHouse">
-			<property name="houseName" value="${house.name}" />
+			<property name="houseName" value="${house.name.override}" />
 			<property name="hostName" value="${house.host.development}" />
 		</bean>
 	</beans>
@@ -356,7 +356,7 @@
 		<bean id="house"
 			class="org.ruanwei.demo.springframework.core.ioc.House"
 			parent="absHouse">
-			<property name="houseName" value="${house.name}" />
+			<property name="houseName" value="${house.name.override}" />
 			<property name="hostName" value="${house.host.production}" />
 		</bean>
 	</beans>

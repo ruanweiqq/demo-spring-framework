@@ -45,7 +45,6 @@ public class TraceBeanPostProcessor implements BeanPostProcessor, PriorityOrdere
 			People people = (People) bean;
 			log.info("postProcessAfterInitialization===================="
 					+ people);
-
 		} else if (bean instanceof Family) {
 			Family family = (Family) bean;
 			log.info("postProcessAfterInitialization===================="

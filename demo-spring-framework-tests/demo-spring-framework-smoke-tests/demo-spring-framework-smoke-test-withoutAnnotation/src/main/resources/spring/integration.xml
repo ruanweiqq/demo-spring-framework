@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:c="http://www.springframework.org/schema/c" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-	xmlns:jms="http://www.springframework.org/schema/jms" xmlns:task="http://www.springframework.org/schema/task"
-	xmlns:oxm="http://www.springframework.org/schema/oxm" xmlns:redis="http://www.springframework.org/schema/redis"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:redis="http://www.springframework.org/schema/redis"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd 
@@ -15,107 +21,7 @@
         http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd  
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd 
         http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd 
-        http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm.xsd 
-        http://www.springframework.org/schema/redis http://www.springframework.org/schema/redis/spring-redis.xsd">
-
-	<!-- ==========B:Data Access:ORM:MyBatis========== -->
-	<!-- <bean id="userDao" class="org.mybatis.spring.mapper.MapperFactoryBean"> 
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" /> <property name="mapperInterface" 
-		value="org.ruanwei.demo.admin.dao.UserDao" /> </bean> <bean id="sqlSessionFactory" 
-		class="org.mybatis.spring.SqlSessionFactoryBean"> <property name="configLocation" 
-		value="classpath:mybatis/mybatis-config.xml" /> <property name="dataSource" 
-		ref="dataSource" /> </bean> -->
-
-	<!-- ==========D.Data Access:Redis========== -->
-	<bean id="redisClient"
-		class="org.ruanwei.demo.springframework.integration.redis.xml.RedisClient">
-		<property name="redisTemplate" ref="redisTemplate" />
-		<property name="stringRedisTemplate" ref="stringRedisTemplate" />
-	</bean>
-
-	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
-		p:connection-factory-ref="jedisConnectionFactory"
-		p:enable-transaction-support="true" p:key-serializer-ref="stringRedisSerializer"
-		p:value-serializer-ref="stringRedisSerializer"
-		p:hashKey-serializer-ref="stringRedisSerializer"
-		p:hashValue-serializer-ref="stringRedisSerializer" />
-
-	<bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate"
-		p:connection-factory-ref="jedisConnectionFactory" p:enable-transaction-support="true"/>
-
-	<bean id="stringRedisSerializer"
-		class="org.springframework.data.redis.serializer.StringRedisSerializer" />
-
-	<!-- Redis Messaging Receiver:RedisMessageListenerContainer -->
-	<redis:listener-container connection-factory="jedisConnectionFactory"
-		topic-serializer="stringRedisSerializer">
-		<!-- the method attribute can be skipped as the default method name is 
-			"handleMessage" -->
-		<redis:listener ref="myRedisMessageListener1" topic="myChannel"
-			serializer="stringRedisSerializer" />
-		<redis:listener ref="myRedisMessageListener2" method="handleMessage"
-			topic="myChannel" serializer="stringRedisSerializer" />
-	</redis:listener-container>
-
-	<bean id="myRedisMessageListener1"
-		class="org.ruanwei.demo.springframework.integration.redis.xml.MyMessageListener" />
-	<bean id="myRedisMessageListener2"
-		class="org.ruanwei.demo.springframework.integration.redis.xml.MyMessageDelegate" />
-
-	<!-- 等价于上面 -->
-	<!-- <bean id="redisMessageListenerContainer"
-		class="org.springframework.data.redis.listener.RedisMessageListenerContainer">
-		<property name="connectionFactory" ref="jedisConnectionFactory" />
-		<property name="messageListeners">
-			<map>
-				<entry key-ref="myRedisMessageListener1">
-					<bean class="org.springframework.data.redis.listener.ChannelTopic">
-						<constructor-arg value="myChannel" />
-					</bean>
-				</entry>
-			</map>
-		</property>
-	</bean> -->
-
-	<bean id="jedisConnectionFactory"
-		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-		p:host-name="localhost" p:port="6379" p:use-pool="true"
-		p:pool-config-ref="jedisPoolConfig" />
-	
-	<!-- <bean id="lettuceConnectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory" 
-		p:host-name="localhost" p:port="6379" /> -->
-
-	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-		<property name="maxTotal" value="32" />
-		<property name="maxIdle" value="6" />
-		<property name="testOnBorrow" value="true" />
-	</bean>
-
-	<bean id="sentinelConfiguration"
-		class="org.springframework.data.redis.connection.RedisSentinelConfiguration">
-		<property name="master" value="myMaster" />
-		<property name="sentinels">
-			<set>
-				<bean class="org.springframework.data.redis.connection.RedisNode"
-					p:host="localhost" p:port="26379" />
-				<bean class="org.springframework.data.redis.connection.RedisNode"
-					p:host="localhost" p:port="26380" />
-			</set>
-		</property>
-	</bean>
-
-	<bean id="clusterConfiguration"
-		class="org.springframework.data.redis.connection.RedisClusterConfiguration">
-		<property name="maxRedirects" value="" />
-		<property name="clusterNodes">
-			<set>
-				<bean class="org.springframework.data.redis.connection.RedisNode"
-					p:host="localhost" p:port="6379" />
-				<bean class="org.springframework.data.redis.connection.RedisNode"
-					p:host="localhost" p:port="6380" />
-			</set>
-		</property>
-	</bean>
+        http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm.xsd">
 
 	<!-- ==========E.JMS Integration========== -->
 	<!-- JMS Sender:Client and JMSTemplate -->
@@ -126,7 +32,8 @@
 		<property name="replyDestination" ref="activeMQQueue2" />
 	</bean>
 
-	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+	<bean id="jmsTemplate"
+		class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="jmsConnectionFactory" />
 		<property name="pubSubDomain" value="false" />
 		<property name="receiveTimeout" value="2000" />
@@ -137,16 +44,18 @@
 
 	<!-- JMS Receiver:SimpleMessageListenerContainer|DefaultMessageListenerContainer -->
 	<jms:listener-container container-type="default"
-		connection-factory="jmsConnectionFactory" message-converter="myMessageConverter"
-		destination-type="queue" receive-timeout="1000" transaction-manager="jmsTransactionManager"
+		connection-factory="jmsConnectionFactory"
+		message-converter="myMessageConverter" destination-type="queue"
+		receive-timeout="1000" transaction-manager="jmsTransactionManager"
 		concurrency="3">
-		<jms:listener id="messageListenerContainer1" destination="qqq1"
-			response-destination="qqq2" ref="myMessageListener1" method="handleMessage"
-			concurrency="3" />
-		<jms:listener id="messageListenerContainer2" destination="qqq2"
-			response-destination="qqq3" ref="myMessageListener2" concurrency="3" />
-		<jms:listener id="messageListenerContainer3" destination="qqq3"
-			ref="myMessageListener3" concurrency="3" />
+		<jms:listener id="messageListenerContainer1"
+			destination="qqq1" response-destination="qqq2"
+			ref="myMessageListener1" method="handleMessage" concurrency="3" />
+		<jms:listener id="messageListenerContainer2"
+			destination="qqq2" response-destination="qqq3"
+			ref="myMessageListener2" concurrency="3" />
+		<jms:listener id="messageListenerContainer3"
+			destination="qqq3" ref="myMessageListener3" concurrency="3" />
 	</jms:listener-container>
 	<!-- 等价于上面 -->
 	<!-- <bean id="messageListenerContainer1" class="org.springframework.jms.listener.DefaultMessageListenerContainer"> 
@@ -161,7 +70,8 @@
 		class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
 		<constructor-arg ref="myMessageDelegate" />
 		<property name="defaultListenerMethod" value="handleMessage" />
-		<property name="defaultResponseDestination" ref="activeMQQueue2" />
+		<property name="defaultResponseDestination"
+			ref="activeMQQueue2" />
 		<property name="messageConverter" ref="myMessageConverter" />
 		<!-- do not use any MessageConvertor including SimpleMessageConverter(spring-jms.jar) -->
 		<!-- <property name="messageConverter"> <null /> </property> -->
@@ -186,31 +96,39 @@
 	<!-- ConnectionFactory->Connection->Session->MessageProducer->send -->
 	<bean id="jmsConnectionFactory"
 		class="org.springframework.jms.connection.CachingConnectionFactory">
-		<property name="targetConnectionFactory" ref="pooledConnectionFactory" />
+		<property name="targetConnectionFactory"
+			ref="pooledConnectionFactory" />
 	</bean>
 
-	<bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
-		<property name="connectionFactory" ref="activeMQConnectionFactory" />
+	<bean id="pooledConnectionFactory"
+		class="org.apache.activemq.pool.PooledConnectionFactory">
+		<property name="connectionFactory"
+			ref="activeMQConnectionFactory" />
 		<property name="maxConnections" value="10" />
 	</bean>
 
-	<bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+	<bean id="activeMQConnectionFactory"
+		class="org.apache.activemq.ActiveMQConnectionFactory">
 		<property name="brokerURL" value="tcp://localhost:61616" />
 	</bean>
 
-	<bean id="activeMQQueue1" class="org.apache.activemq.command.ActiveMQQueue">
+	<bean id="activeMQQueue1"
+		class="org.apache.activemq.command.ActiveMQQueue">
 		<constructor-arg value="qqq1" />
 	</bean>
 
-	<bean id="activeMQQueue2" class="org.apache.activemq.command.ActiveMQQueue">
+	<bean id="activeMQQueue2"
+		class="org.apache.activemq.command.ActiveMQQueue">
 		<constructor-arg value="qqq2" />
 	</bean>
 
-	<bean id="activeMQQueue3" class="org.apache.activemq.command.ActiveMQQueue">
+	<bean id="activeMQQueue3"
+		class="org.apache.activemq.command.ActiveMQQueue">
 		<constructor-arg value="qqq3" />
 	</bean>
 
-	<bean id="activeMQTopic" class="org.apache.activemq.command.ActiveMQTopic">
+	<bean id="activeMQTopic"
+		class="org.apache.activemq.command.ActiveMQTopic">
 		<constructor-arg value="ttt" />
 	</bean>
 
@@ -224,7 +142,8 @@
 		<property name="javaMailSender" ref="mailSender" />
 	</bean>
 
-	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="smtp.163.com" />
 		<property name="username" value="ruanweiqq@163.com" />
 		<property name="password" value="ilovelingling" />
@@ -239,19 +158,20 @@
 	<task:scheduler id="myScheduler" pool-size="10" />
 
 	<task:scheduled-tasks scheduler="myScheduler">
-		<task:scheduled ref="myScheduledTask" method="doSomething1"
-			fixed-delay="10000" initial-delay="1000" />
-		<task:scheduled ref="myScheduledTask" method="doSomething2"
-			fixed-rate="10000" initial-delay="1000" />
-		<task:scheduled ref="myScheduledTask" method="doSomething3"
-			cron="0/10 * * * * ?" />
+		<task:scheduled ref="myScheduledTask"
+			method="doSomething1" fixed-delay="10000" initial-delay="1000" />
+		<task:scheduled ref="myScheduledTask"
+			method="doSomething2" fixed-rate="10000" initial-delay="1000" />
+		<task:scheduled ref="myScheduledTask"
+			method="doSomething3" cron="0/10 * * * * ?" />
 	</task:scheduled-tasks>
 
 	<bean id="myScheduledTask"
 		class="org.ruanwei.demo.springframework.integration.scheduling.xml.MyScheduledTask" />
 
 	<!-- Using the Quartz Scheduler -->
-	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	<bean
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
 				<ref bean="simpleTrigger" />

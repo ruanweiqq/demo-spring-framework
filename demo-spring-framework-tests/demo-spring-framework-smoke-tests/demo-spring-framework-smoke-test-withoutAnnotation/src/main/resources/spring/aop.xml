@@ -22,8 +22,7 @@
 		class="org.ruanwei.demo.springframework.core.aop.MyAspect" />
 	<bean id="good"
 		class="org.ruanwei.demo.springframework.core.aop.GoodImpl" />
-	<!-- To force the use of CGLIB(against JDK dynamic) proxies set the value 
-		of the proxy-target-class attribute of the <aop:config> element to true. -->
+	<!-- To force the use of CGLIB(against JDK dynamic) proxies set <aop:config proxy-target-class="true">. -->
 	<aop:config>
 		<aop:pointcut id="myPointcut"
 			expression="within(org.ruanwei.demo.springframework.core.ioc.*) and execution(* *..Family.say*(..)) and args(message)" />

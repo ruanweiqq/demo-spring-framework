@@ -60,17 +60,17 @@ public class People implements SmartLifecycle,
 		}
 	}
 
-	// Initialization callback
+	// Bean initialization callback
 	public void init() {
 		log.info("====================init()");
 	}
 
-	// Destruction callback
+	// Bean destruction callback
 	public void destroy() {
 		log.info("====================destroy()");
 	}
 
-	// Lifecycle Startup callback
+	// Context life cycle Startup callback
 	@Override
 	public void start() {
 		log.info("====================start()");
@@ -79,7 +79,7 @@ public class People implements SmartLifecycle,
 		}
 	}
 
-	// Lifecycle Shutdown callback
+	// Context life cycle Shutdown callback
 	@Override
 	public void stop() {
 		log.info("====================stop()");
@@ -88,14 +88,14 @@ public class People implements SmartLifecycle,
 		}
 	}
 
-	// Lifecycle
+	// Context life cycle
 	@Override
 	public boolean isRunning() {
 		log.info("====================isRunning()" + this.running);
 		return this.running;
 	}
 
-	// SmartLifecycle Shutdown callback
+	// Context SmartLifecycle Shutdown callback
 	@Override
 	public void stop(Runnable callback) {
 		log.info("====================stop(Runnable callback)" + callback);
@@ -105,12 +105,13 @@ public class People implements SmartLifecycle,
 		callback.run();
 	}
 
-	// SmartLifecycle Shutdown callback
+	// Context SmartLifecycle Shutdown callback
 	@Override
 	public boolean isAutoStartup() {
 		return true;
 	}
 
+	// Context SmartLifecycle Shutdown callback
 	@Override
 	public int getPhase() {
 		return -2;

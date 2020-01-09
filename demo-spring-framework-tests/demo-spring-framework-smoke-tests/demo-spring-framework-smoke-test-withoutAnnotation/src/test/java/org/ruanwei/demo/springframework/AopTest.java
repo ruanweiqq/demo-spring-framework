@@ -48,12 +48,12 @@ public class AopTest {
 	@BeforeEach
 	void beforeEach() {
 		log.info("beforeEach()");
+		assertNotNull(context, "context is null++++++++++++++++++++++++++++");
 	}
 
 	// @Disabled
 	@Test
 	void testAop() {
-		assertNotNull(context, "context is null++++++++++++++++++++++++++++");
 		log.info("1======================================================================================");
 
 		Family family = context.getBean("family", Family.class);
@@ -62,7 +62,6 @@ public class AopTest {
 
 	@Test
 	void testIntroduction() {
-		assertNotNull(context, "context is null++++++++++++++++++++++++++++");
 		log.info("2======================================================================================");
 
 		Good good = (Good) context.getBean("good");
