@@ -5,7 +5,7 @@ this is the master branch
 ### 项目结构
 
 - demo-spring-framework(demo-spring-framework-build:pom)
-  - demo-spring-framework-project ======> demo-spring-framework-build:pom
+    - demo-spring-framework-project ======> demo-spring-framework-build:pom
         - demo-spring-framework-project-dependencies ======> ../..(demo-spring-framework-build:pom)
         - demo-spring-framework-parent ======> ../demo-spring-framework-dependencies:pom
 	- demo-spring-framework-commons(jar) ======> ../demo-spring-framework-parent:pom    
@@ -13,7 +13,7 @@ this is the master branch
 	    - demo-spring-framework-starter-parent ======> ../../demo-spring-framework-dependencies:pom
 	    - demo-spring-framework-starter(jar) ======> demo-spring-framework-starters:pom
 	    - demo-spring-framework-starter-xxx(jar) ======> demo-spring-framework-starters:pom        
-  - demo-spring-framework-tests ======> ../demo-spring-framework-project/demo-spring-framework-parent
+    - demo-spring-framework-tests ======> ../demo-spring-framework-project/demo-spring-framework-parent
         - demo-spring-framework-smoke-tests ======> ../../demo-spring-framework-project/demo-spring-framework-starters/demo-spring-framework-starter-parent
             - demo-spring-framework-smoke-test-xxx(jar) ======> demo-spring-framework-smoke-tests:pom
 	- demo-spring-framework-smoke-tests-invoker
