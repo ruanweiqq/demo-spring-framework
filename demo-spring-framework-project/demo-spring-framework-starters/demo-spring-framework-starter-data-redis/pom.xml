@@ -24,6 +24,15 @@
 			<groupId>org.ruanwei.demo</groupId>
 			<artifactId>demo-spring-framework-starter-context</artifactId>
 		</dependency>
+		<!-- C.3.Redis -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

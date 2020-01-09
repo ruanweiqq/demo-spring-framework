@@ -24,6 +24,10 @@
 			<groupId>org.ruanwei.demo</groupId>
 			<artifactId>demo-spring-framework-starter-context</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webflux</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

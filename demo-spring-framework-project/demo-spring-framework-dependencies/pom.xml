@@ -550,6 +550,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.ruanwei.demo</groupId>
+				<artifactId>demo-spring-framework-starter-xml</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ruanwei.demo</groupId>
 				<artifactId>demo-spring-framework-starter-log4j</artifactId>
 				<version>${revision}</version>
 			</dependency>

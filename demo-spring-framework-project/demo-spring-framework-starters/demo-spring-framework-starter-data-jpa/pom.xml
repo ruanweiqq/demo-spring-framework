@@ -24,6 +24,11 @@
 			<groupId>org.ruanwei.demo</groupId>
 			<artifactId>demo-spring-framework-starter-context</artifactId>
 		</dependency>
+		<!-- C.4.JPA -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
