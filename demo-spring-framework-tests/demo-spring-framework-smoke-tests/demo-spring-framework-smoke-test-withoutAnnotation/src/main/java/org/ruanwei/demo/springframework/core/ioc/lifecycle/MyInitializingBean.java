@@ -2,6 +2,7 @@ package org.ruanwei.demo.springframework.core.ioc.lifecycle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.util.Recorder;
 import org.springframework.beans.factory.InitializingBean;
 
 public class MyInitializingBean implements InitializingBean {
@@ -10,6 +11,7 @@ public class MyInitializingBean implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		log.info("====================afterPropertiesSet()");
+		Recorder.record("afterPropertiesSet()", this.getClass());
 	}
 
 }

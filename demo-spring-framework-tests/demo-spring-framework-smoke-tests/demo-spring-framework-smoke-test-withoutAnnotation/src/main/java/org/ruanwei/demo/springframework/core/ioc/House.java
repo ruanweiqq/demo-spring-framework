@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.util.Recorder;
 
 public class House {
 	private static Log log = LogFactory.getLog(House.class);
@@ -36,16 +37,24 @@ public class House {
 		this.houseName = houseName;
 	}
 
+	public String getHouseName() {
+		return houseName;
+	}
+
 	public void setHostName(String hostName) {
 		log.info("setHostName(String hostName)" + hostName);
 		this.hostName = hostName;
+	}
+
+	public String getHostName() {
+		return hostName;
 	}
 
 	public void setSomeArray(Integer[] someArray) {
 		log.info("setSomeArray(Integer[] someArray)" + someArray);
 		this.someArray = someArray;
 	}
-	
+
 	public void setSomeList(List<Integer> someList) {
 		log.info("setSomeList(List<Integer> someList)" + someList);
 		this.someList = someList;
@@ -103,10 +112,12 @@ public class House {
 
 	public void init() {
 		log.info("====================init()");
+		Recorder.record("init()", this.getClass());
 	}
 
 	public void destroy() {
 		log.info("====================destroy()");
+		Recorder.record("destroy()", this.getClass());
 	}
 
 	@Override
@@ -117,5 +128,4 @@ public class House {
 				+ someProperties2 + ", someMap2=" + someMap2 + ", someField1=" + someField1 + ", someField2="
 				+ someField2 + ", someField3=" + someField3 + "]";
 	}
-
 }

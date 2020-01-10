@@ -1,6 +1,9 @@
 package org.ruanwei.demo.springframework.core.ioc;
 
 import java.beans.ConstructorProperties;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -10,6 +13,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.core.ioc.databinding.PeopleFormat;
 import org.ruanwei.demo.springframework.core.ioc.databinding.PeopleFormat.Separator;
+import org.ruanwei.demo.springframework.core.ioc.event.MyApplicationEvent;
+import org.ruanwei.demo.util.Recorder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanFactory;
@@ -20,25 +25,30 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.weaving.LoadTimeWeaverAware;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySource;
+import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.instrument.classloading.LoadTimeWeaver;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-public class Family implements ApplicationContextAware, BeanFactoryAware,
-		MessageSourceAware, ResourceLoaderAware,
-		ApplicationEventPublisherAware, EnvironmentAware, BeanClassLoaderAware,
-		BeanNameAware, LoadTimeWeaverAware {
+public class Family implements ApplicationContextAware, BeanFactoryAware, MessageSourceAware, ResourceLoaderAware,
+		ApplicationEventPublisherAware, EnvironmentAware, BeanClassLoaderAware, BeanNameAware, LoadTimeWeaverAware {
 	private static Log log = LogFactory.getLog(Family.class);
-	
-	private ApplicationContext context;
+
 	private BeanFactory beanFactory;
+	private ApplicationContext context;
 	private MessageSource messageSource;
 	private ResourceLoader resourceLoader;
 	private ApplicationEventPublisher publisher;
@@ -71,19 +81,127 @@ public class Family implements ApplicationContextAware, BeanFactoryAware,
 	public String sayHello(@Size(min = 2, max = 8) String message) {
 		log.info("sayHello(String message)" + message);
 
-		// 3.Method injection: Arbitrary method replacement
-		log.info("3 + 5 = " + calc(3, 5));
-
-		// 3.Method injection: Lookup method injection
-		People bueaty = createBueaty();
-		// 这里是为了兼容不适用@Lookup注解时的方法注入
-		if (bueaty == null) {
-			bueaty = new People("ruan_bueaty", 0);
-		}
-		// 等价于PayloadApplicationEvent<People>(this,guest);
-		publisher.publishEvent(bueaty);
-
 		return message;
+	}
+
+	/*
+	 * EnumerablePropertySource
+	 *   CommandLinePropertySource
+	 *     SimpleCommandLinePropertySource
+	 *     JOptCommandLinePropertySource
+	 *   MapPropertySource(StandardEnvironment:systemProperties)
+	 *     PropertiesPropertySource
+	 *       ResourcePropertySource
+	 *     SystemEnvironmentPropertySource(StandardEnvironment:systemEnvironment)
+	 *   ServletConfigPropertySource
+	 *   ServletContextPropertySource
+	 *   
+	 *   StandardEnvironment:MapPropertySource(systemProperties)/SystemEnvironmentPropertySource(systemEnvironment)
+	 * */
+	public void helloWorld1() {
+		log.info("helloWorld1()");
+
+		// 1.Environment Profile
+		if (env == null) {
+			env = context.getEnvironment();
+		}
+		// -Dspring.profiles.active="development"
+		// -Dspring.profiles.default="production"
+		log.info("profiles1==========" + env.getActiveProfiles() + " " + env.getDefaultProfiles());
+		Recorder.put("activeProfile", env.getActiveProfiles()[0]);
+		Recorder.put("defaultProfile", env.getDefaultProfiles()[0]);
+
+		if (env instanceof ConfigurableEnvironment) {
+			ConfigurableEnvironment configEnv = (StandardEnvironment) env;
+			configEnv.setActiveProfiles("development");
+			configEnv.setDefaultProfiles("production");
+			if (context instanceof ConfigurableApplicationContext) {
+				ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) context;
+				// ctx.refresh();
+			}
+		}
+
+		env = context.getEnvironment();
+		log.info("profiles2==========" + env.getActiveProfiles() + " " + env.getDefaultProfiles());
+		Recorder.put("activeProfile2", env.getActiveProfiles()[0]);
+		Recorder.put("defaultProfile2", env.getDefaultProfiles()[0]);
+
+		House house = context.getBean("house", House.class);
+		log.info("house==========" + house);
+		Recorder.put("houseName", house.getHouseName());
+		Recorder.put("hostName", house.getHostName());
+
+		// 2.Environment PropertySource
+		// StandardEnvironment:MapPropertySource(systemProperties)/SystemEnvironmentPropertySource(systemEnvironment)
+		if (env instanceof ConfigurableEnvironment) {
+			ConfigurableEnvironment configEnv = (ConfigurableEnvironment) env;
+			MutablePropertySources propertySources = configEnv.getPropertySources();
+			log.info("PropertySources1==========" + propertySources);
+
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("d", 4);
+			PropertySource<Map<String, Object>> mapPropertySource = new MapPropertySource("mapPropertySource", map);
+			propertySources.addLast(mapPropertySource);
+
+			propertySources = configEnv.getPropertySources();
+			log.info("PropertySources2==========" + propertySources);
+		}
+
+		String a = env.getProperty("a", "default_a"); // MapPropertySource(-Da=1)
+		Recorder.put("a", "1");
+
+		String b = env.getProperty("b", "default_b"); // SystemEnvironmentPropertySource(export b=2)
+		Recorder.put("b", "2");
+
+		String c = env.getProperty("c", "default_c");// ResourcePropertySource(@PeopertySource("propertySource.properties"))
+		Recorder.put("c", "3");
+
+		String d = env.getProperty("d", "default_d");// MapPropertySource(addLast)
+		Recorder.put("d", "4");
+
+		log.info("property=========a=" + a + " b=" + b + " c=" + c + " d=" + d);
+	}
+
+	public void helloWorld2() {
+		log.info("helloWorld2()");
+
+		// 1.MessageSource
+		if (messageSource == null) {
+			messageSource = (MessageSource) context;
+		}
+		String helloWorld1 = messageSource.getMessage("messageSource.helloWorld", new Object[] { "ruanwei" },
+				"This is a message.", Locale.US);
+		Recorder.put("helloWorld1", helloWorld1);
+		log.info("helloWorld1==========" + helloWorld1);
+
+		String helloWorld2 = messageSource.getMessage("messageSource.helloWorld", new Object[] { "ruanwei" },
+				"This is a message.", Locale.CHINA);
+		Recorder.put("helloWorld2", helloWorld2);
+		log.info("helloWorld2==========" + helloWorld2);
+
+		// 2.ResourceLoader
+		if (resourceLoader == null) {
+			resourceLoader = (ResourceLoader) context;
+		}
+		log.info("resourceLoader==========" + resourceLoader);
+		Resource resource = resourceLoader.getResource("classpath:spring/applicationContext.xml");
+		Recorder.put("resource", resource.getFilename());
+		log.info("resource==========" + resource);
+
+		// 3.ApplicationEventPublisher
+		if (publisher == null) {
+			publisher = (ApplicationEventPublisher) context;
+		}
+		// 等价于PayloadApplicationEvent<String>(this,helloWorld1);
+		publisher.publishEvent(helloWorld1);
+		publisher.publishEvent(helloWorld2);
+		publisher.publishEvent(new MyApplicationEvent(this, resource.getFilename()));
+		
+		// 4.其他容器对象
+		log.info("beanFactory=========" + beanFactory);
+		log.info("beanName=========" + beanName);
+		log.info("classLoader=========" + classLoader);
+		log.info("loadTimeWeaver=========" + loadTimeWeaver);
 	}
 
 	// a.Bean instantiation with a constructor
@@ -93,8 +211,11 @@ public class Family implements ApplicationContextAware, BeanFactoryAware,
 		this.familyName = familyName;
 		this.familyCount = familyCount;
 		this.father = father;
-		log.info("Family(String familyName, int familyCount, People father)"
-				+ this);
+		log.info("Family(String familyName, int familyCount, People father)" + this);
+	}
+
+	public String getFamilyName() {
+		return familyName;
 	}
 
 	// 2.Setter-based dependency injection
@@ -125,22 +246,20 @@ public class Family implements ApplicationContextAware, BeanFactoryAware,
 	}
 
 	// 3.Method injection: Lookup method injection
-	protected People createBueaty() {
+	public People createBueaty() {
 		log.info("createBueaty");
 		return null;
 	}
 
 	// 3.Method injection: Arbitrary method replacement
-	protected int calc(int a, int b) {
+	public int calc(int a, int b) {
 		return a + b;
 	}
 
 	// 4.Aware injection
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		log.info("setApplicationContext(ApplicationContext applicationContext)"
-				+ applicationContext);
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		log.info("setApplicationContext(ApplicationContext applicationContext)" + applicationContext);
 		this.context = applicationContext;
 	}
 
@@ -155,8 +274,7 @@ public class Family implements ApplicationContextAware, BeanFactoryAware,
 
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
-		log.info("setMessageSource(MessageSource messageSource)"
-				+ messageSource);
+		log.info("setMessageSource(MessageSource messageSource)" + messageSource);
 		if (messageSource == null) {
 			messageSource = (MessageSource) context;
 		}
@@ -165,8 +283,7 @@ public class Family implements ApplicationContextAware, BeanFactoryAware,
 
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
-		log.info("setResourceLoader(ResourceLoader resourceLoader)"
-				+ resourceLoader);
+		log.info("setResourceLoader(ResourceLoader resourceLoader)" + resourceLoader);
 		if (resourceLoader == null) {
 			resourceLoader = (ResourceLoader) context;
 		}
@@ -174,8 +291,7 @@ public class Family implements ApplicationContextAware, BeanFactoryAware,
 	}
 
 	@Override
-	public void setApplicationEventPublisher(
-			ApplicationEventPublisher applicationEventPublisher) {
+	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
 		log.info("setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher)"
 				+ applicationEventPublisher);
 		if (applicationEventPublisher == null) {
@@ -207,26 +323,26 @@ public class Family implements ApplicationContextAware, BeanFactoryAware,
 
 	@Override
 	public void setLoadTimeWeaver(LoadTimeWeaver loadTimeWeaver) {
-		log.info("setLoadTimeWeaver(LoadTimeWeaver loadTimeWeaver)"
-				+ loadTimeWeaver);
+		log.info("setLoadTimeWeaver(LoadTimeWeaver loadTimeWeaver)" + loadTimeWeaver);
 		this.loadTimeWeaver = loadTimeWeaver;
 	}
 
 	// Initialization callback
 	public void init() {
 		log.info("====================init()");
+		Recorder.record("init()", this.getClass());
 	}
 
 	// Destruction callback
 	public void destroy() {
 		log.info("====================destroy()");
+		Recorder.record("destroy()", this.getClass());
 	}
 
 	@Override
 	public String toString() {
-		return "Family [familyName=" + familyName + ", familyCount="
-				+ familyCount + ", father=" + father + ", mother=" + mother
-				+ ", son=" + son + ", daughter=" + daughter + ", guest="
-				+ guest + "]";
+		return "Family [familyName=" + familyName + ", familyCount=" + familyCount + ", father=" + father + ", mother="
+				+ mother + ", son=" + son + ", daughter=" + daughter + ", guest=" + guest + "]";
 	}
+
 }

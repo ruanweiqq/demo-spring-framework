@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.core.ioc.Family;
 import org.ruanwei.demo.springframework.core.ioc.House;
 import org.ruanwei.demo.springframework.core.ioc.People;
+import org.ruanwei.demo.util.Recorder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
@@ -20,6 +21,8 @@ public class TraceBeanPostProcessor implements BeanPostProcessor, PriorityOrdere
 			throws BeansException {
 		log.debug("postProcessBeforeInitialization(Object bean, String beanName) "
 				+ beanName + "=" + bean);
+		Recorder.record("postProcessBeforeInitialization(Object bean, String beanName)", this.getClass());
+		
 		if (bean instanceof People) {
 			People people = (People) bean;
 			log.info("postProcessBeforeInitialization===================="
@@ -41,6 +44,8 @@ public class TraceBeanPostProcessor implements BeanPostProcessor, PriorityOrdere
 			throws BeansException {
 		log.debug("postProcessAfterInitialization(Object bean, String beanName)"
 				+ beanName + "=" + bean);
+		Recorder.record("postProcessAfterInitialization(Object bean, String beanName)", this.getClass());
+		
 		if (bean instanceof People) {
 			People people = (People) bean;
 			log.info("postProcessAfterInitialization===================="

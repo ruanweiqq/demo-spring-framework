@@ -2,6 +2,7 @@ package org.ruanwei.demo.springframework.core.ioc.lifecycle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.util.Recorder;
 import org.springframework.context.LifecycleProcessor;
 
 /**
@@ -20,12 +21,14 @@ public class MyLifecycleProcessor implements LifecycleProcessor {
 	public void onRefresh() {
 		log.info("====================onRefresh()");
 		this.running = true;
+		Recorder.record("onRefresh()", this.getClass());
 	}
 
 	@Override
 	public void onClose() {
 		log.info("====================onClose()");
 		this.running = false;
+		Recorder.record("onClose()", this.getClass());
 	}
 	
 	// ==================================================
@@ -36,6 +39,7 @@ public class MyLifecycleProcessor implements LifecycleProcessor {
 		if (this.running == false) {
 			this.running = true;
 		}
+		Recorder.record("start()", this.getClass());
 	}
 
 	@Override
@@ -44,6 +48,7 @@ public class MyLifecycleProcessor implements LifecycleProcessor {
 		if (this.running == true) {
 			this.running = false;
 		}
+		Recorder.record("stop()", this.getClass());
 	}
 
 	@Override

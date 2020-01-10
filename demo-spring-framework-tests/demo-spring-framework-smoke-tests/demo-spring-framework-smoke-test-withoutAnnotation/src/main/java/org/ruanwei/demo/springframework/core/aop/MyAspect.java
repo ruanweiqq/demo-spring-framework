@@ -2,32 +2,39 @@ package org.ruanwei.demo.springframework.core.aop;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.StopWatch;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.ruanwei.demo.util.Recorder;
+import org.springframework.util.StopWatch;
 
 public class MyAspect {
 	private static Log log = LogFactory.getLog(MyAspect.class);
 
 	public void before(Object t, String message) {
 		log.info("before() message=" + message + " this=" + t);
+		Recorder.put("before", message);
 	}
 
 	public void after(Object t, String message) {
 		log.info("after() message=" + message + " this=" + t);
+		Recorder.put("after", message);
 	}
 
 	public void afterReturning(Object t, String message, Object ret) {
 		log.info("afterReturning() message=" + message + " this=" + t + " ret=" + ret);
+		Recorder.put("afterReturning", message);
+		Recorder.put("ret", ret.toString());
 	}
 
 	public void afterThrowing(JoinPoint jp, Object t, String message, Throwable e) {
 		log.info("afterThrowing() message=" + message + " JoinPoint=" + jp + " this=" + t + " e=" + e);
 		log.error(e);
+		Recorder.put("afterThrowing", message);
 	}
 
 	public Object around(ProceedingJoinPoint call, String message) throws Throwable {
 		log.info("around() message=" + message + " call=" + call);
+		Recorder.put("around", message);
 
 		StopWatch clock = new StopWatch("message=" + message);
 		try {

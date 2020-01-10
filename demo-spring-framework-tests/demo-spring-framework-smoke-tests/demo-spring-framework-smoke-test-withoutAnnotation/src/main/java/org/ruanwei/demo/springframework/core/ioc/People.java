@@ -11,16 +11,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.core.ioc.databinding.validation.FamilyName;
 import org.ruanwei.demo.springframework.core.ioc.event.MyApplicationEvent;
+import org.ruanwei.demo.util.Recorder;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.PayloadApplicationEvent;
 import org.springframework.context.SmartLifecycle;
 
-public class People implements SmartLifecycle,
-		ApplicationListener<ApplicationEvent> {
+public class People implements SmartLifecycle, ApplicationListener<ApplicationEvent> {
 	private static Log log = LogFactory.getLog(People.class);
 
 	private volatile boolean running = true;
+
+	public static volatile int EVENT_COUNT;
 
 	// JSR-303 Bean Validation
 	@NotEmpty
@@ -44,9 +46,11 @@ public class People implements SmartLifecycle,
 	// ApplicationListener callback
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		log.info("====================onApplicationEvent(ApplicationEvent event)"
-				+ event);
-		log.info("Recieve " + event.getClass() + " from " + event.getSource());
+		log.info("====================onApplicationEvent(ApplicationEvent event)" + event);
+		log.info(this + " recieved a " + event.getClass() + " from " + event.getSource());
+		Recorder.record("onApplicationEvent(ApplicationEvent event)", this.getClass());
+
+		EVENT_COUNT++;
 
 		if (event instanceof PayloadApplicationEvent<?>) {
 			Object payload = ((PayloadApplicationEvent<?>) event).getPayload();
@@ -63,11 +67,13 @@ public class People implements SmartLifecycle,
 	// Bean initialization callback
 	public void init() {
 		log.info("====================init()");
+		Recorder.record("init()", this.getClass());
 	}
 
 	// Bean destruction callback
 	public void destroy() {
 		log.info("====================destroy()");
+		Recorder.record("destroy()", this.getClass());
 	}
 
 	// Context life cycle Startup callback
@@ -77,6 +83,7 @@ public class People implements SmartLifecycle,
 		if (this.running == false) {
 			running = true;
 		}
+		Recorder.record("start()", this.getClass());
 	}
 
 	// Context life cycle Shutdown callback
@@ -86,6 +93,7 @@ public class People implements SmartLifecycle,
 		if (this.running == true) {
 			this.running = false;
 		}
+		Recorder.record("stop()", this.getClass());
 	}
 
 	// Context life cycle
@@ -103,6 +111,7 @@ public class People implements SmartLifecycle,
 			this.running = false;
 		}
 		callback.run();
+		Recorder.record("stop(Runnable callback)", this.getClass());
 	}
 
 	// Context SmartLifecycle Shutdown callback

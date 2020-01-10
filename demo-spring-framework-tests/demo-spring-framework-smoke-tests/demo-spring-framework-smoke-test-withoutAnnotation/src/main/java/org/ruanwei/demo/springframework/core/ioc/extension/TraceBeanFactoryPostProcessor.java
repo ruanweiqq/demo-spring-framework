@@ -2,6 +2,7 @@ package org.ruanwei.demo.springframework.core.ioc.extension;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.util.Recorder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
@@ -19,6 +20,8 @@ public class TraceBeanFactoryPostProcessor implements BeanFactoryPostProcessor, 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		log.debug("postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)" + beanFactory);
+		Recorder.record("postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)", this.getClass());
+		
 		String[] beanDefinitionNames = beanFactory.getBeanDefinitionNames();
 		for (String beanName : beanDefinitionNames) {
 			BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
