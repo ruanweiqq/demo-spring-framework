@@ -11,5 +11,4 @@ public class HappyImpl implements Happy {
 		log.info("happy()" + msg);
 		return "Happy " + msg;
 	}
-
 }

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.ruanwei.demo.springframework.core.aop.AOP;
 import org.ruanwei.demo.springframework.core.aop.Good;
 import org.ruanwei.demo.springframework.core.aop.Happy;
 import org.ruanwei.demo.springframework.core.ioc.Family;
@@ -216,9 +217,8 @@ public class CoreTest implements ApplicationContextAware {
 	void testAop() {
 		log.info("7======================================================================================");
 
-		Family family = context.getBean("family", Family.class);
-		log.info(family);
-		family.sayHello("whatever");
+		AOP aop = (AOP) context.getBean("aop");
+		aop.sayHello("whatever");
 
 		assertTrue("whatever".contentEquals(Recorder.get("before_message")), "message should be whatever");
 		assertTrue("whatever".contentEquals(Recorder.get("after_message")), "message should be whatever");

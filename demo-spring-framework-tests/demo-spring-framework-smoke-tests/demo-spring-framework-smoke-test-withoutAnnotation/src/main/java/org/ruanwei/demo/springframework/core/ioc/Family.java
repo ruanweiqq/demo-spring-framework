@@ -229,6 +229,15 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 		log.info("classLoader=========" + classLoader);
 		log.info("loadTimeWeaver=========" + loadTimeWeaver);
 	}
+	
+	public void magic() {
+		log.info("magic()");
+
+		Good good = (Good) context.getBean("good");
+		Happy mixin = (Happy) context.getBean("good");
+
+		log.info(good.good("whatever") + mixin.happy("whatever"));
+	}
 
 	// a.Bean instantiation with a constructor
 	// 1.Constructor-based dependency injection(byName with javac -g)

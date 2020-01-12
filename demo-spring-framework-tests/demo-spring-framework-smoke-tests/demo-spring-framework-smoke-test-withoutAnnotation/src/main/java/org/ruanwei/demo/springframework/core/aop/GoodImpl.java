@@ -11,5 +11,5 @@ public class GoodImpl implements Good {
 		log.info("good()" + msg);
 		return "Good " + msg;
 	}
-
+	
 }

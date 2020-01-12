@@ -2,6 +2,7 @@ package org.ruanwei.demo.springframework;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.springframework.core.aop.AOP;
 import org.ruanwei.demo.springframework.core.aop.GoodImpl;
 import org.ruanwei.demo.springframework.core.aop.MyAspect;
 import org.springframework.context.annotation.Bean;
@@ -24,9 +25,13 @@ public class AopConfig {
 		return new MyAspect();
 	}
 
+	@Bean("aop")
+	public AOP aop() {
+		return new AOP();
+	}
+	
 	@Bean("good")
 	public GoodImpl good() {
-		GoodImpl good = new GoodImpl();
-		return good;
+		return new GoodImpl();
 	}
 }
