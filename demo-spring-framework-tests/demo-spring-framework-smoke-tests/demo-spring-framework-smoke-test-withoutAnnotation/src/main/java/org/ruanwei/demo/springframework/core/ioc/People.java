@@ -12,12 +12,14 @@ import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.core.ioc.databinding.validation.FamilyName;
 import org.ruanwei.demo.springframework.core.ioc.event.MyApplicationEvent;
 import org.ruanwei.demo.util.Recorder;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.PayloadApplicationEvent;
 import org.springframework.context.SmartLifecycle;
 
-public class People implements SmartLifecycle, ApplicationListener<ApplicationEvent> {
+public class People implements SmartLifecycle, ApplicationListener<ApplicationEvent>, InitializingBean, DisposableBean {
 	private static Log log = LogFactory.getLog(People.class);
 
 	private volatile boolean running = true;
@@ -70,6 +72,20 @@ public class People implements SmartLifecycle, ApplicationListener<ApplicationEv
 		Recorder.record("init()", this.getClass());
 	}
 
+	// Bean initialization callback
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		log.info("====================afterPropertiesSet()");
+		Recorder.record("afterPropertiesSet()", this.getClass());
+	}
+
+	// Bean destruction callback
+	public void destroy2() {
+		log.info("====================destroy()");
+		Recorder.record("destroy2()", this.getClass());
+	}
+
+	@Override
 	// Bean destruction callback
 	public void destroy() {
 		log.info("====================destroy()");

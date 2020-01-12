@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.AbstractRefreshableApplicationContext;
 import org.springframework.core.io.ResourceLoader;
@@ -46,6 +47,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @ActiveProfiles("development")
 //@TestPropertySource("classpath:family.properties")
 @TestPropertySource("classpath:propertySource.properties")
+//@TestPropertySource("classpath:propertySource-${spring.profiles.active:development}.properties")
 @SpringJUnitConfig(AppConfig.class)
 //@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
 public class CoreTest {

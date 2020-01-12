@@ -69,7 +69,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  * 
  * 由于没有开启注解，因此以下三种方式均无法注入依赖到AppConfig： 
  * <li>@Value(${placeholder}). 
- * <li>@Value(#{SpEL ). 
+ * <li>@Value(#{SpEL). 
  * <li>@Autowired/@Qualifier.
  * 
  * 要引用外部化配置，以下两种方式： 
@@ -79,7 +79,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  * @author ruanwei
  *
  */
-// @Profile("development")
+@Profile("development")
 @PropertySource("classpath:propertySource-${spring.profiles.active:development}.properties")
 @PropertySource("classpath:family.properties")
 // @ImportResource({"classpath:spring/applicationContext.xml"})

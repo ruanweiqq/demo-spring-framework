@@ -20,6 +20,8 @@ import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -44,7 +46,8 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 public class Family implements ApplicationContextAware, BeanFactoryAware, MessageSourceAware, ResourceLoaderAware,
-		ApplicationEventPublisherAware, EnvironmentAware, BeanClassLoaderAware, BeanNameAware, LoadTimeWeaverAware {
+		ApplicationEventPublisherAware, EnvironmentAware, BeanClassLoaderAware, BeanNameAware, LoadTimeWeaverAware,
+		InitializingBean, DisposableBean {
 	private static Log log = LogFactory.getLog(Family.class);
 
 	private BeanFactory beanFactory;
@@ -195,7 +198,7 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 		publisher.publishEvent(helloWorld1);
 		publisher.publishEvent(helloWorld2);
 		publisher.publishEvent(new MyApplicationEvent(this, resource.getFilename()));
-		
+
 		// 4.其他容器对象
 		log.info("beanFactory=========" + beanFactory);
 		log.info("beanName=========" + beanName);
@@ -332,7 +335,21 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 		Recorder.record("init()", this.getClass());
 	}
 
+	// Bean initialization callback
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		log.info("====================afterPropertiesSet()");
+		Recorder.record("afterPropertiesSet()", this.getClass());
+	}
+
 	// Destruction callback
+	public void destroy2() {
+		log.info("====================destroy()");
+		Recorder.record("destroy2()", this.getClass());
+	}
+
+	@Override
+	// Bean destruction callback
 	public void destroy() {
 		log.info("====================destroy()");
 		Recorder.record("destroy()", this.getClass());

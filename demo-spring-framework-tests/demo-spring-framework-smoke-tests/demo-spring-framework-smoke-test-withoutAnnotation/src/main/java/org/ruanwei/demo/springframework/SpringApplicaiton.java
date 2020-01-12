@@ -7,6 +7,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+@Deprecated
 public class SpringApplicaiton {
 	private static Log log = LogFactory.getLog(SpringApplicaiton.class);
 
