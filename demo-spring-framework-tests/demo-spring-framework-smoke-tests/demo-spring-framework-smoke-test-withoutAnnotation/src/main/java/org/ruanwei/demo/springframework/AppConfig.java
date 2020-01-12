@@ -39,13 +39,12 @@ import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.beans.factory.config.FieldRetrievingFactoryBean;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.beans.factory.config.PropertyPathFactoryBean;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Description;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
@@ -69,7 +68,8 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 /**
  * 
  * 由于没有开启注解，因此以下三种方式均无法注入依赖到AppConfig： 
- * <li>@Value(${placeholder}). 
+ * <li>@Value(${placeholder}).
+ * <li>@Value(${System properties}).
  * <li>@Value(#{SpEL). 
  * <li>@Autowired/@Qualifier.
  * 
@@ -83,8 +83,8 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 @Profile("development")
 @PropertySource("classpath:propertySource-${spring.profiles.active:development}.properties")
 @PropertySource("classpath:family.properties")
-// @ImportResource({"classpath:spring/applicationContext.xml"})
-@Import({ AopConfig.class, DataAccessConfig.class })
+@ImportResource({"classpath:spring/applicationContext.xml"})
+//@Import({ AopConfig.class, DataAccessConfig.class })
 @Configuration
 public class AppConfig implements EnvironmentAware, InitializingBean {
 	private static Log log = LogFactory.getLog(AppConfig.class);
@@ -436,8 +436,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 
 	// A.5.Environment：Profile and PropertySource
 	// A.5.1.PropertySource：供Environment访问。无对应XML配置，参考@PropertySource
-	// A.5.2.Profile：-Dspring.profiles.active="development"
-	// -Dspring.profiles.default="production"
+	// A.5.2.Profile：-Dspring.profiles.active="development" -Dspring.profiles.default="production"
 	// 参考<beans profile="xx">和@Profile
 	@Profile("development")
 	@Bean("house")

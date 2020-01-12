@@ -11,6 +11,8 @@ import javax.validation.constraints.Size;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.springframework.core.aop.Good;
+import org.ruanwei.demo.springframework.core.aop.Happy;
 import org.ruanwei.demo.springframework.core.ioc.databinding.PeopleFormat;
 import org.ruanwei.demo.springframework.core.ioc.databinding.PeopleFormat.Separator;
 import org.ruanwei.demo.springframework.core.ioc.event.MyApplicationEvent;
@@ -32,6 +34,9 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.AbstractRefreshableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.weaving.LoadTimeWeaverAware;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
@@ -83,35 +88,29 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 	public String sayHello(@Size(min = 2, max = 8) String message) {
 		log.info("sayHello(String message)" + message);
 
-		return message;
+		Good good = (Good) context.getBean("good");
+		Happy mixin = (Happy) context.getBean("good");
+
+		log.info(good.good("whatever") + mixin.happy("whatever"));
+
+		return "Hello," + message;
 	}
 
-	/*
-	 * EnumerablePropertySource
-	 *   CommandLinePropertySource
-	 *     SimpleCommandLinePropertySource
-	 *     JOptCommandLinePropertySource
-	 *   MapPropertySource(StandardEnvironment:systemProperties)
-	 *     PropertiesPropertySource
-	 *       ResourcePropertySource
-	 *     SystemEnvironmentPropertySource(StandardEnvironment:systemEnvironment)
-	 *   ServletConfigPropertySource
-	 *   ServletContextPropertySource
-	 *   
-	 *   StandardEnvironment:MapPropertySource(systemProperties)/SystemEnvironmentPropertySource(systemEnvironment)
-	 * */
-	public void helloWorld1() {
-		log.info("helloWorld1()");
+	// 1.Environment Profile
+	/* 
+	 * 初始通过-Dspring.profiles.active="development" -Dspring.profiles.default="development"或@Profile指定
+	 * 通过代码变更为spring.profiles.active="development" spring.profiles.default="production"
+	*/
+	public void refreshProfile() {
+		log.info("refreshProfile()");
 
-		// 1.Environment Profile
 		if (environment == null) {
 			environment = context.getEnvironment();
 		}
-		// -Dspring.profiles.active="development"
-		// -Dspring.profiles.default="production"
-		log.info("profiles1==========" + environment.getActiveProfiles() + " " + environment.getDefaultProfiles());
-		Recorder.put("activeProfile", environment.getActiveProfiles()[0]);
-		Recorder.put("defaultProfile", environment.getDefaultProfiles()[0]);
+		log.info("activeProfile==========" + environment.getActiveProfiles() + " defaultProfile========"
+				+ environment.getDefaultProfiles());
+		House house = context.getBean("house", House.class);
+		log.info("house==========" + house);
 
 		if (environment instanceof ConfigurableEnvironment) {
 			ConfigurableEnvironment configEnv = (StandardEnvironment) environment;
@@ -119,21 +118,39 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 			configEnv.setDefaultProfiles("production");
 			if (context instanceof ConfigurableApplicationContext) {
 				ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) context;
+				// TODO:报错，只允许调用一次
 				// ctx.refresh();
 			}
 		}
 
 		environment = context.getEnvironment();
-		log.info("profiles2==========" + environment.getActiveProfiles() + " " + environment.getDefaultProfiles());
-		Recorder.put("activeProfile2", environment.getActiveProfiles()[0]);
-		Recorder.put("defaultProfile2", environment.getDefaultProfiles()[0]);
+		log.info("activeProfile2==========" + environment.getActiveProfiles() + " defaultProfile2========"
+				+ environment.getDefaultProfiles());
 
-		House house = context.getBean("house", House.class);
-		log.info("house==========" + house);
-		Recorder.put("houseName", house.getHouseName());
-		Recorder.put("hostName", house.getHostName());
+		house = context.getBean("house", House.class);
+		log.info("house2==========" + house);
+	}
 
-		// 2.Environment PropertySource
+	// 2.Environment PropertySource
+	/* 
+	 * EnumerablePropertySource
+	 *   CommandLinePropertySource
+	 *     SimpleCommandLinePropertySource
+	 *     JOptCommandLinePropertySource
+	 *   MapPropertySource(systemProperties)
+	 *     PropertiesPropertySource
+	 *       ResourcePropertySource(@PeopertySource)
+	 *     SystemEnvironmentPropertySource(systemEnvironment)
+	 *   ServletConfigPropertySource
+	 *   ServletContextPropertySource
+	 *   
+	 *   StandardEnvironment:
+	 *     MapPropertySource(systemProperties)
+	 *     SystemEnvironmentPropertySource(systemEnvironment)
+	*/
+	public void refreshPropertySource() {
+		log.info("refreshPropertySource()");
+
 		// StandardEnvironment:MapPropertySource(systemProperties)/SystemEnvironmentPropertySource(systemEnvironment)
 		if (environment instanceof ConfigurableEnvironment) {
 			ConfigurableEnvironment configEnv = (ConfigurableEnvironment) environment;
@@ -150,21 +167,14 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 		}
 
 		String a = environment.getProperty("a", "default_a"); // MapPropertySource(-Da=1)
-		Recorder.put("a", "1");
-
 		String b = environment.getProperty("b", "default_b"); // SystemEnvironmentPropertySource(export b=2)
-		Recorder.put("b", "2");
-
-		String c = environment.getProperty("c", "default_c");// ResourcePropertySource(@PeopertySource("propertySource.properties"))
-		Recorder.put("c", "3");
-
-		String d = environment.getProperty("d", "default_d");// MapPropertySource(addLast)
-		Recorder.put("d", "4");
-
+		String c = environment.getProperty("c", "default_c");// ResourcePropertySource(@PeopertySource("propertySource.properties")//
+																// c=3)
+		String d = environment.getProperty("d", "default_d");// MapPropertySource(addLast d=4)
 		log.info("property=========a=" + a + " b=" + b + " c=" + c + " d=" + d);
 	}
 
-	public void helloWorld2() {
+	public void helloWorld() {
 		log.info("helloWorld2()");
 
 		// 1.MessageSource
@@ -173,12 +183,10 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 		}
 		String helloWorld1 = messageSource.getMessage("messageSource.helloWorld", new Object[] { "ruanwei" },
 				"This is a message.", Locale.US);
-		Recorder.put("helloWorld1", helloWorld1);
 		log.info("helloWorld1==========" + helloWorld1);
 
 		String helloWorld2 = messageSource.getMessage("messageSource.helloWorld", new Object[] { "ruanwei" },
 				"This is a message.", Locale.CHINA);
-		Recorder.put("helloWorld2", helloWorld2);
 		log.info("helloWorld2==========" + helloWorld2);
 
 		// 2.ResourceLoader
@@ -187,17 +195,33 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 		}
 		log.info("resourceLoader==========" + resourceLoader);
 		Resource resource = resourceLoader.getResource("classpath:spring/applicationContext.xml");
-		Recorder.put("resource", resource.getFilename());
 		log.info("resource==========" + resource);
 
 		// 3.ApplicationEventPublisher
 		if (publisher == null) {
 			publisher = (ApplicationEventPublisher) context;
 		}
-		// 等价于PayloadApplicationEvent<String>(this,helloWorld1);
+		// 3.1 发送PayloadApplicationEvent<String>(this,helloWorld1);
 		publisher.publishEvent(helloWorld1);
 		publisher.publishEvent(helloWorld2);
+		publisher.publishEvent(resource.getFilename());
+
+		// 3.2 发送MyApplicationEvent
 		publisher.publishEvent(new MyApplicationEvent(this, resource.getFilename()));
+
+		// 3.3 发送ApplicationContextEvent
+		if (context instanceof AbstractApplicationContext) {
+			AbstractApplicationContext absContext = (AbstractApplicationContext) context;
+			absContext.start();
+			absContext.stop();
+
+			// 即ClassPathXmlApplicationContext和FileSystemXmlApplicationContext
+			if (context instanceof AbstractRefreshableApplicationContext) {
+				// absContext.refresh();
+			}
+
+			// absContext.close();
+		}
 
 		// 4.其他容器对象
 		log.info("beanFactory=========" + beanFactory);
@@ -333,6 +357,11 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 	public void init() {
 		log.info("====================init()");
 		Recorder.record("init()", this.getClass());
+
+		if (context == null) {
+			// context = new AnnotationConfigApplicationContext(AppConfig.class);
+			context = new ClassPathXmlApplicationContext("classpath:spring/applicationContext.xml");
+		}
 	}
 
 	// Bean initialization callback
@@ -340,6 +369,11 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 	public void afterPropertiesSet() throws Exception {
 		log.info("====================afterPropertiesSet()");
 		Recorder.record("afterPropertiesSet()", this.getClass());
+
+		if (context == null) {
+			// context = new AnnotationConfigApplicationContext(AppConfig.class);
+			context = new ClassPathXmlApplicationContext("classpath:spring/applicationContext.xml");
+		}
 	}
 
 	// Destruction callback

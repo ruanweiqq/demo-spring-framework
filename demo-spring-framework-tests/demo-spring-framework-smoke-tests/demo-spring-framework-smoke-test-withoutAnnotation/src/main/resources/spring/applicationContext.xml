@@ -15,7 +15,7 @@
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd 
         http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
-	default-init-method="init" default-destroy-method="destroy2">
+	default-init-method="init" default-destroy-method="destroy2" profile="development">
 
 	<!-- ==========A.The IoC Container========== -->
 	<!-- A.1.Bean Definition and Dependency Injection -->
@@ -340,7 +340,7 @@
 
 	<!-- more bean definitions go here -->
 	<import resource="aop.xml" />
-	<import resource="dataAccess.xml" />
+	<!-- <import resource="dataAccess.xml" /> -->
 	<!-- <import resource="integration.xml" /> -->
 
 	<!-- A.5.2.Profile：必须放在配置文件最后 -->
@@ -349,7 +349,7 @@
 			class="org.ruanwei.demo.springframework.core.ioc.House"
 			parent="absHouse">
 			<property name="houseName" value="${house.name.override}" />
-			<property name="hostName" value="${house.host.development}" />
+			<property name="hostName" value="${house.host.name.development}" />
 		</bean>
 	</beans>
 	<beans profile="production">
@@ -357,7 +357,7 @@
 			class="org.ruanwei.demo.springframework.core.ioc.House"
 			parent="absHouse">
 			<property name="houseName" value="${house.name.override}" />
-			<property name="hostName" value="${house.host.production}" />
+			<property name="hostName" value="${house.host.name.production}" />
 		</bean>
 	</beans>
 </beans>

@@ -14,10 +14,12 @@ import org.ruanwei.demo.springframework.core.ioc.event.MyApplicationEvent;
 import org.ruanwei.demo.util.Recorder;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.PayloadApplicationEvent;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.context.event.ApplicationContextEvent;
 
 public class People implements SmartLifecycle, ApplicationListener<ApplicationEvent>, InitializingBean, DisposableBean {
 	private static Log log = LogFactory.getLog(People.class);
@@ -25,6 +27,8 @@ public class People implements SmartLifecycle, ApplicationListener<ApplicationEv
 	private volatile boolean running = true;
 
 	public static volatile int EVENT_COUNT;
+	public static volatile int CONTEXT_EVENT_COUNT;
+	public static volatile int PAYLOAD_EVENT_COUNT;
 
 	// JSR-303 Bean Validation
 	@NotEmpty
@@ -52,14 +56,18 @@ public class People implements SmartLifecycle, ApplicationListener<ApplicationEv
 		log.info(this + " recieved a " + event.getClass() + " from " + event.getSource());
 		Recorder.record("onApplicationEvent(ApplicationEvent event)", this.getClass());
 
-		EVENT_COUNT++;
-
-		if (event instanceof PayloadApplicationEvent<?>) {
-			Object payload = ((PayloadApplicationEvent<?>) event).getPayload();
-			log.info(event.getTimestamp() + " payload=" + payload.toString());
-		} else if (event instanceof MyApplicationEvent) {
+		if (event instanceof MyApplicationEvent) {
 			String message = ((MyApplicationEvent) event).getMessage();
 			log.info(event.getTimestamp() + " message=" + message);
+			EVENT_COUNT++;
+		} else if (event instanceof ApplicationContextEvent) {
+			ApplicationContext context = ((ApplicationContextEvent) event).getApplicationContext();
+			log.info(event.getTimestamp() + " context=" + context);
+			CONTEXT_EVENT_COUNT++;
+		} else if (event instanceof PayloadApplicationEvent<?>) {
+			Object payload = ((PayloadApplicationEvent<?>) event).getPayload();
+			log.info(event.getTimestamp() + " payload=" + payload.toString());
+			PAYLOAD_EVENT_COUNT++;
 		} else {
 			long timestamp = event.getTimestamp();
 			log.info(event.getSource() + " timestamp=" + timestamp);
