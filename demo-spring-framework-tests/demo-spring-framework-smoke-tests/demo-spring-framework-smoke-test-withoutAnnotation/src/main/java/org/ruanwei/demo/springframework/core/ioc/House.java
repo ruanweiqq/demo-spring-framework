@@ -9,8 +9,10 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.util.Recorder;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 
-public class House {
+public class House implements InitializingBean, DisposableBean {
 	private static Log log = LogFactory.getLog(House.class);
 
 	private String houseName;
@@ -110,11 +112,27 @@ public class House {
 		this.someField3 = someField;
 	}
 
+	// Bean initialization callback
 	public void init() {
 		log.info("====================init()");
 		Recorder.record("init()", this.getClass());
 	}
 
+	// Bean initialization callback
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		log.info("====================afterPropertiesSet()");
+		Recorder.record("afterPropertiesSet()", this.getClass());
+	}
+
+	// Bean destruction callback
+	public void destroy2() {
+		log.info("====================destroy()");
+		Recorder.record("destroy2()", this.getClass());
+	}
+
+	@Override
+	// Bean destruction callback
 	public void destroy() {
 		log.info("====================destroy()");
 		Recorder.record("destroy()", this.getClass());

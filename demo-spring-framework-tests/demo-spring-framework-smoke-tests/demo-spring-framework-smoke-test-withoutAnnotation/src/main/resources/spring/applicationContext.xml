@@ -294,20 +294,21 @@
 		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyLifecycleProcessor" />
 
 	<!-- A.5.Environment：Profile and PropertySource -->
-	<!-- A.5.1.PropertySource：供Environment访问，参考@PropertySource -->
-	<!-- A.5.2.Profile：参考@Profile和<beans profile=""> -->
-
+	<!-- A.5.1.PropertySource：供Environment访问。无对应XML配置，参考@PropertySource -->
+	<!-- A.5.2.Profile：-Dspring.profiles.active="development" -Dspring.profiles.default="production" -->
+	<!-- 参考下面的<beans profile="xx">和@Profile -->
+	
 	<!-- A.6.Extension Points -->
-	<!-- A.6.1.Customizing beans using a BeanPostProcessor -->
-	<!-- include:BeanValidationPostProcessor/MethodValidationPostProcessor/AutowiredAnnotationBeanPostProcessor -->
+	<!-- A.6.1.Customizing beans using a BeanPostProcessor include: -->
+	<!-- BeanValidationPostProcessor/MethodValidationPostProcessor/AutowiredAnnotationBeanPostProcessor/ -->
 	<!-- CommonAnnotationBeanPostProcessor/RequiredAnnotationBeanPostProcessor etc. -->
 	<bean
 		class="org.ruanwei.demo.springframework.core.ioc.extension.TraceBeanPostProcessor"
 		p:order="0" />
 
-	<!-- A.6.2.Customizing configuration metadata with a BeanFactoryPostProcessor -->
-	<!-- include:PropertyOverrideConfigurer -->
-	<!-- PropertyPlaceholderConfigurer/PropertySourcesPlaceholderConfigurer/PreferencesPlaceholderConfigurer -->
+	<!-- A.6.2.Customizing configuration metadata with a BeanFactoryPostProcessor include: -->
+	<!-- PropertyOverrideConfigurer/ -->
+	<!-- PropertyPlaceholderConfigurer/PropertySourcesPlaceholderConfigurer/PreferencesPlaceholderConfigurer/ -->
 	<!-- CustomEditorConfigurer/CustomScopeConfigurer/CustomAutowireConfigurer etc. -->
 	<bean
 		class="org.ruanwei.demo.springframework.core.ioc.extension.TraceBeanFactoryPostProcessor"

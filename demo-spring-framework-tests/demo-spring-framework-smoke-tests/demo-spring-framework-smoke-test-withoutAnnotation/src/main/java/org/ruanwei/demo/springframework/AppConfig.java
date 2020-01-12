@@ -30,6 +30,7 @@ import org.ruanwei.demo.springframework.core.ioc.lifecycle.MyInitializingBean;
 import org.ruanwei.demo.springframework.core.ioc.lifecycle.MyLifecycle;
 import org.ruanwei.demo.springframework.core.ioc.lifecycle.MyLifecycleProcessor;
 import org.ruanwei.demo.springframework.core.ioc.lifecycle.MySmartLifecycle;
+import org.springframework.beans.PropertyEditorRegistrar;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -103,13 +104,16 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		familyCount = Integer.parseInt(env.getProperty("family.familyCount", "2"));
 	}
 
+	// TODO:
+	// 1.son和daughter利用类型转换获得，而不是直接定义它们
+	// 2.@Qualifier("father")和@Qualifier("mother")是否可以去掉
 	// ==========A.The IoC Container==========
 	// A.1.Bean Definition and Dependency Injection
 	// A.1.1.Bean instantiation with a constructor
 	@Lazy
 	@DependsOn("house")
-	@Bean(name = "family", initMethod = "init", destroyMethod = "destroy")
-	public Family family(@Value("${family.familyName:ruan_def}") String familyName, @Qualifier("father") People father,
+	@Bean(name = "family", initMethod = "init", destroyMethod = "destroy2")
+	public Family family(@Value("${family.familyName:uan_def}") String familyName, @Qualifier("father") People father,
 			@Qualifier("mother") People mother, @Qualifier("son") People son, @Qualifier("daughter") People daughter,
 			@Qualifier("guest") People guest) {
 		// 1.Constructor-based dependency injection
@@ -127,7 +131,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Lazy
 	@DependsOn("house")
 	@Bean("family2")
-	public Family family2(@Value("${family.2.familyName:ruan_def2}") String familyName,
+	public Family family2(@Value("${family.2.familyName:Ruan2_def}") String familyName,
 			@Qualifier("father") People father, @Qualifier("mother") People mother, @Qualifier("son") People son,
 			@Qualifier("daughter") People daughter, @Qualifier("guest") People guest) {
 		Family family = FamilyFactory.createInstance1(familyName, familyCount, father);
@@ -142,7 +146,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Lazy
 	@DependsOn("house")
 	@Bean("family3")
-	public Family family3(@Value("${family.3.familyName:ruan_def3}") String familyName,
+	public Family family3(@Value("${family.3.familyName:Ruan3_def}") String familyName,
 			@Qualifier("father") People father, @Qualifier("mother") People mother, @Qualifier("son") People son,
 			@Qualifier("daughter") People daughter, @Qualifier("guest") People guest) {
 		Family family = familyFactory().createInstance2(familyName, familyCount, father);
@@ -162,21 +166,21 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Lazy
 	@Qualifier("father")
 	@Bean("father")
-	public People father(@Value("${father.name:ruanwei_def}") String name, @Value("${father.age:35}") int age) {
+	public People father(@Value("${father.name:ruanwei_def}") String name, @Value("${father.age:36}") int age) {
 		return new People(name, age);
 	}
 
 	@Lazy
 	@Qualifier("mother")
 	@Bean("mother")
-	public People mother(@Value("${mother.name:lixiaoling_def}") String name, @Value("${mother.age:34}") int age) {
+	public People mother(@Value("${mother.name:lixiaoling_def}") String name, @Value("${mother.age:35}") int age) {
 		return new People(name, age);
 	}
 
 	@Lazy
 	@Qualifier("son")
 	@Bean("son")
-	public People son(@Value("${son.name:ruanziqiao_def}") String name, @Value("${son.age:5}") int age) {
+	public People son(@Value("${son.name:ruanziqiao_def}") String name, @Value("${son.age:6}") int age) {
 		return new People(name, age);
 	}
 
@@ -197,10 +201,11 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	}
 
 	@Bean("absHouse")
-	public House absHouse(@Value("${house.name.abstract:houseName_def}") String houseName,
+	public House absHouse(@Value("${house.name.abstract:AbsHouse_def}") String houseName,
 			@Value("1,2") Integer[] someArray, @Value("3,4") List<Integer> someList, @Value("5,6") Set<Integer> someSet,
-			@Value("a=1,b=2") Properties someProperties, @Value("#{someField1}") double someField1,
-			@Value("#{someField2}") String someField2, @Value("#{someField3}") String someField3) {
+			@Value("a=7,b=8") Properties someProperties, @Value("a=9,b=10") Map<String, Integer> someMap,
+			@Value("#{someField1}") double someField1, @Value("#{someField2}") String someField2,
+			@Value("#{someField3}") String someField3) {
 		House abshouse = new House();
 
 		abshouse.setHouseName(houseName);
@@ -209,13 +214,14 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		abshouse.setSomeList(someList);
 		abshouse.setSomeSet(someSet);
 		abshouse.setSomeProperties(someProperties);
-		abshouse.setSomeMap(null);
+		abshouse.setSomeMap(someMap);
 
 		abshouse.setSomeList2(someList2());
 		abshouse.setSomeSet2(someSet2());
 		abshouse.setSomeProperties2(someProperties2());
 		abshouse.setSomeMap2(someMap2());
 
+		// 这里注入的是FactoryBean，无法使用someField1()直接引用
 		abshouse.setSomeField1(someField1);
 		abshouse.setSomeField2(someField2);
 		abshouse.setSomeField3(someField3);
@@ -228,8 +234,8 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Bean({ "someList2", "someList3" })
 	public List<Integer> someList2() {
 		List<Integer> list = new ArrayList<Integer>();
-		list.add(1);
-		list.add(2);
+		list.add(3);
+		list.add(4);
 		return list;
 	}
 
@@ -238,8 +244,8 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Bean({ "someSet2", "someSet3" })
 	public Set<Integer> someSet2() {
 		Set<Integer> set = new HashSet<Integer>();
-		set.add(1);
-		set.add(2);
+		set.add(5);
+		set.add(6);
 		return set;
 	}
 
@@ -248,8 +254,8 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Bean({ "someProperties2", "someProperties3" })
 	public Properties someProperties2() {
 		Properties props = new Properties();
-		props.put("a", 1);
-		props.put("b", 2);
+		props.put("a", 7);
+		props.put("b", 8);
 		return props;
 	}
 
@@ -258,8 +264,8 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Bean({ "someMap2", "someMap3" })
 	public Map<String, Integer> someMap2() {
 		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("a", 1);
-		map.put("b", 2);
+		map.put("a", 9);
+		map.put("b", 10);
 		return map;
 	}
 
@@ -307,13 +313,21 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		conversionService.setRegisterDefaultFormatters(true);
 
 		// 方式一：单个指定Converter/ConverterFactory/GenericConverter S->T
-		// registerConvertors(conversionService);
+		Set<Object> converters = new HashSet<Object>();
+		converters.add(new StringToPeopleConverter());
+		conversionService.setConverters(converters);
 
 		// 方式二：单个指定Formatter/AnnotationFormatterFactory String->T
-		// registerFormatters(conversionService);
+		Set<Object> formatters = new HashSet<Object>();
+		formatters.add(new PeopleFormatter());
+		formatters.add(new PeopleFormatAnnotationFormatterFactory());
+		conversionService.setFormatters(formatters);
 
 		// 方式三：分组指定converters和formatters
-		registerFormatterRegistrars(conversionService);
+		Set<FormatterRegistrar> formatterRegistrars = new HashSet<FormatterRegistrar>();
+		formatterRegistrars.add(new PeopleFormatterRegistrar());
+		formatterRegistrars.add(makeJodaTimeFormatterRegistrar());
+		conversionService.setFormatterRegistrars(formatterRegistrars);
 
 		log.info("conversionService==========" + conversionService);
 		return conversionService;
@@ -325,48 +339,25 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		CustomEditorConfigurer customEditorConfigurer = new CustomEditorConfigurer();
 
 		// 方式四：单个指定PropertyEditor
-		// registerPropertyEditors(customEditorConfigurer);
+		Map<Class<?>, Class<? extends PropertyEditor>> customEditors = new HashMap<Class<?>, Class<? extends PropertyEditor>>();
+		customEditors.put(People.class, PeoplePropertyEditor.class);
+		customEditorConfigurer.setCustomEditors(customEditors);
 
 		// 方式五：分组指定PropertyEditor
-		// registerPropertyEditorRegistrars(customEditorConfigurer);
+		PropertyEditorRegistrar[] propertyEditorRegistrars = new PeoplePropertyEditorRegistrar[] {
+				new PeoplePropertyEditorRegistrar() };
+		customEditorConfigurer.setPropertyEditorRegistrars(propertyEditorRegistrars);
 
 		log.info("customEditorConfigurer==========" + customEditorConfigurer);
 		return customEditorConfigurer;
 	}
 
-	private void registerConvertors(FormattingConversionServiceFactoryBean conversionService) {
-		Set<Object> converters = new HashSet<Object>();
-		converters.add(new StringToPeopleConverter());
-		conversionService.setConverters(converters);
-	}
-
-	private void registerFormatters(FormattingConversionServiceFactoryBean conversionService) {
-		Set<Object> formatters = new HashSet<Object>();
-		formatters.add(new PeopleFormatter());
-		formatters.add(new PeopleFormatAnnotationFormatterFactory());
-		conversionService.setFormatters(formatters);
-	}
-
-	private void registerFormatterRegistrars(FormattingConversionServiceFactoryBean conversionService) {
-		Set<FormatterRegistrar> formatterRegistrars = new HashSet<FormatterRegistrar>();
+	private JodaTimeFormatterRegistrar makeJodaTimeFormatterRegistrar() {
 		JodaTimeFormatterRegistrar jodaTimeFormatterRegistrar = new JodaTimeFormatterRegistrar();
 		DateTimeFormatterFactoryBean dateTimeFormatterFactoryBean = new DateTimeFormatterFactoryBean();
 		dateTimeFormatterFactoryBean.setPattern("yyyy-MM-dd");
 		jodaTimeFormatterRegistrar.setDateFormatter(dateTimeFormatterFactoryBean.getObject());
-		formatterRegistrars.add(jodaTimeFormatterRegistrar);
-		formatterRegistrars.add(new PeopleFormatterRegistrar());
-		conversionService.setFormatterRegistrars(formatterRegistrars);
-	}
-
-	private static void registerPropertyEditors(CustomEditorConfigurer customEditorConfigurer) {
-		Map<Class<?>, Class<? extends PropertyEditor>> customEditors = new HashMap<Class<?>, Class<? extends PropertyEditor>>();
-		customEditors.put(People.class, PeoplePropertyEditor.class);
-		customEditorConfigurer.setCustomEditors(customEditors);
-	}
-
-	private static void registerPropertyEditorRegistrars(CustomEditorConfigurer customEditorConfigurer) {
-		customEditorConfigurer.setPropertyEditorRegistrars(
-				new PeoplePropertyEditorRegistrar[] { new PeoplePropertyEditorRegistrar() });
+		return jodaTimeFormatterRegistrar;
 	}
 
 	// A.2.3.Validation JSR-303/JSR-349/JSR-380
@@ -444,12 +435,14 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	}
 
 	// A.5.Environment：Profile and PropertySource
-	// A.5.1.PropertySource：供Environment访问，参考@PropertySource
-	// A.5.2.Profile：参考@Profile和<beans profile="">
+	// A.5.1.PropertySource：供Environment访问。无对应XML配置，参考@PropertySource
+	// A.5.2.Profile：-Dspring.profiles.active="development"
+	// -Dspring.profiles.default="production"
+	// 参考<beans profile="xx">和@Profile
 	@Profile("development")
 	@Bean("house")
-	public House house1(@Value("${house.name.override:houseName_def}") String houseName,
-			@Value("${house.host.name.development:development_def}") String hostName,
+	public House house1(@Value("${house.name.override:RuanHouse_def}") String houseName,
+			@Value("${house.host.name.development:developmentHost_def}") String hostName,
 			@Value("#{absHouse}") House abshouse) {
 		abshouse.setHouseName(houseName);
 		abshouse.setHostName(hostName);
@@ -458,8 +451,8 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 
 	@Profile("production")
 	@Bean("house")
-	public House house2(@Value("${house.name.override:houseName_def}") String houseName,
-			@Value("${house.host.name.production:production_def}") String hostName,
+	public House house2(@Value("${house.name.override:RuanHouse_def}") String houseName,
+			@Value("${house.host.name.production:productionHost_def}") String hostName,
 			@Value("#{absHouse}") House abshouse) {
 		abshouse.setHouseName(houseName);
 		abshouse.setHostName(hostName);
@@ -467,24 +460,32 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	}
 
 	// A.6.Extension Points
-	// A.6.1.Customizing beans using a BeanPostProcessor
-	@Order(1)
+	// A.6.1.Customizing beans using a BeanPostProcessor include:
+	// BeanValidationPostProcessor/MethodValidationPostProcessor/AutowiredAnnotationBeanPostProcessor/
+	// CommonAnnotationBeanPostProcessor/RequiredAnnotationBeanPostProcessor etc.
+	@Order(0)
 	@Bean
 	public TraceBeanPostProcessor traceBeanPostProcessor() {
 		TraceBeanPostProcessor traceBeanPostProcessor = new TraceBeanPostProcessor();
+		traceBeanPostProcessor.setOrder(0);
 		return traceBeanPostProcessor;
 	}
 
 	// A.6.2.Customizing configuration metadata with a BeanFactoryPostProcessor
-	// 注意，由于生命周期的原因，返回BeanFactoryPostProcessor的@Bean方法一定要声明为static，否则无法处理@Autowired、@Value、@PostConstruct等注解
-	// Static @Bean methods will not be enhanced for scoping and AOP semantics.A
-	// WARN-level log message will be issued
-	// for any non-static @Bean methods having a return type assignable to
-	// BeanFactoryPostProcessor
-	@Order(1)
+	// include:
+	// PropertyOverrideConfigurer/
+	// PropertyPlaceholderConfigurer/PropertySourcesPlaceholderConfigurer/PreferencesPlaceholderConfigurer/
+	// CustomEditorConfigurer/CustomScopeConfigurer/CustomAutowireConfigurer etc.
+	// 注意，由于生命周期的原因，返回BeanFactoryPostProcessor的@Bean方法一定要声明为static，否则无法处理@Autowired、@Value、@PostConstruct等注解.
+	// Static @Bean methods will not be enhanced for scoping and AOP semantics.
+	// A WARN-level log message will be issued for any non-static @Bean methods
+	// having a return type assignable to BeanFactoryPostProcessor.
+	@Order(0)
 	@Bean
 	public static TraceBeanFactoryPostProcessor traceBeanFactoryPostProcessor() {
-		return new TraceBeanFactoryPostProcessor();
+		TraceBeanFactoryPostProcessor traceBeanFactoryPostProcessor = new TraceBeanFactoryPostProcessor();
+		traceBeanFactoryPostProcessor.setOrder(0);
+		return traceBeanFactoryPostProcessor;
 	}
 
 	// PropertySourcesPlaceholderConfigurer通过将@PropertySource加入到属性，以替换@Value中的占位符
@@ -492,27 +493,18 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+		propertySourcesPlaceholderConfigurer.setLocations(new ClassPathResource("family.properties"),
+				new ClassPathResource("jdbc.properties"));
+		// propertySourcesPlaceholderConfigurer.setProperties(properties);
 		propertySourcesPlaceholderConfigurer.setFileEncoding("UTF-8");
 		propertySourcesPlaceholderConfigurer.setOrder(Ordered.HIGHEST_PRECEDENCE);
 		log.info("propertySourcesPlaceholderConfigurer==========" + propertySourcesPlaceholderConfigurer);
 		return propertySourcesPlaceholderConfigurer;
 	}
 
-	// PropertyPlaceholderConfigurer通过指定location/properties属性，以替换@Value中的占位符
-	// @Bean
-	public static PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
-		PropertyPlaceholderConfigurer propertyPlaceholderConfigurer = new PropertyPlaceholderConfigurer();
-		propertyPlaceholderConfigurer.setLocations(new ClassPathResource("family.properties"),
-				new ClassPathResource("jdbc.properties"));
-		propertyPlaceholderConfigurer.setFileEncoding("UTF-8");
-		propertyPlaceholderConfigurer.setOrder(Ordered.HIGHEST_PRECEDENCE);
-		log.info("propertyPlaceholderConfigurer==========" + propertyPlaceholderConfigurer);
-		return propertyPlaceholderConfigurer;
-	}
-
 	// A.6.3.Customizing instantiation logic with a FactoryBean
 	@Bean("familyx")
-	public MyFamilyFactoryBean myFamilyFactoryBean(@Value("${family.x.familyName:ruan_def}") String familyName,
+	public MyFamilyFactoryBean myFamilyFactoryBean(@Value("${family.x.familyName:RuanX_def}") String familyName,
 			@Value("${family.familyCount:2}") int familyCount, @Qualifier("father") People father) {
 		MyFamilyFactoryBean myFamilyFactoryBean = new MyFamilyFactoryBean(familyName, familyCount, father);
 		return myFamilyFactoryBean;
