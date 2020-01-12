@@ -1,10 +1,14 @@
 package org.ruanwei.demo.springframework;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
+
+import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +32,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -160,13 +165,15 @@ public class CoreTest implements ApplicationContextAware {
 		assertTrue(familyx2 instanceof MyFamilyFactoryBean, "familyx2 should be MyFamilyFactoryBean");
 
 		// 3.Method injection: Lookup method injection
-		People bueaty = family.createBueaty();
-		assertNotNull(bueaty, "bueaty should not be null");
-		assertTrue("ruan_guest".contentEquals(bueaty.getName()), "guest name should be Guest_ruanwei");
+		if (context instanceof ClassPathXmlApplicationContext) {
+			People bueaty = family.createBueaty();
+			assertNotNull(bueaty, "bueaty should not be null");
+			assertTrue("ruan_guest".contentEquals(bueaty.getName()), "guest name should be Guest_ruanwei");
 
-		// 3.Method injection: Arbitrary method replacement
-		int sum = family.calc(3, 5);
-		assertEquals(sum, 18, "sum should be 18");
+			// 3.Method injection: Arbitrary method replacement
+			int sum = family.calc(3, 5);
+			assertEquals(18, sum, "sum should be 18");
+		}
 	}
 
 	@Order(4)
@@ -207,15 +214,36 @@ public class CoreTest implements ApplicationContextAware {
 		Family family = context.getBean("family", Family.class);
 		family.helloWorld();
 
-		assertTrue(People.EVENT_COUNT >= 4, "EVENT_COUNT should be greater than 4");
-		assertTrue(People.PAYLOAD_EVENT_COUNT >= 12, "PAYLOAD_EVENT_COUNT should be greater than 12");
-		assertTrue(People.CONTEXT_EVENT_COUNT >= 12, "CONTEXT_EVENT_COUNT should be greater than 12");
+		assertTrue(People.EVENT_COUNT > 0, "EVENT_COUNT should be greater than 0");
+		assertTrue(People.PAYLOAD_EVENT_COUNT > 0, "PAYLOAD_EVENT_COUNT should be greater than 0");
+		assertTrue(People.CONTEXT_EVENT_COUNT > 0, "CONTEXT_EVENT_COUNT should be greater than 0");
 	}
 
 	@Order(7)
 	@Test
-	void testAop() {
+	void testValidation() {
 		log.info("7======================================================================================");
+
+		Family family = context.getBean("family", Family.class);
+
+		assertDoesNotThrow(() -> {
+			family.sayHello("123");
+		}, "family.sayHello should not throw exception");
+
+		String result = assertDoesNotThrow(() -> {
+			return family.sayHello("123");
+		});
+		assertTrue("Hello,123".contentEquals(result), "result message should be Hello,123");
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			family.sayHello("1");
+		}, "family.sayHello should throw ConstraintViolationException");
+	}
+
+	@Order(8)
+	@Test
+	void testAop() {
+		log.info("8======================================================================================");
 
 		AOP aop = (AOP) context.getBean("aop");
 		aop.sayHello("whatever");
@@ -229,10 +257,10 @@ public class CoreTest implements ApplicationContextAware {
 		assertTrue("Hello,whatever".contentEquals(Recorder.get("ret_message")), "message should be whatever");
 	}
 
-	@Order(8)
+	@Order(9)
 	@Test
 	void testIntroduction() {
-		log.info("8======================================================================================");
+		log.info("9======================================================================================");
 
 		Good good = (Good) context.getBean("good");
 		Happy happy = (Happy) context.getBean("good");

@@ -44,8 +44,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Description;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
@@ -70,7 +68,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  * 
  * 由于没有开启注解，因此以下三种方式均无法注入依赖到AppConfig： 
  * <li>@Value(${placeholder}).
- * <li>@Value(${System properties}).
+ * <li>@Value(${systemProperties}).
  * <li>@Value(#{SpEL). 
  * <li>@Autowired/@Qualifier.
  * 
@@ -78,13 +76,14 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  * <li>通过EnvironmentAware注入Environment，然后获取属性 
  * <li>利用@Bean方法参数的隐式支持@Value和@Autowired(可以替换为@Value("#{nyBean}"))
  * 
+ * 对于方法注入，没有与基于XML的配置元数据相匹配的基于Java的配置元数据
+ * 
  * @author ruanwei
  *
  */
 @Profile("development")
 @PropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
 @PropertySource("classpath:family.properties")
-@ImportResource({"classpath:spring/ioc.xml"})
 @Configuration
 public class IocConfig implements EnvironmentAware, InitializingBean {
 	private static Log log = LogFactory.getLog(IocConfig.class);
@@ -104,18 +103,14 @@ public class IocConfig implements EnvironmentAware, InitializingBean {
 		familyCount = Integer.parseInt(env.getProperty("family.familyCount", "2"));
 	}
 
-	// TODO:
-	// 1.son和daughter利用类型转换获得，而不是直接定义它们
-	// 2.@Qualifier("father")和@Qualifier("mother")是否可以去掉
 	// ==========A.The IoC Container==========
 	// A.1.Bean Definition and Dependency Injection
 	// A.1.1.Bean instantiation with a constructor
 	@Lazy
 	@DependsOn("house")
 	@Bean(name = "family", initMethod = "init", destroyMethod = "destroy2")
-	public Family family(@Value("${family.familyName:Ruan_def}") String familyName, @Qualifier("father") People father,
-			@Qualifier("mother") People mother, @Qualifier("son") People son, @Qualifier("daughter") People daughter,
-			@Qualifier("guest") People guest) {
+	public Family family(@Value("${family.familyName:Ruan_def}") String familyName, People father, People mother,
+			@Value("${son.all}") People son, @Value("${daughter.all}") People daughter, People guest) {
 		// 1.Constructor-based dependency injection
 		Family family = new Family(familyName, familyCount, father);
 		// 2.Setter-based dependency injection
@@ -130,9 +125,8 @@ public class IocConfig implements EnvironmentAware, InitializingBean {
 	@Lazy
 	@DependsOn("house")
 	@Bean(name = "family1", initMethod = "init", destroyMethod = "destroy2")
-	public Family family1(@Value("${family.1.familyName:Ruan_def}") String familyName, @Qualifier("father") People father,
-			@Qualifier("mother") People mother, @Qualifier("son") People son, @Qualifier("daughter") People daughter,
-			@Qualifier("guest") People guest) {
+	public Family family1(@Value("${family.1.familyName:Ruan_def}") String familyName, People father, People mother,
+			@Value("${son.all}") People son, @Value("${daughter.all}") People daughter, People guest) {
 		// 1.Constructor-based dependency injection
 		Family family = new Family(familyName, familyCount, father);
 		// 2.Setter-based dependency injection
@@ -148,9 +142,8 @@ public class IocConfig implements EnvironmentAware, InitializingBean {
 	@Lazy
 	@DependsOn("house")
 	@Bean("family2")
-	public Family family2(@Value("${family.2.familyName:Ruan2_def}") String familyName,
-			@Qualifier("father") People father, @Qualifier("mother") People mother, @Qualifier("son") People son,
-			@Qualifier("daughter") People daughter, @Qualifier("guest") People guest) {
+	public Family family2(@Value("${family.2.familyName:Ruan2_def}") String familyName, People father, People mother,
+			@Value("${son.all}") People son, @Value("${daughter.all}") People daughter, People guest) {
 		Family family = FamilyFactory.createInstance1(familyName, familyCount, father);
 		family.setMother(mother);
 		family.setSon(son);
@@ -163,9 +156,8 @@ public class IocConfig implements EnvironmentAware, InitializingBean {
 	@Lazy
 	@DependsOn("house")
 	@Bean("family3")
-	public Family family3(@Value("${family.3.familyName:Ruan3_def}") String familyName,
-			@Qualifier("father") People father, @Qualifier("mother") People mother, @Qualifier("son") People son,
-			@Qualifier("daughter") People daughter, @Qualifier("guest") People guest) {
+	public Family family3(@Value("${family.3.familyName:Ruan3_def}") String familyName, People father, People mother,
+			@Value("${son.all}") People son, @Value("${daughter.all}") People daughter, People guest) {
 		Family family = familyFactory().createInstance2(familyName, familyCount, father);
 		family.setMother(mother);
 		family.setSon(son);
@@ -181,36 +173,19 @@ public class IocConfig implements EnvironmentAware, InitializingBean {
 	}
 
 	@Lazy
-	@Qualifier("father")
 	@Bean("father")
-	public People father(@Value("${father.name:ruanwei_def}") String name, @Value("${father.age:36}") int age) {
+	public People father(@Value("${father.name:ruanwei_def}") String name, @Value("${father.age:88}") int age) {
 		return new People(name, age);
 	}
 
 	@Lazy
-	@Qualifier("mother")
 	@Bean("mother")
-	public People mother(@Value("${mother.name:lixiaoling_def}") String name, @Value("${mother.age:35}") int age) {
-		return new People(name, age);
-	}
-
-	@Lazy
-	@Qualifier("son")
-	@Bean("son")
-	public People son(@Value("${son.name:ruanziqiao_def}") String name, @Value("${son.age:6}") int age) {
-		return new People(name, age);
-	}
-
-	@Lazy
-	@Qualifier("daughter")
-	@Bean("daughter")
-	public People daughter(@Value("${daughter.name:ruanzixuan_def}") String name, @Value("${daughter.age:6}") int age) {
+	public People mother(@Value("${mother.name:lixiaoling_def}") String name, @Value("${mother.age:88}") int age) {
 		return new People(name, age);
 	}
 
 	@Lazy
 	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-	@Qualifier("guest")
 	@Bean("guest")
 	public People guest(@Value("${guest.name:ruan_def}") String name,
 			@Value("#{(new java.util.Random()).nextInt(100) ?: 8}") int age) {

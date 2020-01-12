@@ -15,7 +15,6 @@ import org.springframework.context.annotation.PropertySource;
 @Profile("development")
 @PropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
 @PropertySource("classpath:family.properties")
-// @ImportResource({"classpath:spring/applicationContext.xml"})
 @Import({ IocConfig.class, AopConfig.class/*, DataAccessConfig.class*/ })
 @Configuration
 public class AppConfig {
