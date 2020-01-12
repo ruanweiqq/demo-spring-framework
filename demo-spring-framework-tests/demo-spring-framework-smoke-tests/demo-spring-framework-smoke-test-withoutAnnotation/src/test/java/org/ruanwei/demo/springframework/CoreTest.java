@@ -55,7 +55,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @ActiveProfiles("development")
 @TestPropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
 @SpringJUnitConfig(AppConfig.class)
-// @SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
+//@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
 public class CoreTest implements ApplicationContextAware {
 	private static Log log = LogFactory.getLog(CoreTest.class);
 
