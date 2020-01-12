@@ -223,6 +223,109 @@
 	
 	<!-- <jee:jndi-lookup id="dataSource4" jndi-name="java:comp/env/jdbc/myds"/> -->
 
+<!-- ==========D.Spring Data:Redis========== -->
+	<bean id="redisClient"
+		class="org.ruanwei.demo.springframework.data.redis.xml.RedisClient">
+		<property name="redisTemplate" ref="redisTemplate" />
+		<property name="stringRedisTemplate"
+			ref="stringRedisTemplate" />
+	</bean>
+
+	<bean id="redisTemplate"
+		class="org.springframework.data.redis.core.RedisTemplate"
+		p:connection-factory-ref="jedisConnectionFactory"
+		p:enable-transaction-support="true"
+		p:key-serializer-ref="stringRedisSerializer"
+		p:value-serializer-ref="stringRedisSerializer"
+		p:hashKey-serializer-ref="stringRedisSerializer"
+		p:hashValue-serializer-ref="stringRedisSerializer" />
+
+	<bean id="stringRedisTemplate"
+		class="org.springframework.data.redis.core.StringRedisTemplate"
+		p:connection-factory-ref="jedisConnectionFactory"
+		p:enable-transaction-support="true" />
+
+	<!-- Redis Messaging Receiver:RedisMessageListenerContainer -->
+	<redis:listener-container
+		connection-factory="jedisConnectionFactory"
+		topic-serializer="stringRedisSerializer">
+		<!-- the method attribute can be skipped as the default method name is 
+			"handleMessage" -->
+		<redis:listener ref="myRedisMessageListener1"
+			topic="myChannel" serializer="stringRedisSerializer" />
+		<redis:listener ref="myRedisMessageListener2"
+			method="handleMessage" topic="myChannel"
+			serializer="stringRedisSerializer" />
+	</redis:listener-container>
+	<bean id="myRedisMessageListener1"
+		class="org.ruanwei.demo.springframework.integration.redis.xml.MyMessageListener" />
+	<bean id="myRedisMessageListener2"
+		class="org.ruanwei.demo.springframework.integration.redis.xml.MyMessageDelegate" />
+	<!-- 等价于上面 -->
+	<!-- <bean id="redisMessageListenerContainer"
+		class="org.springframework.data.redis.listener.RedisMessageListenerContainer">
+		<property name="connectionFactory" ref="jedisConnectionFactory" />
+		<property name="messageListeners">
+			<map>
+				<entry key-ref="myRedisMessageListener1">
+					<bean class="org.springframework.data.redis.listener.ChannelTopic">
+						<constructor-arg value="myChannel" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean> -->
+
+	<bean id="stringRedisSerializer"
+		class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+
+	<bean id="jedisConnectionFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		p:host-name="localhost" p:port="6379" p:use-pool="true"
+		p:pool-config-ref="jedisPoolConfig" />
+	<!-- <bean id="lettuceConnectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory" 
+		p:host-name="localhost" p:port="6379" /> -->
+
+	<bean id="jedisPoolConfig"
+		class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="32" />
+		<property name="maxIdle" value="6" />
+		<property name="testOnBorrow" value="true" />
+	</bean>
+
+	<bean id="sentinelConfiguration"
+		class="org.springframework.data.redis.connection.RedisSentinelConfiguration">
+		<property name="master" value="myMaster" />
+		<property name="sentinels">
+			<set>
+				<bean
+					class="org.springframework.data.redis.connection.RedisNode"
+					p:host="localhost" p:port="26379" />
+				<bean
+					class="org.springframework.data.redis.connection.RedisNode"
+					p:host="localhost" p:port="26380" />
+			</set>
+		</property>
+	</bean>
+
+	<bean id="clusterConfiguration"
+		class="org.springframework.data.redis.connection.RedisClusterConfiguration">
+		<property name="maxRedirects" value="" />
+		<property name="clusterNodes">
+			<set>
+				<bean
+					class="org.springframework.data.redis.connection.RedisNode"
+					p:host="localhost" p:port="6379" />
+				<bean
+					class="org.springframework.data.redis.connection.RedisNode"
+					p:host="localhost" p:port="6380" />
+			</set>
+		</property>
+	</bean>
+	
+	<!-- <jpa:repositories base-package="org.ruanwei.demo.springframework.data.jdbc">
+	</jpa:repositories> -->
+	
 	<!-- more bean definitions go here -->
 
 </beans>

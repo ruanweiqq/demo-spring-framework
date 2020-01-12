@@ -340,7 +340,6 @@
 	<!-- more bean definitions go here -->
 	<import resource="aop.xml" />
 	<import resource="dataAccess.xml" />
-	<import resource="springData.xml" />
 	<!-- <import resource="integration.xml" /> -->
 
 	<!-- A.5.2.Profile：必须放在配置文件最后 -->

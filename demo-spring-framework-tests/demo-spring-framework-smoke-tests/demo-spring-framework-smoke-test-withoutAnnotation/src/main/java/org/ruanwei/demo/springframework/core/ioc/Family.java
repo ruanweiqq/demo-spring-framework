@@ -52,8 +52,7 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 	private MessageSource messageSource;
 	private ResourceLoader resourceLoader;
 	private ApplicationEventPublisher publisher;
-
-	private Environment env;
+	private Environment environment;
 
 	private String beanName;
 	private ClassLoader classLoader;
@@ -102,17 +101,17 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 		log.info("helloWorld1()");
 
 		// 1.Environment Profile
-		if (env == null) {
-			env = context.getEnvironment();
+		if (environment == null) {
+			environment = context.getEnvironment();
 		}
 		// -Dspring.profiles.active="development"
 		// -Dspring.profiles.default="production"
-		log.info("profiles1==========" + env.getActiveProfiles() + " " + env.getDefaultProfiles());
-		Recorder.put("activeProfile", env.getActiveProfiles()[0]);
-		Recorder.put("defaultProfile", env.getDefaultProfiles()[0]);
+		log.info("profiles1==========" + environment.getActiveProfiles() + " " + environment.getDefaultProfiles());
+		Recorder.put("activeProfile", environment.getActiveProfiles()[0]);
+		Recorder.put("defaultProfile", environment.getDefaultProfiles()[0]);
 
-		if (env instanceof ConfigurableEnvironment) {
-			ConfigurableEnvironment configEnv = (StandardEnvironment) env;
+		if (environment instanceof ConfigurableEnvironment) {
+			ConfigurableEnvironment configEnv = (StandardEnvironment) environment;
 			configEnv.setActiveProfiles("development");
 			configEnv.setDefaultProfiles("production");
 			if (context instanceof ConfigurableApplicationContext) {
@@ -121,10 +120,10 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 			}
 		}
 
-		env = context.getEnvironment();
-		log.info("profiles2==========" + env.getActiveProfiles() + " " + env.getDefaultProfiles());
-		Recorder.put("activeProfile2", env.getActiveProfiles()[0]);
-		Recorder.put("defaultProfile2", env.getDefaultProfiles()[0]);
+		environment = context.getEnvironment();
+		log.info("profiles2==========" + environment.getActiveProfiles() + " " + environment.getDefaultProfiles());
+		Recorder.put("activeProfile2", environment.getActiveProfiles()[0]);
+		Recorder.put("defaultProfile2", environment.getDefaultProfiles()[0]);
 
 		House house = context.getBean("house", House.class);
 		log.info("house==========" + house);
@@ -133,8 +132,8 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 
 		// 2.Environment PropertySource
 		// StandardEnvironment:MapPropertySource(systemProperties)/SystemEnvironmentPropertySource(systemEnvironment)
-		if (env instanceof ConfigurableEnvironment) {
-			ConfigurableEnvironment configEnv = (ConfigurableEnvironment) env;
+		if (environment instanceof ConfigurableEnvironment) {
+			ConfigurableEnvironment configEnv = (ConfigurableEnvironment) environment;
 			MutablePropertySources propertySources = configEnv.getPropertySources();
 			log.info("PropertySources1==========" + propertySources);
 
@@ -147,16 +146,16 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 			log.info("PropertySources2==========" + propertySources);
 		}
 
-		String a = env.getProperty("a", "default_a"); // MapPropertySource(-Da=1)
+		String a = environment.getProperty("a", "default_a"); // MapPropertySource(-Da=1)
 		Recorder.put("a", "1");
 
-		String b = env.getProperty("b", "default_b"); // SystemEnvironmentPropertySource(export b=2)
+		String b = environment.getProperty("b", "default_b"); // SystemEnvironmentPropertySource(export b=2)
 		Recorder.put("b", "2");
 
-		String c = env.getProperty("c", "default_c");// ResourcePropertySource(@PeopertySource("propertySource.properties"))
+		String c = environment.getProperty("c", "default_c");// ResourcePropertySource(@PeopertySource("propertySource.properties"))
 		Recorder.put("c", "3");
 
-		String d = env.getProperty("d", "default_d");// MapPropertySource(addLast)
+		String d = environment.getProperty("d", "default_d");// MapPropertySource(addLast)
 		Recorder.put("d", "4");
 
 		log.info("property=========a=" + a + " b=" + b + " c=" + c + " d=" + d);
@@ -306,7 +305,7 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 		if (env == null) {
 			env = context.getEnvironment();
 		}
-		this.env = env;
+		this.environment = env;
 	}
 
 	@Override

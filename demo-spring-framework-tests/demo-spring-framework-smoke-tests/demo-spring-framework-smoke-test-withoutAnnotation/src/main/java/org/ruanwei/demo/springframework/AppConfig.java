@@ -83,7 +83,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 @PropertySource("classpath:propertySource-${spring.profiles.active:development}.properties")
 @PropertySource("classpath:family.properties")
 // @ImportResource({"classpath:spring/applicationContext.xml"})
-@Import({ AopConfig.class, DataAccessConfig.class, SpringDataConfig.class })
+@Import({ AopConfig.class, DataAccessConfig.class })
 @Configuration
 public class AppConfig implements EnvironmentAware, InitializingBean {
 	private static Log log = LogFactory.getLog(AppConfig.class);
