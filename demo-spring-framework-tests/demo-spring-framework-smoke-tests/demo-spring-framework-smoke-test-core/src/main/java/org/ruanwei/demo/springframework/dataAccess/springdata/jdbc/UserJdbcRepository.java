@@ -1,4 +1,4 @@
-package org.ruanwei.demo.springframework.data.jdbc;
+package org.ruanwei.demo.springframework.dataAccess.springdata.jdbc;
 
 import java.sql.Date;
 import java.util.List;

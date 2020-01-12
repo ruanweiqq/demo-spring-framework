@@ -227,7 +227,7 @@ public class CoreTest implements ApplicationContextAware {
 		Family family = context.getBean("family", Family.class);
 
 		assertDoesNotThrow(() -> {
-			family.sayHello("123");
+			family.sayHello("12345");
 		}, "family.sayHello should not throw exception");
 
 		String result = assertDoesNotThrow(() -> {
