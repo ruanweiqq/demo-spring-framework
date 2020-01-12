@@ -53,8 +53,8 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
  */
 @ActiveProfiles("development")
 @TestPropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
-//@SpringJUnitConfig(AppConfig.class)
-@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
+@SpringJUnitConfig(AppConfig.class)
+// @SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
 public class CoreTest implements ApplicationContextAware {
 	private static Log log = LogFactory.getLog(CoreTest.class);
 
@@ -141,38 +141,30 @@ public class CoreTest implements ApplicationContextAware {
 		log.info("3======================================================================================");
 
 		Family family = context.getBean("family", Family.class);
-		log.info(family);
 		assertTrue("Ruan".contentEquals(family.getFamilyName()), "familyName should be Ruan");
 
 		Family family1 = context.getBean("family1", Family.class);
-		log.info(family1);
 		assertTrue("Ruan1".contentEquals(family1.getFamilyName()), "familyName should be Ruan1");
 
 		Family family2 = context.getBean("family2", Family.class);
-		log.info(family2);
 		assertTrue("Ruan2".contentEquals(family2.getFamilyName()), "familyName should be Ruan2");
 
 		Family family3 = context.getBean("family3", Family.class);
-		log.info(family3);
 		assertTrue("Ruan3".contentEquals(family3.getFamilyName()), "familyName should be Ruan3");
 
 		Family familyx = context.getBean("familyx", Family.class);
-		log.info(familyx);
 		assertTrue("RuanX".contentEquals(familyx.getFamilyName()), "familyName should be RuanX");
 
 		Object familyx2 = context.getBean("&familyx");
-		log.info(familyx2);
 		assertTrue(familyx2 instanceof MyFamilyFactoryBean, "familyx2 should be MyFamilyFactoryBean");
 
 		// 3.Method injection: Lookup method injection
 		People bueaty = family.createBueaty();
 		assertNotNull(bueaty, "bueaty should not be null");
-		log.info(bueaty);
 		assertTrue("ruan_guest".contentEquals(bueaty.getName()), "guest name should be Guest_ruanwei");
 
 		// 3.Method injection: Arbitrary method replacement
 		int sum = family.calc(3, 5);
-		log.info(sum);
 		assertEquals(sum, 18, "sum should be 18");
 	}
 
@@ -214,9 +206,9 @@ public class CoreTest implements ApplicationContextAware {
 		Family family = context.getBean("family", Family.class);
 		family.helloWorld();
 
-		assertEquals(4, People.EVENT_COUNT, "EVENT_COUNT should be 4");
-		assertEquals(12, People.PAYLOAD_EVENT_COUNT, "PAYLOAD_EVENT_COUNT should be 12");
-		assertEquals(12, People.CONTEXT_EVENT_COUNT, "CONTEXT_EVENT_COUNT should be 12");
+		assertTrue(People.EVENT_COUNT >= 4, "EVENT_COUNT should be greater than 4");
+		assertTrue(People.PAYLOAD_EVENT_COUNT >= 12, "PAYLOAD_EVENT_COUNT should be greater than 12");
+		assertTrue(People.CONTEXT_EVENT_COUNT >= 12, "CONTEXT_EVENT_COUNT should be greater than 12");
 	}
 
 	@Order(7)
@@ -231,7 +223,8 @@ public class CoreTest implements ApplicationContextAware {
 		assertTrue("whatever".contentEquals(Recorder.get("before_message")), "message should be whatever");
 		assertTrue("whatever".contentEquals(Recorder.get("after_message")), "message should be whatever");
 		assertTrue("whatever".contentEquals(Recorder.get("afterReturning_message")), "message should be whatever");
-		// assertTrue("whatever".contentEquals(Recorder.get("afterThrowing_message")), "message should be whatever");
+		// assertTrue("whatever".contentEquals(Recorder.get("afterThrowing_message")),
+		// "message should be whatever");
 		assertTrue("whatever".contentEquals(Recorder.get("around_message")), "message should be whatever");
 		assertTrue("Hello,whatever".contentEquals(Recorder.get("ret_message")), "message should be whatever");
 	}
@@ -243,7 +236,7 @@ public class CoreTest implements ApplicationContextAware {
 
 		Good good = (Good) context.getBean("good");
 		Happy happy = (Happy) context.getBean("good");
-		
+
 		assertTrue(good instanceof Good, "good should be Good");
 		assertTrue(good instanceof Happy, "good should be Happy");
 		assertTrue(happy instanceof Good, "happy should be Good");

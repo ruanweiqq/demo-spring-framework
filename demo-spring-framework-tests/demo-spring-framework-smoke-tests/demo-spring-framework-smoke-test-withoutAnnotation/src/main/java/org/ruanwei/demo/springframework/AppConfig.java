@@ -44,6 +44,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Description;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
@@ -81,10 +82,10 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  *
  */
 @Profile("development")
-@PropertySource("classpath:propertySource-${spring.profiles.active:development}.properties")
+@PropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
 @PropertySource("classpath:family.properties")
 @ImportResource({"classpath:spring/applicationContext.xml"})
-//@Import({ AopConfig.class, DataAccessConfig.class })
+@Import({ AopConfig.class/*, DataAccessConfig.class*/ })
 @Configuration
 public class AppConfig implements EnvironmentAware, InitializingBean {
 	private static Log log = LogFactory.getLog(AppConfig.class);
@@ -113,7 +114,24 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Lazy
 	@DependsOn("house")
 	@Bean(name = "family", initMethod = "init", destroyMethod = "destroy2")
-	public Family family(@Value("${family.familyName:uan_def}") String familyName, @Qualifier("father") People father,
+	public Family family(@Value("${family.familyName:Ruan_def}") String familyName, @Qualifier("father") People father,
+			@Qualifier("mother") People mother, @Qualifier("son") People son, @Qualifier("daughter") People daughter,
+			@Qualifier("guest") People guest) {
+		// 1.Constructor-based dependency injection
+		Family family = new Family(familyName, familyCount, father);
+		// 2.Setter-based dependency injection
+		family.setMother(mother);
+		family.setSon(son);
+		family.setDaughter(daughter);
+		// Proxied scoped beans as dependencies
+		family.setGuest(guest);
+		return family;
+	}
+
+	@Lazy
+	@DependsOn("house")
+	@Bean(name = "family1", initMethod = "init", destroyMethod = "destroy2")
+	public Family family1(@Value("${family.1.familyName:Ruan_def}") String familyName, @Qualifier("father") People father,
 			@Qualifier("mother") People mother, @Qualifier("son") People son, @Qualifier("daughter") People daughter,
 			@Qualifier("guest") People guest) {
 		// 1.Constructor-based dependency injection
@@ -203,7 +221,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Bean("absHouse")
 	public House absHouse(@Value("${house.name.abstract:AbsHouse_def}") String houseName,
 			@Value("1,2") Integer[] someArray, @Value("3,4") List<Integer> someList, @Value("5,6") Set<Integer> someSet,
-			@Value("a=7,b=8") Properties someProperties, @Value("a=9,b=10") Map<String, Integer> someMap,
+			@Value("a=7,b=8") Properties someProperties, /*@Value("a=9,b=10") Map<String, Integer> someMap,*/
 			@Value("#{someField1}") double someField1, @Value("#{someField2}") String someField2,
 			@Value("#{someField3}") String someField3) {
 		House abshouse = new House();
@@ -214,7 +232,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		abshouse.setSomeList(someList);
 		abshouse.setSomeSet(someSet);
 		abshouse.setSomeProperties(someProperties);
-		abshouse.setSomeMap(someMap);
+		// abshouse.setSomeMap(someMap);
 
 		abshouse.setSomeList2(someList2());
 		abshouse.setSomeSet2(someSet2());
@@ -436,7 +454,8 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 
 	// A.5.Environment：Profile and PropertySource
 	// A.5.1.PropertySource：供Environment访问。无对应XML配置，参考@PropertySource
-	// A.5.2.Profile：-Dspring.profiles.active="development" -Dspring.profiles.default="production"
+	// A.5.2.Profile：-Dspring.profiles.active="development"
+	// -Dspring.profiles.default="production"
 	// 参考<beans profile="xx">和@Profile
 	@Profile("development")
 	@Bean("house")
