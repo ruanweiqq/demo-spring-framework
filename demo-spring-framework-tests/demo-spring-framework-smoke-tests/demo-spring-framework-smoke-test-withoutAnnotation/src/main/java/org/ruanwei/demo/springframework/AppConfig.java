@@ -15,7 +15,7 @@ import org.springframework.context.annotation.PropertySource;
 @Profile("development")
 @PropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
 @PropertySource("classpath:family.properties")
-@Import({ IocConfig.class, AopConfig.class/*, DataAccessConfig.class*/ })
+@Import({ IocConfig.class, AopConfig.class, DataAccessConfig.class })
 @Configuration
 public class AppConfig {
 	private static Log log = LogFactory.getLog(AppConfig.class);

@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class User {
 	@Id
+	private int id;
 	private String name;
 	private int age;
 	private Date birthday;
@@ -48,8 +49,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [name=" + name + ", age=" + age + ", birthday=" + birthday
-				+ "]";
+		return "User [id=" + id + ", name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
 	}
 
 }

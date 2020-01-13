@@ -24,12 +24,15 @@
         http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm.xsd 
         http://www.springframework.org/schema/redis http://www.springframework.org/schema/redis/spring-redis.xsd">
 
+	<context:property-placeholder
+		location="classpath*:jdbc.properties" file-encoding="UTF-8" order="0" />
+		
 	<!-- ==========C.0.Transaction========== -->
 	<aop:config>
 		<aop:pointcut id="daoPointcut"
 			expression="execution(* org.ruanwei.demo.springframework.dataAccess.jdbc.*Dao.*(..))" />
 		<aop:pointcut id="repositoryPointcut"
-			expression="execution(* org.ruanwei.demo.springframework.data.*.*Repository.*(..))" />
+			expression="execution(* org.ruanwei.demo.springframework.dataAccess.springdata.*.*Repository.*(..))" />
 		<aop:advisor advice-ref="txAdvice"
 			pointcut-ref="daoPointcut" order="2" />
 		<aop:advisor advice-ref="txAdvice"
@@ -46,11 +49,11 @@
 	<tx:advice id="txAdvice"
 		transaction-manager="transactionManager">
 		<tx:attributes>
-			<!-- all methods starting with 'test' are read only -->
+			<!-- all methods starting with 'query' are read only -->
 			<tx:method name="query*" read-only="true" />
-			<tx:method name="transactionalMethod"
+			<tx:method name="m1"
 				propagation="REQUIRED" rollback-for="java.lang.ArithmeticException" />
-			<tx:method name="transactionalSubMethod"
+			<tx:method name="m2"
 				propagation="REQUIRES_NEW"
 				rollback-for="java.lang.ArithmeticException" />
 			<!-- other methods use the default transaction settings (see below) -->
@@ -71,17 +74,17 @@
 	</bean>
 	
 	<!-- ==========C.2.ORM:JPA========== -->
-	<bean id="userJpaDao"
+	<!-- <bean id="userJpaDao"
 		class="org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao">
 		<property name="entityManagerFactory"
 			ref="entityManagerFactory" />
 	</bean>
-	<!-- PlatformTransactionManager:local transaction manager for JPA -->
+	PlatformTransactionManager:local transaction manager for JPA
 	<bean id="jpaTransactionManager"
 		class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory"
 			ref="entityManagerFactory" />
-		<!-- <property name="dataSource" ref="dataSource1" /> -->
+		<property name="dataSource" ref="dataSource1" />
 	</bean>
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -103,14 +106,16 @@
 			<bean
 				class="org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver" />
 		</property>
-	</bean>
+	</bean> -->
+	<!-- <jpa:repositories base-package="org.ruanwei.demo.springframework.data.jdbc">
+	</jpa:repositories> -->
 	
 	<!-- ==========C.3.ORM:Hibernate========== -->
 	<!-- <bean id="userHibernateDao"
 		class="org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserHibernateDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-		<!-- PlatformTransactionManager:local transaction manager for Hibernate
+	PlatformTransactionManager:local transaction manager for Hibernate
 	<bean id="hibernateTransactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
@@ -136,20 +141,20 @@
 		class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 		<property name="mapperInterface"
-			value="org.ruanwei.demo.admin.dao.UserMybatisDao" />
+			value="org.ruanwei.demo.springframework.dataAccess.orm.mybatis.UserMybatisDao" />
 	</bean>
 	<bean id="sqlSessionFactory"
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="configLocation"
 			value="classpath:mybatis/mybatis-config.xml" />
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="dataSource1" />
 	</bean> -->
 	
 	<!-- global transaction manager for JTA -->
 	<!-- <bean id="jtaTransactionManager"
 		class="org.springframework.transaction.jta.JtaTransactionManager"/> -->
 	
-	<!-- ==========C.4.DataSource========== -->
+	<!-- ==========C.5.DataSource========== -->
 	<!-- DataSource:HSQL/H2/DERBY -->
 	<jdbc:embedded-database id="dataSource"
 		type="HSQL" generate-name="true">
@@ -224,8 +229,8 @@
 	<!-- <jee:jndi-lookup id="dataSource4" jndi-name="java:comp/env/jdbc/myds"/> -->
 
 <!-- ==========D.Spring Data:Redis========== -->
-	<bean id="redisClient"
-		class="org.ruanwei.demo.springframework.data.redis.xml.RedisClient">
+	<!-- <bean id="redisClient"
+		class="org.ruanwei.demo.springframework.dataAccess.springdata.redis.RedisClient">
 		<property name="redisTemplate" ref="redisTemplate" />
 		<property name="stringRedisTemplate"
 			ref="stringRedisTemplate" />
@@ -245,12 +250,12 @@
 		p:connection-factory-ref="jedisConnectionFactory"
 		p:enable-transaction-support="true" />
 
-	<!-- Redis Messaging Receiver:RedisMessageListenerContainer -->
+	Redis Messaging Receiver:RedisMessageListenerContainer
 	<redis:listener-container
 		connection-factory="jedisConnectionFactory"
 		topic-serializer="stringRedisSerializer">
-		<!-- the method attribute can be skipped as the default method name is 
-			"handleMessage" -->
+		the method attribute can be skipped as the default method name is 
+			"handleMessage"
 		<redis:listener ref="myRedisMessageListener1"
 			topic="myChannel" serializer="stringRedisSerializer" />
 		<redis:listener ref="myRedisMessageListener2"
@@ -260,7 +265,7 @@
 	<bean id="myRedisMessageListener1"
 		class="org.ruanwei.demo.springframework.integration.redis.xml.MyMessageListener" />
 	<bean id="myRedisMessageListener2"
-		class="org.ruanwei.demo.springframework.integration.redis.xml.MyMessageDelegate" />
+		class="org.ruanwei.demo.springframework.integration.redis.xml.MyMessageDelegate" /> -->
 	<!-- 等价于上面 -->
 	<!-- <bean id="redisMessageListenerContainer"
 		class="org.springframework.data.redis.listener.RedisMessageListenerContainer">
@@ -276,15 +281,15 @@
 		</property>
 	</bean> -->
 
-	<bean id="stringRedisSerializer"
+	<!-- <bean id="stringRedisSerializer"
 		class="org.springframework.data.redis.serializer.StringRedisSerializer" />
 
 	<bean id="jedisConnectionFactory"
 		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
 		p:host-name="localhost" p:port="6379" p:use-pool="true"
 		p:pool-config-ref="jedisPoolConfig" />
-	<!-- <bean id="lettuceConnectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory" 
-		p:host-name="localhost" p:port="6379" /> -->
+	<bean id="lettuceConnectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory" 
+		p:host-name="localhost" p:port="6379" />
 
 	<bean id="jedisPoolConfig"
 		class="redis.clients.jedis.JedisPoolConfig">
@@ -321,10 +326,7 @@
 					p:host="localhost" p:port="6380" />
 			</set>
 		</property>
-	</bean>
-	
-	<!-- <jpa:repositories base-package="org.ruanwei.demo.springframework.data.jdbc">
-	</jpa:repositories> -->
+	</bean> -->
 	
 	<!-- more bean definitions go here -->
 

@@ -26,6 +26,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -84,18 +85,16 @@ public class UserJdbcDao {
 	private static final String sql_62 = "select * from user where id > :id";
 
 //	private static final String sql_71 = "insert into user(name,age,birthday) values(\"ruanwei\", 35, \"1983-07-06\")";
-	private static final String sql_71 = "insert into user(name,age,birthday) values(?, ?, ?)";
-	private static final String sql_72 = "insert into user(name,age,birthday) values(:name, :age, :birthday)";
+	private static final String sql_insert = "insert into user(name,age,birthday) values(?, ?, ?)";
+	private static final String sql_insert_namedParam = "insert into user(name,age,birthday) values(:name, :age, :birthday)";
 
-	private static final String sql_81 = "update user set age = ? where name = ?";
-	private static final String sql_82 = "update user set age = :age where name = :name";
+	private static final String sql_update = "update user set age = ? where name = ?";
+	private static final String sql_update_namedParam = "update user set age = :age where name = :name";
 
-	private static final String sql_9 = "delete from user where id > ?";
-
-	private static final PreparedStatementSetter pss0 = ps -> ps.setLong(1, 0L);
+	private static final String sql_delete = "delete from user where name = ?";
+	private static final String sql_delete_namedParam = "delete from user where name = :name";
 
 	@Required
-	@Autowired
 	public void setDataSource(@Qualifier("jdbcDataSource") DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -105,162 +104,298 @@ public class UserJdbcDao {
 	}
 
 	// ====================single row====================
-	// RowMapperResultSetExtractor & SingleColumnRowMapper
-	public void queryForSingleRowWithSingleColumn(int id) {
-		String column1 = jdbcTemplate.queryForObject(sql_11, new Object[] { id }, String.class);
-
-		Map<String, Integer> namedParam = new HashMap<String, Integer>();
-		namedParam.put("id", id);
-		String column2 = namedParameterJdbcTemplate.queryForObject(sql_12, namedParam, String.class);
-
-		log.info("column1=" + column1 + ",column2=" + column2);
-	}
-
 	// RowMapperResultSetExtractor & ColumnMapRowMapper
-	public void queryForSingleRowAsColumnMap(int id) {
+	public Map<String, Object> queryForSingleRowAsColumnMap(int id) {
+		log.info("queryForSingleRowAsColumnMap(int id)");
+
 		Map<String, Object> columnMap1 = jdbcTemplate.queryForMap(sql_21, new Object[] { id });
 
-		Map<String, Integer> namedParam = new HashMap<String, Integer>();
-		namedParam.put("id", id);
-		Map<String, Object> columnMap2 = namedParameterJdbcTemplate.queryForMap(sql_22, namedParam);
+		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		paramMap.put("id", id);
+		Map<String, Object> columnMap2 = namedParameterJdbcTemplate.queryForMap(sql_22, paramMap);
 
 		columnMap1.forEach((k, v) -> log.info(k + "=" + v));
 		columnMap2.forEach((k, v) -> log.info(k + "=" + v));
+
+		return columnMap2;
+	}
+
+	// RowMapperResultSetExtractor & SingleColumnRowMapper
+	public String queryForSingleRowWithSingleColumn(int id) {
+		log.info("queryForSingleRowWithSingleColumn(int id)");
+
+		String column1 = jdbcTemplate.queryForObject(sql_11, new Object[] { id }, String.class);
+
+		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		paramMap.put("id", id);
+		String column2 = namedParameterJdbcTemplate.queryForObject(sql_12, paramMap, String.class);
+
+		log.info("column1=" + column1 + ",column2=" + column2);
+		return column2;
 	}
 
 	// RowMapperResultSetExtractor & BeanPropertyRowMapper
-	public void queryForSingleRowAsBeanProperty(int id) {
-		User obj1 = jdbcTemplate.queryForObject(sql_31, new Object[] { id },
+	public User queryForSingleRowAsBeanProperty(int id) {
+		log.info("queryForSingleRowAsBeanProperty(int id)");
+
+		User user1 = jdbcTemplate.queryForObject(sql_31, new Object[] { id },
 				new BeanPropertyRowMapper<User>(User.class));
 
-		Map<String, Integer> namedParam = new HashMap<String, Integer>();
-		namedParam.put("id", id);
-		User obj2 = namedParameterJdbcTemplate.queryForObject(sql_32, namedParam,
+		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		paramMap.put("id", id);
+		User user2 = namedParameterJdbcTemplate.queryForObject(sql_32, paramMap,
 				new BeanPropertyRowMapper<User>(User.class));
 
-		log.info("obj1=" + obj1 + ",obj2=" + obj2);
+		log.info("user1=" + user1 + ",user2=" + user2);
+		return user2;
 	}
 
 	// ====================multiple row====================
-	public void queryForListWithSingleColumn(int largerThanId) {
-		List<String> columnList1 = jdbcTemplate.queryForList(sql_41, new Object[] { largerThanId }, String.class);
+	public List<Map<String, Object>> queryForListWithColumnMap(int largerThanId) {
+		log.info("queryForListWithColumnMap(int largerThanId)");
 
-		Map<String, Integer> namedParam = new HashMap<String, Integer>();
-		namedParam.put("id", largerThanId);
-		List<String> columnList2 = namedParameterJdbcTemplate.queryForList(sql_42, namedParam, String.class);
-
-		columnList1.forEach(column -> log.info("column=" + column));
-		columnList2.forEach(column -> log.info("column=" + column));
-	}
-
-	public void queryForListWithColumnMap(int largerThanId) {
 		List<Map<String, Object>> columnMapList1 = jdbcTemplate.queryForList(sql_51, new Object[] { largerThanId });
 
-		Map<String, Integer> namedParam = new HashMap<String, Integer>();
-		namedParam.put("id", largerThanId);
-		List<Map<String, Object>> columnMapList2 = namedParameterJdbcTemplate.queryForList(sql_52, namedParam);
+		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		paramMap.put("id", largerThanId);
+		List<Map<String, Object>> columnMapList2 = namedParameterJdbcTemplate.queryForList(sql_52, paramMap);
 
 		columnMapList1.forEach(columbMap -> columbMap.forEach((k, v) -> log.info(k + "=" + v)));
 		columnMapList2.forEach(columbMap -> columbMap.forEach((k, v) -> log.info(k + "=" + v)));
+		return columnMapList2;
 	}
 
-	public void queryForListWithBeanProperty(int largerThanId) {
+	public List<String> queryForListWithSingleColumn(int largerThanId) {
+		log.info("queryForListWithSingleColumn(int largerThanId)");
+
+		List<String> columnList1 = jdbcTemplate.queryForList(sql_41, new Object[] { largerThanId }, String.class);
+
+		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		paramMap.put("id", largerThanId);
+		List<String> columnList2 = namedParameterJdbcTemplate.queryForList(sql_42, paramMap, String.class);
+
+		columnList1.forEach(column -> log.info("column=" + column));
+		columnList2.forEach(column -> log.info("column=" + column));
+		return columnList2;
+	}
+
+	public List<User> queryForListWithBeanProperty(int largerThanId) {
+		log.info("queryForListWithBeanProperty(int largerThanId)");
+
 		List<User> objList1 = jdbcTemplate.query(sql_61, new Object[] { largerThanId },
 				new BeanPropertyRowMapper<User>(User.class));
 
+		PreparedStatementSetter pss0 = ps -> ps.setLong(1, 0L);
 		List<User> objList2 = jdbcTemplate.query(sql_61, pss0, new BeanPropertyRowMapper<User>(User.class));
 
-		Map<String, Integer> namedParam = new HashMap<String, Integer>();
-		namedParam.put("id", largerThanId);
-		List<User> objList3 = namedParameterJdbcTemplate.query(sql_62, namedParam,
+		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		paramMap.put("id", largerThanId);
+		List<User> objList3 = namedParameterJdbcTemplate.query(sql_62, paramMap,
 				new BeanPropertyRowMapper<User>(User.class));
 
 		objList1.forEach(obj -> log.info("obj=" + obj));
 		objList2.forEach(obj -> log.info("obj=" + obj));
 		objList3.forEach(obj -> log.info("obj=" + obj));
+		return objList3;
 	}
 
+	// ===================Part 1=============================
 	// ====================update====================
-	// create/update/delete都是调用update方法
+	private int _update(String sql, Object candidate, KeyHolder keyHolder) {
+		log.info("_update(String sql, Object candidate, KeyHolder keyHolder)");
+
+		int ret;
+		// MapSqlParameterSource or BeanPropertySqlParameterSource
+		SqlParameterSource sqlParamSource = SqlParameterSourceUtils.createBatch(candidate)[0];
+		if (keyHolder == null) {
+			ret = namedParameterJdbcTemplate.update(sql, sqlParamSource);
+		} else {
+			namedParameterJdbcTemplate.update(sql, sqlParamSource, keyHolder);
+			ret = keyHolder.getKey().intValue();
+		}
+		return ret;
+	}
+
+	private int _update(String sql, Map<String, ?> valueMap, KeyHolder keyHolder) {
+		log.info("_update(String sql, Map<String, ?> valueMap, KeyHolder keyHolder)");
+
+		int ret;
+		// MapSqlParameterSource or BeanPropertySqlParameterSource
+		SqlParameterSource sqlParamSource = SqlParameterSourceUtils.createBatch(valueMap)[0];
+		if (keyHolder == null) {
+			ret = namedParameterJdbcTemplate.update(sql, sqlParamSource);
+		} else {
+			namedParameterJdbcTemplate.update(sql, sqlParamSource, keyHolder);
+			ret = keyHolder.getKey().intValue();
+		}
+		return ret;
+	}
+
+	// ====================batch update====================
+	private int[] _batchUpdate(String sql, Object... candidates) {
+		log.info("_batchUpdate(Object... candidates)");
+
+		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(candidates);
+		return namedParameterJdbcTemplate.batchUpdate(sql, batch);
+	}
+
+	private int[] _batchUpdate(String sql, Map<String, ?>[] valueMaps) {
+		log.info("_batchUpdate(Map<String, ?>[] valueMaps)");
+
+		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(valueMaps);
+		return namedParameterJdbcTemplate.batchUpdate(sql, batch);
+	}
+
+	private int[] _batchUpdate(String sql, Collection<?> candidates) {
+		log.info("_batchUpdate(Collection<?> candidates)");
+
+		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(candidates);
+		return namedParameterJdbcTemplate.batchUpdate(sql, batch);
+	}
+
+	// Create
+	public int create(User user) {
+		log.info("create(User user)");
+		return _update(sql_insert_namedParam, user, null);
+	}
+
+	public int create(Map<String, ?> user) {
+		log.info("create(Map<String, ?> user)");
+		return _update(sql_insert_namedParam, user, null);
+	}
+
+	// Create with key
+	public int createWithKey(User user) {
+		log.info("createWithKey(User user)");
+
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		int key = _update(sql_insert_namedParam, user, keyHolder);
+		log.info("generatedKey=" + key);
+		return key;
+	}
+
+	public int createWithKey(Map<String, ?> user) {
+		log.info("createWithKey(Map<String, ?> user)");
+
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		int key = _update(sql_insert_namedParam, user, keyHolder);
+		log.info("generatedKey=" + key);
+		return key;
+	}
+
+	// Update
+	public int update(User user) {
+		log.info("update(User user)");
+		return _update(sql_update_namedParam, user, null);
+	}
+
+	public int update(Map<String, ?> user) {
+		log.info("update(Map<String, ?> user)");
+		return _update(sql_update_namedParam, user, null);
+	}
+
+	// Delete
+	public int delete(User user) {
+		log.info("delete(User user)");
+		return _update(sql_delete_namedParam, user, null);
+	}
+
+	public int delete(Map<String, ?> user) {
+		log.info("delete(Map<String, ?> user)");
+		return _update(sql_delete_namedParam, user, null);
+	}
+
+	// Batch Create
+	public int[] batchCreate(User... users) {
+		log.info("batchCreate(User... users)");
+		return _batchUpdate(sql_insert_namedParam, users);
+	}
+
+	// Batch Update
+	public int[] batchUpdate(Map<String, Object>[] users) {
+		log.info("batchUpdate(Map<String, User>[] users)");
+		return _batchUpdate(sql_update_namedParam, users);
+	}
+
+	// Batch Delete
+	public int[] batchDelete(Collection<User> users) {
+		log.info("batchDelete(Collection<User> users)");
+		return _batchUpdate(sql_delete_namedParam, users);
+	}
+
+	// ===================Part 2=============================
+	// Create/Update/Delete
 	public int createUser1(User user) {
 		log.info("createUser1(User user)" + user);
-
-		int count = jdbcTemplate.update(sql_71, user.getName(), user.getAge(), user.getBirthday());
-		return count;
+		return jdbcTemplate.update(sql_insert, user.getName(), user.getAge(), user.getBirthday());
 	}
 
 	public int createUser2(User user) {
 		log.info("createUser2(User user)");
 
-		PreparedStatementSetter upss = buildUserPSS(user);
-		int count = jdbcTemplate.update(sql_71, upss);
-		return count;
+		PreparedStatementSetter pss = ps -> {
+			ps.setString(1, user.getName());
+			ps.setInt(2, user.getAge());
+			ps.setDate(3, user.getBirthday());
+		};
+		return jdbcTemplate.update(sql_insert, pss);
 	}
 
-	public int createUser3(User user) {
-		log.info("createUser3(User user)");
+	public int createUserWithKey1(User user) {
+		log.info("createUserWithKey1(User user)");
 
+		PreparedStatementCreator psc = conn -> {
+			PreparedStatement ps = conn.prepareStatement(sql_insert, new String[] { "id" });
+			ps.setString(1, user.getName());
+			ps.setInt(2, user.getAge());
+			ps.setDate(3, user.getBirthday());
+			return ps;
+		};
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		PreparedStatementCreator upsc = buildUserPSC(sql_71, user);
-		int count = jdbcTemplate.update(upsc, keyHolder);
-		log.info("generatedKey=" + keyHolder.getKey().longValue());
-		return count;
+
+		int count = jdbcTemplate.update(psc, keyHolder);
+		int key = keyHolder.getKey().intValue();
+		log.info("generatedKey=" + key + ", count=" + count);
+		return key;
 	}
 
-	public <T> int createUser4(T t) {
-		log.info("createUser4(T t)");
+	// Batch Create/Update/Delete
+	public int[] batchCreateUser1(List<User> users) {
+		log.info("batchCreateUser1(List<User> users)");
 
-		SqlParameterSource sqlParamSource = SqlParameterSourceUtils.createBatch(t)[0];
-		int count = namedParameterJdbcTemplate.update(sql_72, sqlParamSource);
-		return count;
-	}
+		BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				ps.setString(1, users.get(i).getName());
+				ps.setInt(2, users.get(i).getAge());
+				ps.setDate(3, users.get(i).getBirthday());
+			}
 
-	public <T> int createUser5(T t) {
-		log.info("createUser5(T t)");
+			@Override
+			public int getBatchSize() {
+				return users.size();
+			}
+		};
 
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		SqlParameterSource sqlParamSource = SqlParameterSourceUtils.createBatch(t)[0];
-
-		int count = namedParameterJdbcTemplate.update(sql_72, sqlParamSource, keyHolder);
-		log.info("generatedKey=" + keyHolder.getKey().longValue());
-		return count;
-	}
-
-	// ====================batch update====================
-	public int[] batchUpdateUser1(final List<User> users) {
-		log.info("batchUpdateUser1(final List<User> users)");
-
-		BatchPreparedStatementSetter ubpss = buildUserBPSS(users);
-		int[] updateCounts = jdbcTemplate.batchUpdate(sql_81, ubpss);
+		int[] updateCounts = jdbcTemplate.batchUpdate(sql_insert, bpss);
 		return updateCounts;
 	}
 
-	public int[][] batchUpdateUser2(final Collection<User> users) {
-		log.info("batchUpdateUser2(final List<User> users)");
+	public int[][] batchCreateUser2(Collection<User> users) {
+		log.info("batchCreateUser2(Collection<User> users)");
 
-		ParameterizedPreparedStatementSetter<User> uppss = buildUserPPSS();
-		int[][] updateCounts = jdbcTemplate.batchUpdate(sql_81, users, 2, uppss);
+		ParameterizedPreparedStatementSetter<User> uppss = (ps, user) -> {
+			ps.setString(1, user.getName());
+			ps.setInt(2, user.getAge());
+			ps.setDate(3, user.getBirthday());
+		};
+
+		int[][] updateCounts = jdbcTemplate.batchUpdate(sql_insert, users, 2, uppss);
 		return updateCounts;
 	}
 
-	public <T> int[] batchUpdateUser3(final Collection<T> list) {
-		log.info("batchUpdateUser3(final List<User> users)");
-
-		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(list);
-		int[] updateCounts = namedParameterJdbcTemplate.batchUpdate(sql_82, batch);
-		return updateCounts;
-	}
-
-	public <T> int[] batchUpdateUser4(final Map<String, ?>... batchValues) {
-		log.info("batchUpdateUser4(final Map<String, ?>... batchValues)");
-
-		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(batchValues);
-		int[] updateCounts = namedParameterJdbcTemplate.batchUpdate(sql_82, batch);
-		return updateCounts;
-	}
-
-	public int[] batchUpdateUser5(final List<User> users) {
-		log.info("batchUpdateUser5(final List<User> users)");
+	public int[] batchCreateUser3(List<User> users) {
+		log.info("batchCreateUser3(List<User> users)");
 		if (jdbcTemplate != null) {
 			String sql = "update user set age=:age where id!=:id";
 			List<Object[]> batch = new ArrayList<Object[]>();
@@ -274,13 +409,6 @@ public class UserJdbcDao {
 		throw new UnsupportedOperationException();
 	}
 
-	public int deleteUser(int largerThanId) {
-		log.info("deleteUser(int largerThanId)");
-
-		int count = jdbcTemplate.update(sql_9, largerThanId);
-		return count;
-	}
-
 	// ====================SimpleJdbc====================
 	public void insertUser6(User user) {
 		log.info("insertUser6(User user)");
@@ -288,6 +416,7 @@ public class UserJdbcDao {
 		parameters.put("name", user.getName());
 		parameters.put("age", user.getAge());
 		parameters.put("birthday", user.getBirthday());
+
 		simpleJdbcInsert.execute(parameters);
 		Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);
 		log.info("generatedKey=" + newId.longValue());
@@ -298,14 +427,13 @@ public class UserJdbcDao {
 		SqlParameterSource in = new MapSqlParameterSource().addValue("in_id", 1);
 		simpleJdbcCall.withProcedureName("user").withoutProcedureColumnMetaDataAccess().useInParameterNames("in_id")
 				.declareParameters(new SqlParameter("in_id", Types.NUMERIC),
-						new SqlOutParameter("out_name", Types.VARCHAR),
-						new SqlOutParameter("out_age", Types.VARCHAR),
+						new SqlOutParameter("out_name", Types.VARCHAR), new SqlOutParameter("out_age", Types.VARCHAR),
 						new SqlOutParameter("out_birthday", Types.DATE));
 		Map<String, Object> out = simpleJdbcCall.execute(in);
 		User user = new User();
 		user.setName((String) out.get("out_name"));
 		user.setAge((int) out.get("out_age"));
-		user.setBirthday((Date)out.get("out_birthday"));
+		user.setBirthday((Date) out.get("out_birthday"));
 	}
 
 	public void createTable() {
@@ -319,59 +447,21 @@ public class UserJdbcDao {
 
 	// ====================transaction====================
 	// 不能在事务方法中进行try-catch
-	public void transactionalMethod(User... users) {
+	// REQUIRED
+	public void m1(User... users) {
 		createUser1(users[0]);
-		createUser1(users[1]);
 
-		transactionalSubMethod(users[2], users[3]);
+		// REQUIRES_NEW，理论上这个方法不回滚
+		m2(users[1]);
 
 		int i = 1 / 0;
 	}
 
 	// 不能在事务方法中进行try-catch
-	private void transactionalSubMethod(User... users) {
-		createUser1(users[0]);
-		createUser1(users[1]);
+	public void m2(User user) {
+		createUser1(user);
 	}
 
 	// ====================private====================
-	private PreparedStatementSetter buildUserPSS(User user) {
-		return ps -> {
-			ps.setString(1, user.getName());
-			ps.setInt(2, user.getAge());
-			ps.setDate(3, user.getBirthday());
-		};
-	}
 
-	private BatchPreparedStatementSetter buildUserBPSS(List<User> users) {
-		return new BatchPreparedStatementSetter() {
-			@Override
-			public void setValues(PreparedStatement ps, int i) throws SQLException {
-				ps.setInt(1, users.get(i).getAge());
-				ps.setString(2, users.get(i).getName());
-			}
-
-			@Override
-			public int getBatchSize() {
-				return users.size();
-			}
-		};
-	}
-
-	private ParameterizedPreparedStatementSetter<User> buildUserPPSS() {
-		return (ps, arg) -> {
-			ps.setInt(1, arg.getAge());
-			ps.setString(2, arg.getName());
-		};
-	}
-
-	private PreparedStatementCreator buildUserPSC(String sql, User user) {
-		return conn -> {
-			PreparedStatement ps = conn.prepareStatement(sql, new String[] { "id" });
-			ps.setString(1, user.getName());
-			ps.setInt(2, user.getAge());
-			ps.setDate(3, user.getBirthday());
-			return ps;
-		};
-	}
 }

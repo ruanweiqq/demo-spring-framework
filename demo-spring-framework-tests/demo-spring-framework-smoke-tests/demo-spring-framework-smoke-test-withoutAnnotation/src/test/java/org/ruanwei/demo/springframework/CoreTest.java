@@ -26,10 +26,8 @@ import org.ruanwei.demo.springframework.core.ioc.House;
 import org.ruanwei.demo.springframework.core.ioc.People;
 import org.ruanwei.demo.springframework.core.ioc.extension.MyFamilyFactoryBean;
 import org.ruanwei.demo.util.Recorder;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -49,23 +47,23 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
  * 2.避免手动获取bean实例
  * 3.避免手动数据库清理
  * 
- * 在XML配置下:
- * 1.@ActiveProfiles("p")不生效，只能通过-Dspring.profiles.active=p指定Profile
- * 2.@Autowired不生效，只能通过ApplicationContextAware注入或者自己实例化ApplicationContext
- * 3.beforeAll()在ApplicationContext初始化前执行，因此无法访问容器信息
+ * 注意：
+ * 1.@ActiveProfiles("p")不生效，只能指定-Dspring.profiles.active="development" -Dspring.profiles.default="development" -Da=1.
+ * 2.beforeAll()在ApplicationContext初始化前执行，因此无法访问容器及其信息.
+ * 3.尽管被测试代码没有启用注解，但测试代码默认启用了，因此可以用@Autowired注入，或者通过ApplicationContextAware，或者自己实例化ApplicationContext.
  * 
  * @author ruanwei
  * 
  */
 @ActiveProfiles("development")
 @TestPropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
-@SpringJUnitConfig(AppConfig.class)
-//@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
-public class CoreTest implements ApplicationContextAware {
+@SpringJUnitConfig({ IocConfig.class, AopConfig.class })
+// @SpringJUnitConfig(locations = {"classpath:spring/ioc.xml","classpath:spring/aop.xml"})
+public class CoreTest{
 	private static Log log = LogFactory.getLog(CoreTest.class);
 
 	@Autowired
-	private static ApplicationContext context;
+	private ApplicationContext context;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -83,7 +81,7 @@ public class CoreTest implements ApplicationContextAware {
 	@BeforeEach
 	void beforeEach() {
 		log.info("beforeEach()");
-		assertNotNull(context, "context should be not null++++++++++++++++++++++++++++");
+		assertNotNull(context, "context should be not null");
 	}
 
 	@Order(1)
@@ -279,10 +277,5 @@ public class CoreTest implements ApplicationContextAware {
 	@AfterAll
 	static void afterAll() {
 		log.info("afterAll()");
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.context = applicationContext;
 	}
 }
