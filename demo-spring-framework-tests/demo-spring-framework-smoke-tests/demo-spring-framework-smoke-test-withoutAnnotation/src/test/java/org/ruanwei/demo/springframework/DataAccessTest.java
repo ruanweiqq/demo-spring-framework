@@ -10,6 +10,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,15 +20,25 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.ruanwei.demo.springframework.dataAccess.User;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao;
+import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcPagingAndSortingRepository;
+import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 
@@ -47,8 +60,8 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 // @Transactional("txManager")
 @ActiveProfiles("development")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-//@SpringJUnitConfig(locations = "classpath:spring/dataAccess.xml")
-@SpringJUnitConfig(DataAccessConfig.class)
+@SpringJUnitConfig(locations = "classpath:spring/dataAccess.xml")
+//@SpringJUnitConfig(DataAccessConfig.class)
 public class DataAccessTest {
 	private static Log log = LogFactory.getLog(DataAccessTest.class);
 
@@ -113,6 +126,12 @@ public class DataAccessTest {
 
 	@Autowired
 	private UserJdbcDao userJdbcDao;
+
+	//@Autowired
+	private UserJdbcRepository userJdbcRepository;
+
+	//@Autowired
+	private UserJdbcPagingAndSortingRepository userJdbcPagingAndSortingRepository;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -258,6 +277,107 @@ public class DataAccessTest {
 			List<User> users = userJdbcDao.queryForListWithBeanProperty(gt0);
 			assertEquals(2, users.size(), "user size should be 2");
 		}
+	}
+
+	@Disabled
+	@Test
+	void testSpringDataJdbcWithTransaction() {
+		assertNotNull(userJdbcRepository, "userJdbcRepository is null++++++++++++++++++++++++++++");
+		try {
+			userJdbcRepository.transactionalMethod1(new User("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
+		} catch (Exception e) {
+			log.error("transaction rolled back", e);
+		}
+	}
+
+	private void testCreate() {
+		int count = userJdbcRepository.createUser(beanForCreate.getName(), beanForCreate.getAge(),
+				beanForCreate.getBirthday());
+		log.info("jdbcRepository.createUser========" + count);
+
+		User user = userJdbcRepository.save(beanForCreate);
+		log.info("jdbcCrudRepository.save========" + user);
+
+		//Iterable<User> userList = userJdbcRepository.saveAll(listParamForCreate);
+		//userList.forEach(e -> log.info("jdbcCrudRepository.saveAll========" + e));
+	}
+
+	private void testUpdate() {
+		int count = userJdbcRepository.updateUser(beanForUpdate.getName(), beanForUpdate.getAge());
+		log.info("jdbcRepository.updateUser========" + count);
+	}
+
+	private void testQueryForSingleRow() {
+		String name = userJdbcRepository.findNameById(eq1);
+		log.info("jdbcRepository.findNameById========" + name);
+
+		Map<String, Object> columnMap = userJdbcRepository.findNameAndAgeById(eq1);
+		columnMap.forEach((k, v) -> log.info("jdbcRepository.findNameAndAgeById====" + k + "=" + v));
+
+		User user = userJdbcRepository.findUserById(eq1);
+		log.info("jdbcRepository.findUserById========" + user);
+
+		Optional<User> user2 = userJdbcRepository.findById(eq1);
+		log.info("jdbcCrudRepository.findById========" + user2.get());
+
+		long count = userJdbcRepository.count();
+		log.info("jdbcCrudRepository.count()========" + count);
+
+		boolean exist = userJdbcRepository.existsById(eq1);
+		log.info("jdbcCrudRepository.existsById========" + exist);
+	}
+
+	private void testQueryForList() {
+		List<String> nameList = userJdbcRepository.findNameListById(gt0);
+		nameList.forEach(e -> log.info("jdbcRepository.findNameListById========" + e));
+
+		List<Map<String, Object>> columnMapList = userJdbcRepository.findNameAndAgeListById(gt0);
+		columnMapList.forEach(columbMap -> columbMap
+				.forEach((k, v) -> log.info("jdbcRepository.findNameAndAgeListById====" + k + "=" + v)));
+
+		List<User> userList = userJdbcRepository.findUserListById(gt0);
+		userList.forEach(e -> log.info("jdbcRepository.findUserListById========" + e));
+
+		//Iterable<User> userList2 = userJdbcRepository.findAllById(listParamForQuery);
+		//userList2.forEach(e -> log.info("jdbcCrudRepository.findAllById========" + e));
+
+		Iterable<User> userList3 = userJdbcRepository.findAll();
+		userList3.forEach(e -> log.info("jdbcCrudRepository.findAll()========" + e));
+	}
+
+	private void testQueryAsync() {
+		Future<List<User>> userList = userJdbcRepository.findAllUser1();
+		CompletableFuture<List<User>> userList2 = userJdbcRepository.findAllUser2();
+		ListenableFuture<List<User>> userList3 = userJdbcRepository.findAllUser3();
+	}
+
+	private void testQueryForPagingAndSorting() {
+		Sort sort = Sort.by(Direction.ASC, "age");
+		Pageable pageable = PageRequest.of(0, 5);
+		Pageable pageableWithSort = PageRequest.of(0, 5, sort);
+
+		Iterable<User> userList = userJdbcPagingAndSortingRepository.findAll(sort);
+		userList.forEach(e -> log.info("jdbcPagingAndSortingRepository.findAll========" + e));
+
+		// see also java.util.Stream in java 8.
+		Page<User> userPage = userJdbcPagingAndSortingRepository.findAll(pageable);
+		userPage.forEach(e -> log.info("jdbcPagingAndSortingRepository.findAll========" + e));
+
+		Slice<User> userSlice = userJdbcPagingAndSortingRepository.findAll(pageable);
+		userSlice.forEach(e -> log.info("jdbcPagingAndSortingRepository.findAll========" + e));
+
+		Page<User> userPage2 = userJdbcPagingAndSortingRepository.findAll(pageableWithSort);
+		userPage2.forEach(e -> log.info("jdbcPagingAndSortingRepository.findAll========" + e));
+	}
+
+	private void testDelete() {
+		int count = userJdbcRepository.deleteUser(2);
+		log.info("jdbcRepository.deleteUser========" + count);
+
+		userJdbcRepository.deleteById(3);
+		userJdbcRepository.delete(beanForDelete);
+		//userJdbcRepository.deleteAll(listParamForDelete);
+		// userJdbcRepository.deleteAll();
 	}
 
 	@AfterEach

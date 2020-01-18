@@ -60,21 +60,19 @@ public interface UserJdbcRepository extends CrudRepository<User, Integer> {
 	@Query("delete from user where id > :id")
 	int deleteUser(@Param("id") int largerThanId);
 
-	// ====================transactional====================
+	// ====================transaction====================
 	// 不能在事务方法中进行try-catch
-	default public void transactionalMethod(User... users) {
-		createUser(users[0].getName(), users[0].getAge(), users[0].getBirthday());
-		createUser(users[1].getName(), users[1].getAge(), users[1].getBirthday());
+	default public void transactionalMethod1(User user) {
+		createUser(user.getName(), user.getAge(), user.getBirthday());
 
-		transactionalSubMethod(users[2], users[3]);
+		transactionalMethod2(new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 
 		int i = 1 / 0;
 	}
 
 	// 不能在事务方法中进行try-catch
-	default public void transactionalSubMethod(User... users) {
-		createUser(users[0].getName(), users[0].getAge(), users[0].getBirthday());
-		createUser(users[1].getName(), users[1].getAge(), users[1].getBirthday());
+	default public void transactionalMethod2(User user) {
+		createUser(user.getName(), user.getAge(), user.getBirthday());
 	}
 
 	// ====================async query====================
