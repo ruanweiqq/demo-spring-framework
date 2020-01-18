@@ -44,7 +44,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 @Profile("development")
 @PropertySource("classpath:jdbc.properties")
 // @EnableTransactionManagement
-// @ImportResource({ "classpath:spring/dataAccess.xml" })
+@ImportResource({ "classpath:spring/dataAccess.xml" })
 @Configuration
 public class DataAccessConfig implements EnvironmentAware, InitializingBean {// implements
 																				// TransactionManagementConfigurer

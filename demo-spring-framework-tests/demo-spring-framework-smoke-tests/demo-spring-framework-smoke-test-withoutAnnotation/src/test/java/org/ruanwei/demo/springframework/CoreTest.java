@@ -16,8 +16,10 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.ruanwei.demo.springframework.core.aop.AOP;
 import org.ruanwei.demo.springframework.core.aop.Good;
 import org.ruanwei.demo.springframework.core.aop.Happy;
@@ -57,6 +59,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
  */
 @ActiveProfiles("development")
 @TestPropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringJUnitConfig({ IocConfig.class, AopConfig.class })
 // @SpringJUnitConfig(locations = {"classpath:spring/ioc.xml","classpath:spring/aop.xml"})
 public class CoreTest{

@@ -17,12 +17,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.ruanwei.demo.springframework.dataAccess.User;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -45,6 +46,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 // @Commit
 // @Transactional("txManager")
 @ActiveProfiles("development")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 //@SpringJUnitConfig(locations = "classpath:spring/dataAccess.xml")
 @SpringJUnitConfig(DataAccessConfig.class)
 public class DataAccessTest {
@@ -111,7 +113,7 @@ public class DataAccessTest {
 
 	@Autowired
 	private UserJdbcDao userJdbcDao;
-	
+
 	@BeforeAll
 	static void beforeAll() {
 		log.info("beforeAll()");
@@ -121,6 +123,18 @@ public class DataAccessTest {
 	void beforeEach() {
 		log.info("beforeEach()");
 		assertNotNull(userJdbcDao, "userJdbcDao should not be null");
+
+		// 0.根据name删除
+		userJdbcDao.delete(beanForDelete);
+		userJdbcDao.delete(mapForDelete);
+
+		List<User> users = userJdbcDao.queryForListWithBeanProperty(gt0);
+		assertEquals(1, users.size(), "user size should be 1");
+
+		// 0.根据name批量删除
+		userJdbcDao.batchDelete(beanCollForBatchUpdate);
+		users = userJdbcDao.queryForListWithBeanProperty(gt0);
+		assertEquals(1, users.size(), "user size should be 1");
 	}
 
 	@Order(1)
@@ -128,14 +142,7 @@ public class DataAccessTest {
 	void testSpringJdbcCRUD() {
 		log.info("1======================================================================================");
 
-		// 1.根据name删除
-		userJdbcDao.delete(beanForDelete);
-		userJdbcDao.delete(mapForDelete);
-
-		List<User> users = userJdbcDao.queryForListWithBeanProperty(gt0);
-		assertEquals(1, users.size(), "user size should be 1");
-
-		// 2.创建
+		// 1.创建
 		userJdbcDao.create(beanForCreate);
 		userJdbcDao.create(mapForCreate);
 		userJdbcDao.createWithKey(beanForCreate);
@@ -145,10 +152,10 @@ public class DataAccessTest {
 		userJdbcDao.createUser2(beanForCreate);
 		userJdbcDao.createUserWithKey1(beanForCreate);
 
-		users = userJdbcDao.queryForListWithBeanProperty(gt0);
+		List<User> users = userJdbcDao.queryForListWithBeanProperty(gt0);
 		assertEquals(8, users.size(), "user size should be 8");
 
-		// 3.根据name更新age
+		// 2.根据name更新age
 		userJdbcDao.update(beanForUpdate);
 		userJdbcDao.update(mapForUpdate);
 
@@ -163,7 +170,7 @@ public class DataAccessTest {
 		users2.forEach(m -> assertEquals(18, m.get("age"), "user age should be 18"));
 		names.forEach(n -> assertTrue("ruanwei_tmp".contentEquals(n), "user name should be ruanwei_tmp"));
 
-		// 4.根据name删除
+		// 3.根据name删除
 		userJdbcDao.delete(beanForDelete);
 		userJdbcDao.delete(mapForDelete);
 
@@ -193,20 +200,15 @@ public class DataAccessTest {
 	void testSpringJdbcBatchCRUD() {
 		log.info("2======================================================================================");
 
-		// 1.根据name批量删除
-		userJdbcDao.batchDelete(beanCollForBatchUpdate);
-		List<User> users = userJdbcDao.queryForListWithBeanProperty(gt0);
-		assertEquals(1, users.size(), "user size should be 1");
-
-		// 2.批量创建
+		// 1.批量创建
 		userJdbcDao.batchCreate(beanArrayForBatchUpdate);
 		userJdbcDao.batchCreateUser1(Arrays.asList(beanCollForBatchUpdate.toArray(new User[0])));
 		userJdbcDao.batchCreateUser2(beanCollForBatchUpdate);
 
-		users = userJdbcDao.queryForListWithBeanProperty(gt0);
+		List<User> users = userJdbcDao.queryForListWithBeanProperty(gt0);
 		assertEquals(7, users.size(), "user size should be 7");
 
-		// 3.根据name批量更新age
+		// 2.根据name批量更新age
 		userJdbcDao.batchUpdate(mapArrayForBatchUpdate);
 
 		users = userJdbcDao.queryForListWithBeanProperty(eq1);
@@ -220,7 +222,7 @@ public class DataAccessTest {
 		users2.forEach(m -> assertEquals(18, m.get("age"), "user age should be 18"));
 		names.forEach(n -> assertTrue("ruanwei_tmp".contentEquals(n), "user name should be ruanwei_tmp"));
 
-		// 4.根据name批量删除
+		// 3.根据name批量删除
 		userJdbcDao.batchDelete(beanCollForBatchUpdate);
 
 		users = userJdbcDao.queryForListWithBeanProperty(gt0);
@@ -249,28 +251,13 @@ public class DataAccessTest {
 	void testSpringJdbcWithTransaction() {
 		log.info("3======================================================================================");
 		try {
-			User paramForCreate1 = new User("ruanwei_tmp", 1, Date.valueOf("1983-07-06"));
-			User paramForCreate2 = new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06"));
-
-			userJdbcDao.m1(paramForCreate1, paramForCreate2);
-		} catch (Exception e) {
-			log.error("transaction rolled back", e);
+			userJdbcDao.transactionalMethod1(new User("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
+		} catch (ArithmeticException e) {
+			log.error("transaction rolled back as ArithmeticException", e);
 		} finally {
 			List<User> users = userJdbcDao.queryForListWithBeanProperty(gt0);
 			assertEquals(2, users.size(), "user size should be 2");
 		}
-	}
-
-	private void testQueryForSingleRow() {
-		userJdbcDao.queryForSingleRowWithSingleColumn(eq1);
-		userJdbcDao.queryForSingleRowAsColumnMap(eq1);
-		userJdbcDao.queryForSingleRowAsBeanProperty(eq1);
-	}
-
-	private void testQueryForList() {
-		userJdbcDao.queryForListWithSingleColumn(gt0);
-		userJdbcDao.queryForListWithColumnMap(gt0);
-		userJdbcDao.queryForListWithBeanProperty(gt0);
 	}
 
 	@AfterEach

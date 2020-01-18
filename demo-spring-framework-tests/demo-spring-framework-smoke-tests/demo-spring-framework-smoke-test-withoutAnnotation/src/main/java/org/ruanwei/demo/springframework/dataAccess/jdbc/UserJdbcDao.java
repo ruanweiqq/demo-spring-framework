@@ -448,17 +448,17 @@ public class UserJdbcDao {
 	// ====================transaction====================
 	// 不能在事务方法中进行try-catch
 	// REQUIRED
-	public void m1(User... users) {
-		createUser1(users[0]);
+	public void transactionalMethod1(User user) {
+		createUser1(user);
 
 		// REQUIRES_NEW，理论上这个方法不回滚
-		m2(users[1]);
+		transactionalMethod2(new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 
 		int i = 1 / 0;
 	}
 
 	// 不能在事务方法中进行try-catch
-	public void m2(User user) {
+	public void transactionalMethod2(User user) {
 		createUser1(user);
 	}
 
