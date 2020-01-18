@@ -21,6 +21,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -43,6 +45,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  */
 @Profile("development")
 @PropertySource("classpath:jdbc.properties")
+@EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
+@EnableJpaRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jpa")
 // @EnableTransactionManagement
 @ImportResource({ "classpath:spring/dataAccess.xml" })
 @Configuration
@@ -216,13 +220,13 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 
 	@Qualifier("jndiDataSource")
 	@Lazy
-	//@Bean(destroyMethod = "close")
+	// @Bean(destroyMethod = "close")
 	public JndiObjectFactoryBean dataSource4() {
 		JndiObjectFactoryBean jndiObjectFactoryBean = new JndiObjectFactoryBean();
 		jndiObjectFactoryBean.setJndiName("java:comp/env/jdbc/myds");
 		return jndiObjectFactoryBean;
 	}
-	
+
 	// ==========D.Spring Data:Redis==========
 
 }

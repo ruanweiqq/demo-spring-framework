@@ -9,6 +9,8 @@
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:repository="https://www.springframework.org/schema/data/repository"
 	xmlns:jms="http://www.springframework.org/schema/jms"
 	xmlns:task="http://www.springframework.org/schema/task"
 	xmlns:oxm="http://www.springframework.org/schema/oxm"
@@ -18,7 +20,9 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd 
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd 
-        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd  
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.springframework.org/schema/data/jpa https://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+        https://www.springframework.org/schema/data/repository https://www.springframework.org/schema/data/repository/spring-repository.xsd  
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd 
         http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd 
         http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm.xsd 
@@ -78,8 +82,8 @@
 		class="org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao">
 		<property name="entityManagerFactory"
 			ref="entityManagerFactory" />
-	</bean>
-	PlatformTransactionManager:local transaction manager for JPA
+	</bean>-->
+	<!-- PlatformTransactionManager:local transaction manager for JPA -->
 	<bean id="jpaTransactionManager"
 		class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory"
@@ -102,21 +106,19 @@
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
 		</property>
-		<property name="loadTimeWeaver">
+		<!-- <property name="loadTimeWeaver">
 			<bean
 				class="org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver" />
-		</property>
-	</bean> -->
-	<!-- <jpa:repositories base-package="org.ruanwei.demo.springframework.data.jdbc">
-	</jpa:repositories> -->
+		</property> -->
+	</bean> 
 	
 	<!-- ==========C.3.ORM:Hibernate========== -->
 	<!-- <bean id="userHibernateDao"
 		class="org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserHibernateDao">
 		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-	PlatformTransactionManager:local transaction manager for Hibernate
-	<bean id="hibernateTransactionManager"
+	</bean> -->
+	<!-- PlatformTransactionManager:local transaction manager for Hibernate -->
+	<!-- <bean id="hibernateTransactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 		<property name="dataSource" ref="dataSource1" />
@@ -134,7 +136,7 @@
 				hibernate.dialect=org.hibernate.dialect.HSQLDialect
 			</value>
 		</property>
-	</bean> -->
+	</bean>  -->
 
 	<!-- ==========C.4.ORM:MyBatis========== -->
 	<!-- <bean id="userMybatisDao"
@@ -227,8 +229,17 @@
 	</jdbc:initialize-database>
 	
 	<!-- <jee:jndi-lookup id="dataSource4" jndi-name="java:comp/env/jdbc/myds"/> -->
-
-<!-- ==========D.Spring Data:Redis========== -->
+	
+	<!-- ==========D.Spring Data:JDBC========== -->
+	<!-- <repositories
+		base-package="org.ruanwei.demo.springframework.dataAccess.springdata.jdbc" /> -->
+		
+	<!-- ==========D.Spring Data:JPA========== -->
+	<!-- <jpa:repositories
+		base-package="org.ruanwei.demo.springframework.dataAccess.springdata.jpa">
+	</jpa:repositories> -->
+	
+	<!-- ==========D.Spring Data:Redis========== -->
 	<!-- <bean id="redisClient"
 		class="org.ruanwei.demo.springframework.dataAccess.springdata.redis.RedisClient">
 		<property name="redisTemplate" ref="redisTemplate" />

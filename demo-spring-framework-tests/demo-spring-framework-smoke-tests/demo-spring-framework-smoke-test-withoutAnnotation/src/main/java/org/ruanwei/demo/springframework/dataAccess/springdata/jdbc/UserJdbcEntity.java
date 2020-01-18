@@ -1,21 +1,27 @@
-package org.ruanwei.demo.springframework.dataAccess;
+package org.ruanwei.demo.springframework.dataAccess.springdata.jdbc;
 
 import java.sql.Date;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.Data;
 
 @Data
-public class User {
-	//@Id
+@Table("user")
+public class UserJdbcEntity {
+	@Id
 	private int id;
+	@Column("name")
 	private String name;
 	private int age;
 	private Date birthday;
 
-	public User() {
+	public UserJdbcEntity() {
 	}
 
-	public User(String name, int age, Date birthday) {
+	public UserJdbcEntity(String name, int age, Date birthday) {
 		this.name = name;
 		this.age = age;
 		this.birthday = birthday;
@@ -47,7 +53,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
+		return "UserEntity [id=" + id + ", name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
 	}
 
 }
