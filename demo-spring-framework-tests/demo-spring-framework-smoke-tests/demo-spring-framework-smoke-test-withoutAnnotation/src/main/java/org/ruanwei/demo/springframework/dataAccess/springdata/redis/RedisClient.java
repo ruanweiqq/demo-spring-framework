@@ -1,4 +1,4 @@
-package org.ruanwei.demo.springframework.integration.redis.xml;
+package org.ruanwei.demo.springframework.dataAccess.springdata.redis;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ruanwei.demo.springframework.integration.Settings;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.geo.Point;

@@ -1,4 +1,4 @@
-package org.ruanwei.demo.springframework.integration.redis.xml;
+package org.ruanwei.demo.springframework.dataAccess.springdata.redis;
 
 import java.io.UnsupportedEncodingException;
 

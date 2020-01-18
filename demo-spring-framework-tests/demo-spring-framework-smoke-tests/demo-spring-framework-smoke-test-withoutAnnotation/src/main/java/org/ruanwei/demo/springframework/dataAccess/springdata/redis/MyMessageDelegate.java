@@ -1,11 +1,10 @@
-package org.ruanwei.demo.springframework.integration.redis.xml;
+package org.ruanwei.demo.springframework.dataAccess.springdata.redis;
 
 import java.io.Serializable;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ruanwei.demo.springframework.integration.jms.Email;
 
 /**
  * send back a response Message if a handler method returns a non-void value.
