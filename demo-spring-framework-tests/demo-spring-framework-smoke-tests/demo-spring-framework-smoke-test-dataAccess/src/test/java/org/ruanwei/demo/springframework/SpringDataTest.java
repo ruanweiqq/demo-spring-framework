@@ -17,7 +17,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.ruanwei.demo.springframework.data.jdbc.UserJdbcPagingAndSortingRepository;
 import org.ruanwei.demo.springframework.data.jdbc.UserJdbcRepository;
 import org.ruanwei.demo.springframework.dataAccess.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +63,6 @@ public class SpringDataTest {
 
 	@Autowired
 	private UserJdbcRepository userJdbcRepository;
-
-	@Autowired
-	private UserJdbcPagingAndSortingRepository userJdbcPagingAndSortingRepository;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -182,17 +178,17 @@ public class SpringDataTest {
 		Pageable pageable = PageRequest.of(0, 5);
 		Pageable pageableWithSort = PageRequest.of(0, 5, sort);
 
-		Iterable<User> userList = userJdbcPagingAndSortingRepository.findAll(sort);
+		Iterable<User> userList = userJdbcRepository.findAll(sort);
 		userList.forEach(e -> log.info("jdbcPagingAndSortingRepository.findAll========" + e));
 
 		// see also java.util.Stream in java 8.
-		Page<User> userPage = userJdbcPagingAndSortingRepository.findAll(pageable);
+		Page<User> userPage = userJdbcRepository.findAll(pageable);
 		userPage.forEach(e -> log.info("jdbcPagingAndSortingRepository.findAll========" + e));
 
-		Slice<User> userSlice = userJdbcPagingAndSortingRepository.findAll(pageable);
+		Slice<User> userSlice = userJdbcRepository.findAll(pageable);
 		userSlice.forEach(e -> log.info("jdbcPagingAndSortingRepository.findAll========" + e));
 
-		Page<User> userPage2 = userJdbcPagingAndSortingRepository.findAll(pageableWithSort);
+		Page<User> userPage2 = userJdbcRepository.findAll(pageableWithSort);
 		userPage2.forEach(e -> log.info("jdbcPagingAndSortingRepository.findAll========" + e));
 	}
 

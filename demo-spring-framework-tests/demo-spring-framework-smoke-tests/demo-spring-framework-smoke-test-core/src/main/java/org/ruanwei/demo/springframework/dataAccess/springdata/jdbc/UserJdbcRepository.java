@@ -9,7 +9,7 @@ import java.util.concurrent.Future;
 import org.ruanwei.demo.springframework.dataAccess.User;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.RepositoryDefinition;
 import org.springframework.data.repository.query.Param;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
@@ -31,7 +31,7 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 @Transactional
 @RepositoryDefinition(domainClass = User.class, idClass = Integer.class)
-public interface UserJdbcRepository extends CrudRepository<User, Integer> {
+public interface UserJdbcRepository extends PagingAndSortingRepository<User, Integer> {
 
 	// 1 Create
 	// CrudRepository#save
