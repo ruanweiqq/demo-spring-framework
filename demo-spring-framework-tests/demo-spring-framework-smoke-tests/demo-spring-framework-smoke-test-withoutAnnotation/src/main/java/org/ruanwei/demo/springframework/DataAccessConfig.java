@@ -45,8 +45,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  */
 @Profile("development")
 @PropertySource("classpath:jdbc.properties")
-@EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
-@EnableJpaRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jpa")
+//@EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
+//@EnableJpaRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jpa")
 // @EnableTransactionManagement
 @ImportResource({ "classpath:spring/dataAccess.xml" })
 @Configuration

@@ -16,11 +16,14 @@ import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * 
- * @RepositoryDefinition 等价于 extends Repository<T,ID>.
- * see also SimpleJdbcRepository.@NoRepositoryBean
+ * 加上 @RepositoryDefinition 等价于 extends Repository<T,ID>.
+ * 
+ * 加上 @NoRepositoryBean 的接口不会被实例化
  * 
  * Spring Data JDBC supports defining a query manually only as a String in a @Query annotation. 
  * Deriving a query from the name of the method is currently not supported.
+ * 
+ * SimpleJdbcRepository是默认实现.
  * 
  * @author ruanwei
  *
