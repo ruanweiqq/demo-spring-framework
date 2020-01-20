@@ -97,11 +97,11 @@ public class CoreTest {
 		String[] activeProfiles = environment.getActiveProfiles();
 		String[] defaultProfiles = environment.getDefaultProfiles();
 
-		assertTrue(activeProfiles.length == 1, "active profile should be at least 1");
-		assertTrue(defaultProfiles.length == 1, "default profile should be at least 1");
+		assertEquals(1, activeProfiles.length, "active profile should be at least 1");
+		assertEquals(1, defaultProfiles.length, "default profile should be at least 1");
 
-		assertTrue("development".contentEquals(activeProfiles[0]), "active profile should be development");
-		assertTrue("development".contentEquals(defaultProfiles[0]), "default profile should be development");
+		assertEquals("development", activeProfiles[0], "active profile should be development");
+		assertEquals("development", defaultProfiles[0], "default profile should be development");
 
 		Family family = context.getBean("family", Family.class);
 		family.refreshProfile();
@@ -110,20 +110,19 @@ public class CoreTest {
 		activeProfiles = environment.getActiveProfiles();
 		defaultProfiles = environment.getDefaultProfiles();
 
-		assertTrue(activeProfiles.length == 1, "active profile should be at least 1");
-		assertTrue(defaultProfiles.length == 1, "default profile should be at least 1");
+		assertEquals(1, activeProfiles.length, "active profile should be at least 1");
+		assertEquals(1, defaultProfiles.length, "default profile should be at least 1");
 
-		assertTrue("development".contentEquals(activeProfiles[0]), "active profile should be development");
-		assertTrue("production".contentEquals(defaultProfiles[0]), "default profile should be production");
+		assertEquals("development", activeProfiles[0], "active profile should be development");
+		assertEquals("production", defaultProfiles[0], "default profile should be production");
 
-		assertTrue("development".contentEquals(activeProfiles[0]), "active profiles should be development");
+		assertEquals("development", activeProfiles[0], "active profiles should be development");
 		// assertTrue("development".contentEquals(defaultProfiles[0]), "default profiles
 		// should be development");
 
 		House house = context.getBean("house", House.class);
-		assertTrue("RuanHouse".contentEquals(house.getHouseName()), "houseName should be RuanHouse as overrided");
-		assertTrue("developmentHost".contentEquals(house.getHostName()),
-				"hostName should be developmentHost as profile");
+		assertEquals("RuanHouse", house.getHouseName(), "houseName should be RuanHouse as overrided");
+		assertEquals("developmentHost", house.getHostName(), "hostName should be developmentHost as profile");
 	}
 
 	@Order(2)
@@ -149,19 +148,19 @@ public class CoreTest {
 		log.info("3======================================================================================");
 
 		Family family = context.getBean("family", Family.class);
-		assertTrue("Ruan".contentEquals(family.getFamilyName()), "familyName should be Ruan");
+		assertEquals("Ruan", family.getFamilyName(), "familyName should be Ruan");
 
 		Family family1 = context.getBean("family1", Family.class);
-		assertTrue("Ruan1".contentEquals(family1.getFamilyName()), "familyName should be Ruan1");
+		assertEquals("Ruan1", family1.getFamilyName(), "familyName should be Ruan1");
 
 		Family family2 = context.getBean("family2", Family.class);
-		assertTrue("Ruan2".contentEquals(family2.getFamilyName()), "familyName should be Ruan2");
+		assertEquals("Ruan2", family2.getFamilyName(), "familyName should be Ruan2");
 
 		Family family3 = context.getBean("family3", Family.class);
-		assertTrue("Ruan3".contentEquals(family3.getFamilyName()), "familyName should be Ruan3");
+		assertEquals("Ruan3", family3.getFamilyName(), "familyName should be Ruan3");
 
 		Family familyx = context.getBean("familyx", Family.class);
-		assertTrue("RuanX".contentEquals(familyx.getFamilyName()), "familyName should be RuanX");
+		assertEquals("RuanX", familyx.getFamilyName(), "familyName should be RuanX");
 
 		Object familyx2 = context.getBean("&familyx");
 		assertTrue(familyx2 instanceof MyFamilyFactoryBean, "familyx2 should be MyFamilyFactoryBean");
@@ -170,7 +169,7 @@ public class CoreTest {
 		if (context instanceof ClassPathXmlApplicationContext) {
 			People bueaty = family.createBueaty();
 			assertNotNull(bueaty, "bueaty should not be null");
-			assertTrue("ruan_guest".contentEquals(bueaty.getName()), "guest name should be Guest_ruanwei");
+			assertEquals("ruan_guest", bueaty.getName(), "guest name should be Guest_ruanwei");
 
 			// 3.Method injection: Arbitrary method replacement
 			int sum = family.calc(3, 5);
@@ -202,7 +201,7 @@ public class CoreTest {
 		assertTrue(context instanceof ResourceLoader, "context should be ResourceLoader");
 
 		Resource resource = context.getResource("classpath:spring/applicationContext.xml");
-		assertTrue("applicationContext.xml".contentEquals(resource.getFilename()),
+		assertEquals("applicationContext.xml", resource.getFilename(),
 				"resource filename should be applicationContext.xml");
 	}
 
@@ -235,7 +234,7 @@ public class CoreTest {
 		String result = assertDoesNotThrow(() -> {
 			return family.sayHello("123");
 		});
-		assertTrue("Hello,123".contentEquals(result), "result message should be Hello,123");
+		assertEquals("Hello,123", result, "result message should be Hello,123");
 
 		assertThrows(ConstraintViolationException.class, () -> {
 			family.sayHello("1");
@@ -250,13 +249,12 @@ public class CoreTest {
 		AOP aop = (AOP) context.getBean("aop");
 		aop.sayHello("whatever");
 
-		assertTrue("whatever".contentEquals(Recorder.get("before_message")), "message should be whatever");
-		assertTrue("whatever".contentEquals(Recorder.get("after_message")), "message should be whatever");
-		assertTrue("whatever".contentEquals(Recorder.get("afterReturning_message")), "message should be whatever");
-		// assertTrue("whatever".contentEquals(Recorder.get("afterThrowing_message")),
-		// "message should be whatever");
-		assertTrue("whatever".contentEquals(Recorder.get("around_message")), "message should be whatever");
-		assertTrue("Hello,whatever".contentEquals(Recorder.get("ret_message")), "message should be whatever");
+		assertEquals("whatever", Recorder.get("before_message"), "message should be whatever");
+		assertEquals("whatever", Recorder.get("after_message"), "message should be whatever");
+		assertEquals("whatever", Recorder.get("afterReturning_message"), "message should be whatever");
+		// assertEquals("whatever",Recorder.get("afterThrowing_message"),"message should be whatever");
+		assertEquals("whatever", Recorder.get("around_message"), "message should be whatever");
+		assertEquals("Hello,whatever", Recorder.get("ret_message"), "message should be whatever");
 	}
 
 	@Order(9)
