@@ -15,7 +15,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ruanwei.demo.springframework.dataAccess.CrudDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.CrudDao2;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -63,7 +63,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @Repository
-public class UserJpaDao implements CrudDao<UserEntity, Integer> {
+public class UserJpaDao implements CrudDao2<UserEntity, Integer> {
 	private static Log log = LogFactory.getLog(UserJpaDao.class);
 
 	private static final String jpql_12 = "from User as u where u.age = ?1";

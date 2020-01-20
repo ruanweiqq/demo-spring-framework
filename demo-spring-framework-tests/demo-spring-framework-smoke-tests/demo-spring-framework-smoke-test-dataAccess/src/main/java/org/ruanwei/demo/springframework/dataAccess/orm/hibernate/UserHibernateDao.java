@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.ruanwei.demo.springframework.dataAccess.CrudDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.CrudDao2;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @Repository
-public class UserHibernateDao implements CrudDao<UserEntity, Integer> {
+public class UserHibernateDao implements CrudDao2<UserEntity, Integer> {
 	private static Log log = LogFactory.getLog(UserHibernateDao.class);
 
 	private static final String hql = "from demo.User user where user.id=?";

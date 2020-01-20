@@ -4,9 +4,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.util.Recorder;
 import org.springframework.context.Lifecycle;
+import org.springframework.core.PriorityOrdered;
 
 // Startup and shutdown callbacks
-public class MyLifecycle implements Lifecycle {
+public class MyLifecycle implements Lifecycle, PriorityOrdered {
 	private static Log log = LogFactory.getLog(MyLifecycle.class);
 
 	private volatile boolean running = false;
@@ -33,6 +34,11 @@ public class MyLifecycle implements Lifecycle {
 	public boolean isRunning() {
 		log.info("====================isRunning()");
 		return running;
+	}
+
+	@Override
+	public int getOrder() {
+		return 0;
 	}
 
 }

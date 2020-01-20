@@ -17,15 +17,15 @@ public class PeopleSpringValidator implements Validator {
 	}
 
 	@Override
-	public void validate(Object target2, Errors errors) {
-		log.info("validate(Object target, Errors errors)" + target2 + errors);
+	public void validate(Object target, Errors errors) {
+		log.info("validate(Object target, Errors errors)" + target + errors);
 
-		if (target2 == null) {
+		if (target == null) {
 			errors.reject("org.ruanwei.demo.springframework.argument.null", new Object[] { "people" },
 					"The argument must not be null.");
 		}
 
-		People people = (People) target2;
+		People people = (People) target;
 
 		ValidationUtils.rejectIfEmpty(errors, "name", "org.ruanwei.demo.springframework.argument.empty",
 				new Object[] { "name" }, "The argument must not be empty.");

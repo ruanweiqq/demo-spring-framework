@@ -2,7 +2,9 @@ package org.ruanwei.demo.springframework.core.ioc;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Component;
 
+@Component("familyFactory")
 public class FamilyFactory {
 	private static Log log = LogFactory.getLog(FamilyFactory.class);
 

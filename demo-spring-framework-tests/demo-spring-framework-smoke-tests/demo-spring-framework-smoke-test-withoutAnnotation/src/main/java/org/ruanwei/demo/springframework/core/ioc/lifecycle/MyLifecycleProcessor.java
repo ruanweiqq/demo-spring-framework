@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.util.Recorder;
 import org.springframework.context.LifecycleProcessor;
+import org.springframework.core.PriorityOrdered;
 
 /**
  * 默认是被ApplicationContext主动调用
@@ -12,7 +13,7 @@ import org.springframework.context.LifecycleProcessor;
  * @author ruanwei
  *
  */
-public class MyLifecycleProcessor implements LifecycleProcessor {
+public class MyLifecycleProcessor implements LifecycleProcessor,PriorityOrdered {
 	private static Log log = LogFactory.getLog(MyLifecycleProcessor.class);
 	
 	private volatile boolean running = false;
@@ -55,6 +56,12 @@ public class MyLifecycleProcessor implements LifecycleProcessor {
 	public boolean isRunning() {
 		log.info("====================isRunning()");
 		return this.running;
+	}
+
+	@Override
+	public int getOrder() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

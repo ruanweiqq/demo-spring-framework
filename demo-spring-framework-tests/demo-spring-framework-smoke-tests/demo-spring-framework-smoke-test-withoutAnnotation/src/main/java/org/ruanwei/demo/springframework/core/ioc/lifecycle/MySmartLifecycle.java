@@ -4,9 +4,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.util.Recorder;
 import org.springframework.context.SmartLifecycle;
+import org.springframework.core.PriorityOrdered;
 
 // Startup and shutdown callbacks
-public class MySmartLifecycle implements SmartLifecycle {
+public class MySmartLifecycle implements SmartLifecycle,PriorityOrdered {
 	private static Log log = LogFactory.getLog(MySmartLifecycle.class);
 	
 	private volatile boolean running = false;
@@ -59,6 +60,12 @@ public class MySmartLifecycle implements SmartLifecycle {
 	public int getPhase() {
 		log.info("getPhase()");
 		return -1;
+	}
+
+	@Override
+	public int getOrder() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

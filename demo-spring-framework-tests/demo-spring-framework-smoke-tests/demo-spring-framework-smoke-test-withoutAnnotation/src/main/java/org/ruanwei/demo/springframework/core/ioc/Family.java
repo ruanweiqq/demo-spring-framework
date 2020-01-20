@@ -88,11 +88,6 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 	public String sayHello(@Size(min = 2, max = 8) String message) {
 		log.info("sayHello(String message)" + message);
 
-		Good good = (Good) context.getBean("good");
-		Happy mixin = (Happy) context.getBean("good");
-
-		log.info(good.good("whatever") + mixin.happy("whatever"));
-
 		return "Hello," + message;
 	}
 

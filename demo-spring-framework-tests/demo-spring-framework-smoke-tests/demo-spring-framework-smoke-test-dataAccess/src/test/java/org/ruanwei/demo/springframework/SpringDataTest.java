@@ -17,8 +17,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.ruanwei.demo.springframework.data.jdbc.UserJdbcRepository;
 import org.ruanwei.demo.springframework.dataAccess.User;
+import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +39,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 // @Commit
 @ActiveProfiles("development")
 //@SpringJUnitConfig(locations = "classpath:spring/applicationContext2.xml")
-@SpringJUnitConfig(AppConfig2.class)
+@SpringJUnitConfig(SpringDataConfig2.class)
 public class SpringDataTest {
 	private static Log log = LogFactory.getLog(SpringDataTest.class);
 
