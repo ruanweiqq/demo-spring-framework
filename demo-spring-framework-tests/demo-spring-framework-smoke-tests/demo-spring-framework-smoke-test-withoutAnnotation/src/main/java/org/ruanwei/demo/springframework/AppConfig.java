@@ -80,8 +80,8 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  * <li>通过EnvironmentAware注入Environment，然后获取属性 
  * <li>利用@Bean方法参数的隐式支持@Value和@Autowired(可以替换为@Value("#{nyBean}"))
  * 
- * 对于方法注入，没有与基于XML的配置元数据相匹配的基于Java的配置元数据
- * 对于AOP配置，没有与基于XML的配置元数据相匹配的基于Java的配置元数据,因此此处import了xml配置.
+ * 对于方法注入和AOP，没有与基于XML的配置元数据相匹配的基于Java的配置元数据(无注解)
+ * 因此此处import了xml配置
  * 
  * @author ruanwei
  *

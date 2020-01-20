@@ -15,14 +15,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -39,7 +36,8 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
- * 对于事务配置，没有与基于XML的配置元数据相匹配的基于Java的配置元数据,因此此处import了xml配置.
+ * 对于事务配置，没有与基于XML的配置元数据相匹配的基于Java的配置元数据(无注解),因此此处import了xml配置.
+ * 
  * @author ruanwei
  *
  */
@@ -48,7 +46,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 //@EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
 //@EnableJpaRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jpa")
 // @EnableTransactionManagement
-@ImportResource({ "classpath:spring/dataAccess.xml" })
+//@ImportResource({ "classpath:spring/dataAccess.xml" })
 @Configuration
 public class DataAccessConfig implements EnvironmentAware, InitializingBean {// implements
 																				// TransactionManagementConfigurer

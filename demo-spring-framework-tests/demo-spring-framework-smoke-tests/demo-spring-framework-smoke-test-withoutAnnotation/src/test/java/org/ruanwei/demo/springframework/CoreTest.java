@@ -61,7 +61,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @TestPropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringJUnitConfig(AppConfig.class)
-// @SpringJUnitConfig(locations = {"classpath:spring/ioc.xml","classpath:spring/aop.xml"})
+//@SpringJUnitConfig(locations = {"classpath:spring/applicationContext.xml"})
 public class CoreTest {
 	private static Log log = LogFactory.getLog(CoreTest.class);
 

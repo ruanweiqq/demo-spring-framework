@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.DeclareParents;
 import org.aspectj.lang.annotation.Pointcut;
+import org.ruanwei.demo.util.Recorder;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -75,26 +76,32 @@ public class MyAspect {
 	@Before("myPointcut() && this(t) && args(message)")
 	public void before(JoinPoint jp, Object t, String message) {
 		log.info("before() message=" + message + " JoinPoint=" + jp.toLongString() + " this=" + t);
+		Recorder.put("before_message", message);
 	}
 
 	@After("myPointcut() && this(t) && args(message)")
 	public void after(JoinPoint jp, Object t, String message) {
 		log.info("after() message=" + message + " JoinPoint=" + jp.toLongString() + " this=" + t);
+		Recorder.put("after_message", message);
 	}
 
 	@AfterReturning(pointcut = "myPointcut() && this(t) && args(message)", returning = "ret")
 	public void afterReturning(JoinPoint jp, Object t, String message, Object ret) {
 		log.info("afterReturning() message=" + message + " JoinPoint=" + jp + " this=" + t + " ret=" + ret);
+		Recorder.put("afterReturning_message", message);
+		Recorder.put("ret_message", ret.toString());
 	}
 
 	@AfterThrowing(pointcut = "myPointcut() && this(t) && args(message)", throwing = "e")
 	public void afterThrowing(JoinPoint jp, Object t, String message, Throwable e) {
 		log.info("afterThrowing() message=" + message + " JoinPoint=" + jp + " this=" + t + " e=" + e);
+		Recorder.put("afterThrowing_message", message);
 	}
 
 	@Around("myPointcut()  && args(message)")
 	public Object around(ProceedingJoinPoint call, String message) throws Throwable {
 		log.info("around() message=" + message + " call=" + call);
+		Recorder.put("around_message", message);
 
 		StopWatch clock = new StopWatch("message=" + message);
 		try {
