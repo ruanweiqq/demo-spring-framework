@@ -19,7 +19,6 @@ import org.ruanwei.demo.springframework.core.ioc.databinding.PeopleFormatterRegi
 import org.ruanwei.demo.springframework.core.ioc.databinding.PeoplePropertyEditor;
 import org.ruanwei.demo.springframework.core.ioc.databinding.PeoplePropertyEditorRegistrar;
 import org.springframework.beans.PropertyEditorRegistrar;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.CustomEditorConfigurer;
@@ -38,8 +37,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.FormatterRegistrar;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactoryBean;
 import org.springframework.format.datetime.joda.JodaTimeFormatterRegistrar;
@@ -54,7 +51,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  *  要引用外部化配置，以下两种方式： 
  * <li>通过EnvironmentAware注入Environment，然后获取属性 
  * <li>利用@Bean方法参数的隐式支持@Value和@Autowired(可以替换为@Value("#{myBean}"))
- * 对于方法注入，没有与基于XML的配置元数据相匹配的基于Java的配置元数据
+ * 对于方法注入替换，没有与基于XML的配置元数据相匹配的基于Java的配置元数据
  * 
  * @author ruanwei
  *
@@ -75,9 +72,6 @@ public class AppConfig {
 	@Value("#{systemProperties['java.version']?:'1.8'}")
 	private String javaVersion;
 
-	@Autowired
-	private Environment env;
-
 	// ==========A.The IoC Container==========
 	// A.1.Bean Definition and Dependency Injection
 	// A.1.1.Bean instantiation with a constructor
@@ -85,7 +79,7 @@ public class AppConfig {
 	// defined in XML/Java as below.
 	@Lazy
 	@DependsOn("house")
-	@Bean(name = "family1", initMethod = "init", destroyMethod = "destroy2")
+	@Bean("family1")
 	public Family family1(@Value("${family.1.familyName:Ruan_def}") String familyName, People father, People mother,
 			@Value("${son.all}") People son, @Value("${daughter.all}") People daughter, People guest) {
 		// 1.Constructor-based dependency injection
@@ -349,8 +343,7 @@ public class AppConfig {
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
 		propertySourcesPlaceholderConfigurer.setFileEncoding("UTF-8");
-		propertySourcesPlaceholderConfigurer.setLocations(new ClassPathResource("family.properties"),
-				new ClassPathResource("jdbc.properties"));
+		//propertySourcesPlaceholderConfigurer.setLocations(new ClassPathResource("family.properties"));
 		log.info("propertySourcesPlaceholderConfigurer==========" + propertySourcesPlaceholderConfigurer);
 		return propertySourcesPlaceholderConfigurer;
 	}

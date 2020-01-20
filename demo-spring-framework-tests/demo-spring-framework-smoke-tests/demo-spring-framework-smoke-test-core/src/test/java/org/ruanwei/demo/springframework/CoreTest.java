@@ -16,6 +16,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,8 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
  * 1.@ActiveProfiles("p")不生效，只能指定-Dspring.profiles.active="development" -Dspring.profiles.default="development" -Da=1.
  * 2.beforeAll()在ApplicationContext初始化前执行，因此无法访问容器及其信息.
  * 3.尽管被测试代码没有启用注解，但测试代码默认启用了，因此可以用@Autowired注入，或者通过ApplicationContextAware，或者自己实例化ApplicationContext.
+ * 4.由于没有关于PropertySource的基于xml的配置，这里使用了@TestPropertySource
+ * 
  * 
  * @author ruanwei
  * 
@@ -60,8 +63,8 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @ActiveProfiles("development")
 @TestPropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringJUnitConfig(AppConfig.class)
-//@SpringJUnitConfig(locations = {"classpath:spring/ioc.xml"})
+//@SpringJUnitConfig(AppConfig.class)
+@SpringJUnitConfig(locations = {"classpath:spring/applicationContext.xml"})
 public class CoreTest {
 	private static Log log = LogFactory.getLog(CoreTest.class);
 
@@ -96,11 +99,11 @@ public class CoreTest {
 		String[] activeProfiles = environment.getActiveProfiles();
 		String[] defaultProfiles = environment.getDefaultProfiles();
 
-		assertTrue(activeProfiles.length == 1, "active profile should be at least 1");
-		assertTrue(defaultProfiles.length == 1, "default profile should be at least 1");
+		assertEquals(1, activeProfiles.length, "active profile should be at least 1");
+		assertEquals(1, defaultProfiles.length, "default profile should be at least 1");
 
-		assertTrue("development".contentEquals(activeProfiles[0]), "active profile should be development");
-		assertTrue("development".contentEquals(defaultProfiles[0]), "default profile should be development");
+		assertEquals("development", activeProfiles[0], "active profile should be development");
+		assertEquals("development", defaultProfiles[0], "default profile should be development");
 
 		Family family = context.getBean("family", Family.class);
 		family.refreshProfile();
@@ -109,20 +112,19 @@ public class CoreTest {
 		activeProfiles = environment.getActiveProfiles();
 		defaultProfiles = environment.getDefaultProfiles();
 
-		assertTrue(activeProfiles.length == 1, "active profile should be at least 1");
-		assertTrue(defaultProfiles.length == 1, "default profile should be at least 1");
+		assertEquals(1, activeProfiles.length, "active profile should be at least 1");
+		assertEquals(1, defaultProfiles.length, "default profile should be at least 1");
 
-		assertTrue("development".contentEquals(activeProfiles[0]), "active profile should be development");
-		assertTrue("production".contentEquals(defaultProfiles[0]), "default profile should be production");
+		assertEquals("development", activeProfiles[0], "active profile should be development");
+		assertEquals("production", defaultProfiles[0], "default profile should be production");
 
-		assertTrue("development".contentEquals(activeProfiles[0]), "active profiles should be development");
+		assertEquals("development", activeProfiles[0], "active profiles should be development");
 		// assertTrue("development".contentEquals(defaultProfiles[0]), "default profiles
 		// should be development");
 
 		AbsHouse house = context.getBean("house", AbsHouse.class);
-		assertTrue("RuanHouse".contentEquals(house.getHouseName()), "houseName should be RuanHouse as overrided");
-		assertTrue("developmentHost".contentEquals(house.getHostName()),
-				"hostName should be developmentHost as profile");
+		assertEquals("RuanHouse", house.getHouseName(), "houseName should be RuanHouse as overrided");
+		assertEquals("developmentHost", house.getHostName(), "hostName should be developmentHost as profile");
 	}
 
 	@Order(2)

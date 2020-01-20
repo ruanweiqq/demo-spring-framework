@@ -20,17 +20,17 @@ public class TraceBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		log.debug("postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)" + beanFactory);
+		//log.debug("postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)" + beanFactory);
 		Recorder.record("postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)", this.getClass());
 		
 		String[] beanDefinitionNames = beanFactory.getBeanDefinitionNames();
 		for (String beanName : beanDefinitionNames) {
 			BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
-			log.debug(beanName + "=====" + beanDefinition);
+			//log.debug(beanName + "=====" + beanDefinition);
 			MutablePropertyValues mpv = beanDefinition.getPropertyValues();
 			PropertyValue[] pvArray = mpv.getPropertyValues();
 			for (PropertyValue pv : pvArray) {
-				log.debug("\t" + pv.getName() + "===" + pv.getValue());
+				//log.debug("\t" + pv.getName() + "===" + pv.getValue());
 			}
 		}
 	}

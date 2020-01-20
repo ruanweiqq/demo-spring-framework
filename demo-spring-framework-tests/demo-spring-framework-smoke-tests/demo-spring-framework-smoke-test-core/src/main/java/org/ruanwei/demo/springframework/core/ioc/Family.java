@@ -1,5 +1,6 @@
 package org.ruanwei.demo.springframework.core.ioc;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class Family implements BeanNameAware, BeanClassLoaderAware, LoadTimeWeav
 	// a.Bean instantiation with a constructor
 	// 1.Constructor-based dependency injection
 	@Autowired
-	public Family(@Value("${family.1.familyName:ruan_def}") String familyName,
+	public Family(@Value("${family.familyName:ruan_def}") String familyName,
 			@Value("${family.familyCount:2}") int familyCount, @Valid People father) {
 		this.familyName = familyName;
 		this.familyCount = familyCount;
@@ -159,8 +160,8 @@ public class Family implements BeanNameAware, BeanClassLoaderAware, LoadTimeWeav
 		if (environment == null) {
 			environment = context.getEnvironment();
 		}
-		log.info("activeProfile==========" + environment.getActiveProfiles() + " defaultProfile========"
-				+ environment.getDefaultProfiles());
+		log.info("activeProfile==========" + Arrays.toString(environment.getActiveProfiles()) + " defaultProfile========"
+				+ Arrays.toString(environment.getDefaultProfiles()));
 		AbsHouse house = context.getBean("house", AbsHouse.class);
 		log.info("house==========" + house);
 
@@ -176,8 +177,8 @@ public class Family implements BeanNameAware, BeanClassLoaderAware, LoadTimeWeav
 		}
 
 		environment = context.getEnvironment();
-		log.info("activeProfile2==========" + environment.getActiveProfiles() + " defaultProfile2========"
-				+ environment.getDefaultProfiles());
+		log.info("activeProfile2==========" + Arrays.toString(environment.getActiveProfiles()) + " defaultProfile2========"
+				+ Arrays.toString(environment.getDefaultProfiles()));
 
 		house = context.getBean("house", AbsHouse.class);
 		log.info("house2==========" + house);

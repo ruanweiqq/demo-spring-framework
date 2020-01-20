@@ -53,6 +53,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
  * 1.@ActiveProfiles("p")不生效，只能指定-Dspring.profiles.active="development" -Dspring.profiles.default="development" -Da=1.
  * 2.beforeAll()在ApplicationContext初始化前执行，因此无法访问容器及其信息.
  * 3.尽管被测试代码没有启用注解，但测试代码默认启用了，因此可以用@Autowired注入，或者通过ApplicationContextAware，或者自己实例化ApplicationContext.
+ * 4.由于没有关于PropertySource的基于xml的配置，这里使用了@TestPropertySource
  * 
  * @author ruanwei
  * 

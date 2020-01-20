@@ -19,7 +19,7 @@ public class TraceBeanPostProcessor implements BeanPostProcessor {
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		log.debug("postProcessBeforeInitialization(Object bean, String beanName) " + beanName + "=" + bean);
+		//log.debug("postProcessBeforeInitialization(Object bean, String beanName) " + beanName + "=" + bean);
 		Recorder.record("postProcessBeforeInitialization(Object bean, String beanName)", this.getClass());
 		
 		if (bean instanceof People) {
@@ -37,7 +37,7 @@ public class TraceBeanPostProcessor implements BeanPostProcessor {
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		log.debug("postProcessAfterInitialization(Object bean, String beanName)" + beanName + "=" + bean);
+		//log.debug("postProcessAfterInitialization(Object bean, String beanName)" + beanName + "=" + bean);
 		if (bean instanceof People) {
 			People people = (People) bean;
 			log.info("postProcessAfterInitialization====================" + people);

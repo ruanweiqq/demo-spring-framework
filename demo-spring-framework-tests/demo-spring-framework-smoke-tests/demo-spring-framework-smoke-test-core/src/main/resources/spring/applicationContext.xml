@@ -82,7 +82,7 @@
 		class="org.ruanwei.demo.springframework.core.ioc.People"
 		lazy-init="true" c:_0="${guest.name}"
 		c:_1="#{(new java.util.Random()).nextInt(100) ?: 8}" scope="prototype">
-		<aop:scoped-proxy />
+		<!-- <aop:scoped-proxy /> -->
 	</bean>
 	
 	<!-- see ListFactoryBean -->
@@ -243,8 +243,8 @@
 	<!-- versions >= 3.1 default to org.springframework.context.support.PropertySourcesPlaceholderConfigurer. -->
 	<!-- PropertySourcesPlaceholderConfigurer是将@PropertySource加入到属性的PropertyPlaceholderConfigurer，因此可以替换@Value中的占位符. -->
 	<context:property-placeholder
-		location="classpath*:family.properties,classpath*:jdbc.properties"
-		file-encoding="UTF-8" order="0" />
+		location="classpath*:family.properties" file-encoding="UTF-8"
+		order="0" />
 	<!-- see org.springframework.beans.factory.config.PropertyOverrideConfigurer -->
 	<!-- <context:property-override /> -->
 

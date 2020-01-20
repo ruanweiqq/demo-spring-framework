@@ -1,6 +1,7 @@
 package org.ruanwei.demo.springframework.core.ioc;
 
 import java.beans.ConstructorProperties;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -102,8 +103,8 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 		if (environment == null) {
 			environment = context.getEnvironment();
 		}
-		log.info("activeProfile==========" + environment.getActiveProfiles() + " defaultProfile========"
-				+ environment.getDefaultProfiles());
+		log.info("activeProfile==========" + Arrays.toString(environment.getActiveProfiles()) + " defaultProfile========"
+				+ Arrays.toString(environment.getDefaultProfiles()));
 		House house = context.getBean("house", House.class);
 		log.info("house==========" + house);
 
@@ -119,8 +120,8 @@ public class Family implements ApplicationContextAware, BeanFactoryAware, Messag
 		}
 
 		environment = context.getEnvironment();
-		log.info("activeProfile2==========" + environment.getActiveProfiles() + " defaultProfile2========"
-				+ environment.getDefaultProfiles());
+		log.info("activeProfile2==========" + Arrays.toString(environment.getActiveProfiles()) + " defaultProfile2========"
+				+ Arrays.toString(environment.getDefaultProfiles()));
 
 		house = context.getBean("house", House.class);
 		log.info("house2==========" + house);
