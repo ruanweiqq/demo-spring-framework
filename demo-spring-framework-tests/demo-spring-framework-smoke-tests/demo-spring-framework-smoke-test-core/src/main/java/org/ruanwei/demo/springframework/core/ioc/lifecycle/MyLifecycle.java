@@ -4,12 +4,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.util.Recorder;
 import org.springframework.context.Lifecycle;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-//Startup and shutdown callbacks
-@Order(Ordered.LOWEST_PRECEDENCE)
+@Order(0)
 @Component
 public class MyLifecycle implements Lifecycle {
 	private static Log log = LogFactory.getLog(MyLifecycle.class);

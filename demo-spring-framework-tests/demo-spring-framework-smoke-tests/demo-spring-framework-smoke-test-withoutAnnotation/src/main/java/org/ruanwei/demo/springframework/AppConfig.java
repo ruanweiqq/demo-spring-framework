@@ -54,8 +54,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.FormatterRegistrar;
@@ -69,19 +67,22 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 /**
+ * The 'family', 'father' and 'house' bean are defined as @Component,other beans are defined in XML/Java.
  * 
- * 由于没有开启注解，因此以下三种方式均无法注入依赖到AppConfig： 
+ * 如果没有开启注解，以下三种方式均无法注入依赖到AppConfig： 
  * <li>@Value(${placeholder}).
- * <li>@Value(${systemProperties}).
  * <li>@Value(#{SpEL). 
  * <li>@Autowired/@Qualifier.
+ * 测试类中式默认支持注解的.
  * 
- * 要引用外部化配置，以下两种方式： 
- * <li>通过EnvironmentAware注入Environment，然后获取属性 
- * <li>利用@Bean方法参数的隐式支持@Value和@Autowired(可以替换为@Value("#{nyBean}"))
+ * 如果没有开启注解配置，对于方法注入、方法替换和AOP，没有与基于XML的配置元数据等价的基于Java的配置元数据。
+ * 可以通过@ImportResource来加载相应的XML配置元数据来解决这个问题
  * 
- * 对于方法注入和AOP，没有与基于XML的配置元数据相匹配的基于Java的配置元数据(无注解)
- * 因此此处import了xml配置
+ * 注意：@Bean方法参数隐式支持@Value和@Autowired
+ * 
+ * 要引用外部化配置，可以使用以下两种方式： 
+ * <li>通过@PropertySource/@TestPropertySource指定PropertySource,注入Environment，然后通过其获取属性
+ * <li>通过PropertyPlaceholderConfigurer+@PropertySource/setLocations指定占位符，然后通过@Value获取属性
  * 
  * @author ruanwei
  *
@@ -89,7 +90,6 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 @Profile("development")
 @ImportResource({ "classpath:spring/applicationContext.xml" })
 @PropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
-@PropertySource("classpath:family.properties")
 @Configuration
 public class AppConfig implements EnvironmentAware, InitializingBean {
 	private static Log log = LogFactory.getLog(AppConfig.class);
@@ -97,6 +97,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	private Environment env;
 
 	private int familyCount;
+	private String javaVersion;
 
 	@Override
 	public void setEnvironment(Environment environment) {
@@ -107,9 +108,10 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		log.info("afterPropertiesSet()======" + env);
 		familyCount = Integer.parseInt(env.getProperty("family.familyCount", "2"));
+		javaVersion = env.getProperty("java.version", "1.8");
 	}
 
-	// ==========A.The IoC Container==========
+	// ==========A.Core:IoC==========
 	// A.1.Bean Definition and Dependency Injection
 	// A.1.1.Bean instantiation with a constructor
 	@Lazy
@@ -150,10 +152,13 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Bean("family2")
 	public Family family2(@Value("${family.2.familyName:Ruan2_def}") String familyName, People father, People mother,
 			@Value("${son.all}") People son, @Value("${daughter.all}") People daughter, People guest) {
+		// 1.Constructor-based dependency injection
 		Family family = FamilyFactory.createInstance1(familyName, familyCount, father);
+		// 2.Setter-based dependency injection
 		family.setMother(mother);
 		family.setSon(son);
 		family.setDaughter(daughter);
+		// Proxied scoped beans as dependencies
 		family.setGuest(guest);
 		return family;
 	}
@@ -164,10 +169,13 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Bean("family3")
 	public Family family3(@Value("${family.3.familyName:Ruan3_def}") String familyName, People father, People mother,
 			@Value("${son.all}") People son, @Value("${daughter.all}") People daughter, People guest) {
+		// 1.Constructor-based dependency injection
 		Family family = familyFactory().createInstance2(familyName, familyCount, father);
+		// 2.Setter-based dependency injection
 		family.setMother(mother);
 		family.setSon(son);
 		family.setDaughter(daughter);
+		// Proxied scoped beans as dependencies
 		family.setGuest(guest);
 		return family;
 	}
@@ -201,7 +209,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	@Bean("absHouse")
 	public House absHouse(@Value("${house.name.abstract:AbsHouse_def}") String houseName,
 			@Value("1,2") Integer[] someArray, @Value("3,4") List<Integer> someList, @Value("5,6") Set<Integer> someSet,
-			@Value("a=7,b=8") Properties someProperties, /*@Value("c=9,d=10") Map<String, Integer> someMap,*/
+			@Value("a=7,b=8") Properties someProperties, @Value("#{{c:9,d:10}}") Map<String, Integer> someMap,
 			@Value("#{someField1}") double someField1, @Value("#{someField2}") String someField2,
 			@Value("#{someField3}") String someField3) {
 		House abshouse = new House();
@@ -461,7 +469,6 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	// A.6.1.Customizing beans using a BeanPostProcessor include:
 	// BeanValidationPostProcessor/MethodValidationPostProcessor/AutowiredAnnotationBeanPostProcessor/
 	// CommonAnnotationBeanPostProcessor/RequiredAnnotationBeanPostProcessor etc.
-	@Order(0)
 	@Bean
 	public TraceBeanPostProcessor traceBeanPostProcessor() {
 		TraceBeanPostProcessor traceBeanPostProcessor = new TraceBeanPostProcessor();
@@ -478,7 +485,6 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	// Static @Bean methods will not be enhanced for scoping and AOP semantics.
 	// A WARN-level log message will be issued for any non-static @Bean methods
 	// having a return type assignable to BeanFactoryPostProcessor.
-	@Order(0)
 	@Bean
 	public static TraceBeanFactoryPostProcessor traceBeanFactoryPostProcessor() {
 		TraceBeanFactoryPostProcessor traceBeanFactoryPostProcessor = new TraceBeanFactoryPostProcessor();
@@ -486,8 +492,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		return traceBeanFactoryPostProcessor;
 	}
 
-	// PropertySourcesPlaceholderConfigurer通过将@PropertySource加入到属性，以替换@Value中的占位符
-	@Order(Ordered.HIGHEST_PRECEDENCE)
+	// PropertySourcesPlaceholderConfigurer通过将@PropertySource加入到占位符，以替换@Value和XML中的占位符
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
@@ -495,7 +500,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 				new ClassPathResource("jdbc.properties"));
 		// propertySourcesPlaceholderConfigurer.setProperties(properties);
 		propertySourcesPlaceholderConfigurer.setFileEncoding("UTF-8");
-		propertySourcesPlaceholderConfigurer.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		propertySourcesPlaceholderConfigurer.setOrder(0);
 		log.info("propertySourcesPlaceholderConfigurer==========" + propertySourcesPlaceholderConfigurer);
 		return propertySourcesPlaceholderConfigurer;
 	}
@@ -508,6 +513,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		return myFamilyFactoryBean;
 	}
 
+	// B.Core:AOP and Instrumentation
 	@Bean("myAspect")
 	public MyAspect myAspect() {
 		return new MyAspect();

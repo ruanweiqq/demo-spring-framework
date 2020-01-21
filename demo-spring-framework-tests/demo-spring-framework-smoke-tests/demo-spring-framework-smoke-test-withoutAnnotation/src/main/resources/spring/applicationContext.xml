@@ -18,7 +18,7 @@
 	default-init-method="init" default-destroy-method="destroy2"
 	profile="development">
 
-	<!-- ==========A.The IoC Container========== -->
+	<!-- ==========A.Core:IoC========== -->
 	<!-- A.1.Bean Definition and Dependency Injection -->
 	<!-- A.1.1.Bean instantiation with a constructor -->
 	<bean id="family"
@@ -279,14 +279,14 @@
 		<property name="defaultEncoding" value="utf-8" />
 	</bean>
 
-	<!-- A.4.Lifecycle:Initialization/Destruction/Startup/Shutdown callbacks -->
-	<!-- A.4.1.Bean life cycle callbacks, see InitializingBean/DisposableBean -->
+	<!-- A.4.Lifecycle: Bean and Context callbacks -->
+	<!-- A.4.1.Bean lifecycle, see InitializingBean/DisposableBean/@PostConstruct/@PreDestroy -->
 	<bean
 		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyInitializingBean" />
 	<bean
 		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyDisposableBean" />
 
-	<!-- A.4.2.Context life cycle callbacks, see SmartLifecycle -->
+	<!-- A.4.2.Context lifecycle, see SmartLifecycle/@Order/PriorityOrdered/Ordered -->
 	<bean
 		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyLifecycle" />
 	<bean
@@ -295,11 +295,12 @@
 		class="org.ruanwei.demo.springframework.core.ioc.lifecycle.MyLifecycleProcessor" />
 
 	<!-- A.5.Environment：Profile and PropertySource -->
-	<!-- A.5.1.PropertySource：供Environment访问。无对应XML配置，参考@PropertySource -->
-	<!-- A.5.2.Profile：-Dspring.profiles.active="development" -Dspring.profiles.default="production" -->
-	<!-- 参考下面的<beans profile="xx">和@Profile -->
+	<!-- A.5.1.PropertySource：供Environment访问。参考@PropertySource -->
+	<!-- A.5.2.Profile：参考下面的<beans profile="xx">和@Profile -->
+	<!-- -Dspring.profiles.active="development" -Dspring.profiles.default="production" -->
 	
 	<!-- A.6.Extension Points -->
+	<!-- 参考 PriorityOrdered/Ordered/@Order -->
 	<!-- A.6.1.Customizing beans using a BeanPostProcessor include: -->
 	<!-- BeanValidationPostProcessor/MethodValidationPostProcessor/AutowiredAnnotationBeanPostProcessor/ -->
 	<!-- CommonAnnotationBeanPostProcessor/RequiredAnnotationBeanPostProcessor etc. -->
@@ -316,6 +317,7 @@
 		p:order="0" />
 	<!-- versions <= 3.0 default to org.springframework.beans.factory.config.PropertyPlaceholderConfigurer. -->
 	<!-- versions >= 3.1 default to org.springframework.context.support.PropertySourcesPlaceholderConfigurer. -->
+	<!-- PropertySourcesPlaceholderConfigurer通过将@PropertySource加入到PropertyPlaceholderConfigurer，以替换@Value和XML中的占位符 -->
 	<context:property-placeholder
 		location="classpath*:family.properties,classpath*:jdbc.properties"
 		file-encoding="UTF-8" order="0" />
@@ -338,10 +340,9 @@
 	
 	<!-- A.7 switches on the load-time weaving -->
 	<!-- <context:load-time-weaver/> -->
-	
 	<!-- <context:spring-configured /> -->
 
-	<!-- ==========B.AOP and Instrumentation========== -->
+	<!-- ==========B.Core:AOP and Instrumentation========== -->
 	<bean id="myAspect"
 		class="org.ruanwei.demo.springframework.core.aop.MyAspect" />
 	<bean id="aop"
@@ -381,7 +382,7 @@
 	<bean id="good"
 		class="org.ruanwei.demo.springframework.core.aop.GoodImpl" />
 		
-	<!-- A.5.2.Profile：必须放在配置文件最后 -->
+	<!-- A.5.2.Profile：必须放在XML配置文件最后 -->
 	<beans profile="development">
 		<bean id="house"
 			class="org.ruanwei.demo.springframework.core.ioc.House"

@@ -16,7 +16,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 /**
@@ -61,10 +59,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
  * 
  */
 @ActiveProfiles("development")
-@TestPropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-//@SpringJUnitConfig(AppConfig.class)
-@SpringJUnitConfig(locations = { "classpath:spring/applicationContext.xml" })
+@SpringJUnitConfig(AppConfig.class)
+//@SpringJUnitConfig(locations = { "classpath:spring/applicationContext.xml" })
 public class CoreTest {
 	private static Log log = LogFactory.getLog(CoreTest.class);
 

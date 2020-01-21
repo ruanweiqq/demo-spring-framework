@@ -17,54 +17,44 @@ public class TraceBeanPostProcessor implements BeanPostProcessor, PriorityOrdere
 	private int order = Ordered.LOWEST_PRECEDENCE;
 
 	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName)
-			throws BeansException {
-		log.debug("postProcessBeforeInitialization(Object bean, String beanName) "
-				+ beanName + "=" + bean);
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		log.debug("postProcessBeforeInitialization(Object bean, String beanName) " + beanName + "=" + bean);
 		Recorder.record("postProcessBeforeInitialization(Object bean, String beanName)", this.getClass());
-		
+
 		if (bean instanceof People) {
 			People people = (People) bean;
-			log.info("postProcessBeforeInitialization===================="
-					+ people);
+			log.info("postProcessBeforeInitialization====================" + people);
 		} else if (bean instanceof Family) {
 			Family family = (Family) bean;
-			log.info("postProcessBeforeInitialization===================="
-					+ family);
+			log.info("postProcessBeforeInitialization====================" + family);
 		} else if (bean instanceof House) {
 			House house = (House) bean;
-			log.info("postProcessBeforeInitialization===================="
-					+ house);
+			log.info("postProcessBeforeInitialization====================" + house);
 		}
 		return bean;
 	}
 
 	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName)
-			throws BeansException {
-		log.debug("postProcessAfterInitialization(Object bean, String beanName)"
-				+ beanName + "=" + bean);
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		log.debug("postProcessAfterInitialization(Object bean, String beanName)" + beanName + "=" + bean);
 		Recorder.record("postProcessAfterInitialization(Object bean, String beanName)", this.getClass());
-		
+
 		if (bean instanceof People) {
 			People people = (People) bean;
-			log.info("postProcessAfterInitialization===================="
-					+ people);
+			log.info("postProcessAfterInitialization====================" + people);
 		} else if (bean instanceof Family) {
 			Family family = (Family) bean;
-			log.info("postProcessAfterInitialization===================="
-					+ family);
+			log.info("postProcessAfterInitialization====================" + family);
 		} else if (bean instanceof House) {
 			House house = (House) bean;
-			log.info("postProcessAfterInitialization===================="
-					+ house);
+			log.info("postProcessAfterInitialization====================" + house);
 		}
 		return bean;
 	}
 
 	@Override
 	public int getOrder() {
-		return this.order;
+		return 0;
 	}
 
 	public void setOrder(int order) {

@@ -60,7 +60,6 @@ public class MyLifecycleProcessor implements LifecycleProcessor,PriorityOrdered 
 
 	@Override
 	public int getOrder() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

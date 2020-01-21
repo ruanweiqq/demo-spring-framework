@@ -37,7 +37,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 /**
@@ -59,7 +58,6 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
  * 
  */
 @ActiveProfiles("development")
-@TestPropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringJUnitConfig(AppConfig.class)
 //@SpringJUnitConfig(locations = {"classpath:spring/applicationContext.xml"})

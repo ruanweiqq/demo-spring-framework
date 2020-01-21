@@ -48,20 +48,30 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 /**
- *  要引用外部化配置，以下两种方式： 
- * <li>通过EnvironmentAware注入Environment，然后获取属性 
- * <li>利用@Bean方法参数的隐式支持@Value和@Autowired(可以替换为@Value("#{myBean}"))
- * 对于方法注入替换，没有与基于XML的配置元数据相匹配的基于Java的配置元数据
+ * The 'family', 'father' and 'house' bean are defined as @Component,other beans are defined in XML/Java.
+ * 
+ * 如果没有开启注解，以下三种方式均无法注入依赖到AppConfig： 
+ * <li>@Value(${placeholder}).
+ * <li>@Value(#{SpEL). 
+ * <li>@Autowired/@Qualifier.
+ * 测试类中式默认支持注解的.
+ * 
+ * 如果没有开启注解配置，对于方法注入、方法替换和AOP，没有与基于XML的配置元数据等价的基于Java的配置元数据。
+ * 可以通过@ImportResource来加载相应的XML配置元数据来解决这个问题
+ * 
+ * 注意：@Bean方法参数隐式支持@Value和@Autowired
+ * 
+ * 要引用外部化配置，可以使用以下两种方式： 
+ * <li>通过@PropertySource/@TestPropertySource指定PropertySource,注入Environment，然后通过其获取属性
+ * <li>通过PropertyPlaceholderConfigurer+@PropertySource/setLocations指定占位符，然后通过@Value获取属性
  * 
  * @author ruanwei
  *
  */
 @EnableAspectJAutoProxy
-// @Profile("development")
 @PropertySource("classpath:propertySource-${spring.profiles.active:development_def}.properties")
 @PropertySource("classpath:family.properties")
 @ComponentScan(basePackages = { "org.ruanwei.demo.springframework" })
-// @ImportResource({"classpath:spring/applicationContext.xml"})
 @Configuration
 public class AppConfig {
 	private static Log log = LogFactory.getLog(AppConfig.class);
@@ -72,11 +82,9 @@ public class AppConfig {
 	@Value("#{systemProperties['java.version']?:'1.8'}")
 	private String javaVersion;
 
-	// ==========A.The IoC Container==========
+	// ==========A.Core:IoC==========
 	// A.1.Bean Definition and Dependency Injection
 	// A.1.1.Bean instantiation with a constructor
-	// The 'family' bean is defined in Family component,other Family beans are
-	// defined in XML/Java as below.
 	@Lazy
 	@DependsOn("house")
 	@Bean("family1")
@@ -99,10 +107,13 @@ public class AppConfig {
 	@Bean("family2")
 	public Family family2(@Value("${family.2.familyName:Ruan2_def}") String familyName, People father, People mother,
 			@Value("${son.all}") People son, @Value("${daughter.all}") People daughter, People guest) {
+		// 1.Constructor-based dependency injection
 		Family family = FamilyFactory.createInstance1(familyName, familyCount, father);
+		// 2.Setter-based dependency injection
 		family.setMother(mother);
 		family.setSon(son);
 		family.setDaughter(daughter);
+		// Proxied scoped beans as dependencies
 		family.setGuest(guest);
 		return family;
 	}
@@ -114,16 +125,17 @@ public class AppConfig {
 	public Family family3(@Value("${family.3.familyName:Ruan3_def}") String familyName, People father, People mother,
 			@Value("${son.all}") People son, @Value("${daughter.all}") People daughter, People guest,
 			FamilyFactory familyFactory) {
+		// 1.Constructor-based dependency injection
 		Family family = familyFactory.createInstance2(familyName, familyCount, father);
+		// 2.Setter-based dependency injection
 		family.setMother(mother);
 		family.setSon(son);
 		family.setDaughter(daughter);
+		// Proxied scoped beans as dependencies
 		family.setGuest(guest);
 		return family;
 	}
 
-	// The 'father' bean is defined in People component,other People beans are
-	// defined in XML/Java as below
 	@Lazy
 	@Bean("mother")
 	public People mother(@Value("${mother.name:lixiaoling_def}") String name, @Value("${mother.age:88}") int age) {
@@ -222,15 +234,15 @@ public class AppConfig {
 		conversionService.setRegisterDefaultFormatters(true);
 
 		// 方式一：单个指定Converter/ConverterFactory/GenericConverter S->T
-//		Set<Object> converters = new HashSet<Object>();
-//		converters.add(new StringToPeopleConverter());
-//		conversionService.setConverters(converters);
+		// Set<Object> converters = new HashSet<Object>();
+		// converters.add(new StringToPeopleConverter());
+		// conversionService.setConverters(converters);
 
 		// 方式二：单个指定Formatter/AnnotationFormatterFactory String->T
-//		Set<Object> formatters = new HashSet<Object>();
-//		formatters.add(new PeopleFormatter());
-//		formatters.add(new PeopleFormatAnnotationFormatterFactory());
-//		conversionService.setFormatters(formatters);
+		// Set<Object> formatters = new HashSet<Object>();
+		// formatters.add(new PeopleFormatter());
+		// formatters.add(new PeopleFormatAnnotationFormatterFactory());
+		// conversionService.setFormatters(formatters);
 
 		// 方式三：分组指定converters和formatters
 		Set<FormatterRegistrar> formatterRegistrars = new HashSet<FormatterRegistrar>();
@@ -240,6 +252,14 @@ public class AppConfig {
 
 		log.info("conversionService==========" + conversionService);
 		return conversionService;
+	}
+
+	private JodaTimeFormatterRegistrar makeJodaTimeFormatterRegistrar() {
+		JodaTimeFormatterRegistrar jodaTimeFormatterRegistrar = new JodaTimeFormatterRegistrar();
+		DateTimeFormatterFactoryBean dateTimeFormatterFactoryBean = new DateTimeFormatterFactoryBean();
+		dateTimeFormatterFactoryBean.setPattern("yyyy-MM-dd");
+		jodaTimeFormatterRegistrar.setDateFormatter(dateTimeFormatterFactoryBean.getObject());
+		return jodaTimeFormatterRegistrar;
 	}
 
 	// A.2.2.PropertyEditor-based Conversion
@@ -259,14 +279,6 @@ public class AppConfig {
 
 		log.info("customEditorConfigurer==========" + customEditorConfigurer);
 		return customEditorConfigurer;
-	}
-
-	private JodaTimeFormatterRegistrar makeJodaTimeFormatterRegistrar() {
-		JodaTimeFormatterRegistrar jodaTimeFormatterRegistrar = new JodaTimeFormatterRegistrar();
-		DateTimeFormatterFactoryBean dateTimeFormatterFactoryBean = new DateTimeFormatterFactoryBean();
-		dateTimeFormatterFactoryBean.setPattern("yyyy-MM-dd");
-		jodaTimeFormatterRegistrar.setDateFormatter(dateTimeFormatterFactoryBean.getObject());
-		return jodaTimeFormatterRegistrar;
 	}
 
 	// A.2.3.Validation JSR-303/JSR-349/JSR-380
@@ -289,7 +301,6 @@ public class AppConfig {
 		return methodValidationPostProcessor;
 	}
 
-	// A.2.3.Validation JSR-303/JSR-349/JSR-380
 	@Bean("validator")
 	public LocalValidatorFactoryBean validator() {
 		LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
@@ -316,17 +327,18 @@ public class AppConfig {
 		return messageSource;
 	}
 
-	// A.4.Lifecycle:Initialization/Destruction/Startup/Shutdown callbacks
-	// A.4.1.Bean lifecycle callbacks, see @PostConstruct/@PreDestroy
-	// A.4.2.Context lifecycle callbacks, see @Smartlifecycle
+	// A.4.Lifecycle: Bean and Context callbacks
+	// A.4.1.Bean lifecycle, see
+	// InitializingBean/DisposableBean/@PostConstruct/@PreDestroy
+	// A.4.2.Context lifecycle, see SmartLifecycle/@Order/PriorityOrdered/Ordered
 
 	// A.5.Environment：Profile and PropertySource
 	// A.5.1.PropertySource：供Environment访问。无对应XML配置，参考@PropertySource
-	// A.5.2.Profile：-Dspring.profiles.active="development"
-	// -Dspring.profiles.default="production"
-	// 参考下面的<beans profile="xx">和@Profile
+	// A.5.2.Profile：参考下面的<beans profile="xx">和@Profile
+	// -Dspring.profiles.active="development" -Dspring.profiles.default="production"
 
 	// A.6.Extension Points
+	// PriorityOrdered/Ordered/@Order
 	// A.6.1.Customizing beans using a BeanPostProcessor include:
 	// BeanValidationPostProcessor/MethodValidationPostProcessor/AutowiredAnnotationBeanPostProcessor/
 	// CommonAnnotationBeanPostProcessor/RequiredAnnotationBeanPostProcessor etc.
@@ -337,13 +349,14 @@ public class AppConfig {
 	// PropertyPlaceholderConfigurer/PropertySourcesPlaceholderConfigurer/PreferencesPlaceholderConfigurer/
 	// CustomEditorConfigurer/CustomScopeConfigurer/CustomAutowireConfigurer etc.
 
-	// PropertySourcesPlaceholderConfigurer通过将@PropertySource加入到属性，以替换@Value中的占位符，因此此处可以不用指定
+	// PropertySourcesPlaceholderConfigurer通过将@PropertySource加入到占位符，以替换@Value和XML中的占位符
 	@Order(0)
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
 		propertySourcesPlaceholderConfigurer.setFileEncoding("UTF-8");
-		//propertySourcesPlaceholderConfigurer.setLocations(new ClassPathResource("family.properties"));
+		// propertySourcesPlaceholderConfigurer.setLocations(new
+		// ClassPathResource("family.properties"));
 		log.info("propertySourcesPlaceholderConfigurer==========" + propertySourcesPlaceholderConfigurer);
 		return propertySourcesPlaceholderConfigurer;
 	}
@@ -357,5 +370,5 @@ public class AppConfig {
 
 	// A.7 Switches on the load-time weaving
 
-	// ==========B.AOP and Instrumentation==========
+	// ==========B.Core:AOP and Instrumentation==========
 }

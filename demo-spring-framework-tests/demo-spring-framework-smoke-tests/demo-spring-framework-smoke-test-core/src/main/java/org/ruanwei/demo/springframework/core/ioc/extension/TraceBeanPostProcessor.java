@@ -8,20 +8,20 @@ import org.ruanwei.demo.springframework.core.ioc.People;
 import org.ruanwei.demo.util.Recorder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-@Order(Ordered.LOWEST_PRECEDENCE)
+@Order(0)
 @Component
 public class TraceBeanPostProcessor implements BeanPostProcessor {
 	private static Log log = LogFactory.getLog(TraceBeanPostProcessor.class);
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		//log.debug("postProcessBeforeInitialization(Object bean, String beanName) " + beanName + "=" + bean);
+		// log.debug("postProcessBeforeInitialization(Object bean, String beanName) " +
+		// beanName + "=" + bean);
 		Recorder.record("postProcessBeforeInitialization(Object bean, String beanName)", this.getClass());
-		
+
 		if (bean instanceof People) {
 			People people = (People) bean;
 			log.info("postProcessBeforeInitialization====================" + people);
@@ -37,7 +37,8 @@ public class TraceBeanPostProcessor implements BeanPostProcessor {
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		//log.debug("postProcessAfterInitialization(Object bean, String beanName)" + beanName + "=" + bean);
+		// log.debug("postProcessAfterInitialization(Object bean, String beanName)" +
+		// beanName + "=" + bean);
 		if (bean instanceof People) {
 			People people = (People) bean;
 			log.info("postProcessAfterInitialization====================" + people);

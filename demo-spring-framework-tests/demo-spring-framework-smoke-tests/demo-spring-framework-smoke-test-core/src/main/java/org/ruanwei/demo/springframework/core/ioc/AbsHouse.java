@@ -69,7 +69,7 @@ public abstract class AbsHouse {
 	@Value("a=7,b=8")
 	private Properties someProperties;
 
-	// @Value("c=9,d=10")
+	@Value("#{{c:9,d:10}}")
 	private Map<String, Integer> someMap;
 
 	// 使用SpEL

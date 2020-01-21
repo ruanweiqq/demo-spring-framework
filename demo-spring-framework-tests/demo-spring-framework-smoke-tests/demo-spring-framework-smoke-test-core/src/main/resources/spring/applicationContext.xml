@@ -15,25 +15,24 @@
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
 	default-init-method="init" default-destroy-method="destroy">
 
-	<!-- ==========A.The IoC Container========== -->
+	<!-- ==========A.Core:IoC========== -->
 	<!-- <context:component-scan> implicitly enables the <context:annotation-config>. -->
-	<context:component-scan
-		base-package="org.ruanwei.demo.springframework">
-		<!-- <context:exclude-filter/> <context:include-filter/> -->
-		<context:exclude-filter type="annotation"
-			expression="org.springframework.context.annotation.Configuration" />
-	</context:component-scan>
 	<!-- <context:annotation-config /> registers the below 6 BeanPostProcessor by default: -->
+	<!-- org.springframework.context.annotation.ConfigurationClassPostProcessor process @Configuration -->
 	<!-- org.springframework.context.annotation.CommonAnnotationBeanPostProcessor process JSR-250:@Resource/@PostConstruct/@PreDestroy -->
 	<!-- org.springframework.context.event.EventListenerMethodProcessor process @EventListener -->
-	<!-- org.springframework.context.annotation.ConfigurationClassPostProcessor process @Configuration -->
 	<!-- org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor for @Required. -->
 	<!-- org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor for @Autowired/@Value/@Lookup/JSR-330:@Inject. -->
 	<!-- org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor process @PersistenceContext -->
+	<context:component-scan
+		base-package="org.ruanwei.demo.springframework">
+		<!-- <context:exclude-filter/> -->
+		<!-- <context:include-filter/> -->
+	</context:component-scan>
 	
+	<!-- The 'family', 'father' and 'house' bean are defined as @Component,other beans are defined in XML/Java. -->
 	<!-- A.1.Bean Definition and Dependency Injection -->
 	<!-- A.1.1.Bean instantiation with a constructor -->
-	<!-- The 'family' bean is defined in Family component,other Family beans are defined in XML/Java as below. -->
 	<bean id="family1"
 		class="org.ruanwei.demo.springframework.core.ioc.Family"
 		lazy-init="true" depends-on="house" c:_0="${family.1.familyName}"
@@ -45,11 +44,13 @@
 	<bean id="family2"
 		class="org.ruanwei.demo.springframework.core.ioc.FamilyFactory"
 		factory-method="createInstance1" lazy-init="true" depends-on="house">
+		<!-- 1.Constructor-based dependency injection -->
 		<constructor-arg type="java.lang.String"
 			value="${family.2.familyName}" />
 		<constructor-arg type="int"
 			value="${family.familyCount}" />
 		<constructor-arg index="2" ref="father" />
+		<!-- 2.Setter-based dependency injection -->
 		<property name="mother" ref="mother" />
 		<property name="son" value="${son.all}" />
 		<property name="daughter" value="${daughter.all}" />
@@ -59,21 +60,19 @@
 	<!-- A.1.3.Bean instantiation using an instance factory method -->
 	<bean id="family3" factory-bean="familyFactory"
 		factory-method="createInstance2" lazy-init="true" depends-on="house">
+		<!-- 1.Constructor-based dependency injection -->
 		<constructor-arg type="java.lang.String"
 			value="${family.3.familyName}" />
 		<constructor-arg type="int"
 			value="${family.familyCount}" />
 		<constructor-arg index="2" ref="father" />
+		<!-- 2.Setter-based dependency injection -->
 		<property name="mother" ref="mother" />
 		<property name="son" value="${son.all}" />
 		<property name="daughter" value="${daughter.all}" />
 		<property name="guest" ref="guest" />
 	</bean>
-	<!-- <bean id="familyFactory"
-		class="org.ruanwei.demo.springframework.core.ioc.FamilyFactory"
-		lazy-init="true" /> -->
 	
-	<!-- The 'father' bean is defined in People component,other People beans are defined in XML/Java as below. -->
 	<bean id="mother"
 		class="org.ruanwei.demo.springframework.core.ioc.People"
 		lazy-init="true" c:name="${mother.name}" c:age="${mother.age}" />
@@ -130,7 +129,6 @@
 	</bean>
 
 	<!-- A.2.Data Binding -->
-	<!-- 一共有五种方式，参考withoutAnnotation项目 -->
 	<!-- A.2.1.ConversionService-based Type Conversion and Formatting -->
 	<bean id="conversionService"
 		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
@@ -220,16 +218,17 @@
 		<property name="defaultEncoding" value="utf-8" />
 	</bean>
 
-	<!-- A.4.Lifecycle:Initialization/Destruction/Startup/Shutdown callbacks -->
-	<!-- A.4.1.Bean lifecycle callbacks, see @PostConstruct/@PreDestroy -->
-	<!-- A.4.2.Context lifecycle callbacks, see @SmartLifecycle/@Order -->
+	<!-- A.4.Lifecycle: Bean and Context callbacks -->
+	<!-- A.4.1.Bean lifecycle, see InitializingBean/DisposableBean/@PostConstruct/@PreDestroy -->
+	<!-- A.4.2.Context lifecycle, see SmartLifecycle/@Order/PriorityOrdered/Ordered -->
 
 	<!-- A.5.Environment：Profile and PropertySource -->
-	<!-- A.5.1.PropertySource：供Environment访问。无对应XML配置，参考@PropertySource -->
-	<!-- A.5.2.Profile：-Dspring.profiles.active="development" -Dspring.profiles.default="production" -->
-	<!-- 参考下面的<beans profile="xx">和@Profile -->
+	<!-- A.5.1.PropertySource：供Environment访问。参考@PropertySource -->
+	<!-- A.5.2.Profile：参考下面的<beans profile="xx">和@Profile -->
+	<!-- -Dspring.profiles.active="development" -Dspring.profiles.default="production" -->
 
 	<!-- A.6.Extension Points -->
+	<!-- 参考 PriorityOrdered/Ordered/@Order -->
 	<!-- A.6.1.Customizing beans using a BeanPostProcessor include: -->
 	<!-- BeanValidationPostProcessor/MethodValidationPostProcessor/AutowiredAnnotationBeanPostProcessor/ -->
 	<!-- CommonAnnotationBeanPostProcessor/RequiredAnnotationBeanPostProcessor etc. -->
@@ -241,7 +240,7 @@
 	
 	<!-- versions <= 3.0 default to org.springframework.beans.factory.config.PropertyPlaceholderConfigurer. -->
 	<!-- versions >= 3.1 default to org.springframework.context.support.PropertySourcesPlaceholderConfigurer. -->
-	<!-- PropertySourcesPlaceholderConfigurer是将@PropertySource加入到属性的PropertyPlaceholderConfigurer，因此可以替换@Value中的占位符. -->
+	<!-- PropertySourcesPlaceholderConfigurer通过将@PropertySource加入到PropertyPlaceholderConfigurer，以替换@Value和XML中的占位符 -->
 	<context:property-placeholder
 		location="classpath*:family.properties" file-encoding="UTF-8"
 		order="0" />
@@ -253,14 +252,12 @@
 	<!-- FieldRetrievingFactoryBean/PropertyPathFactoryBean/MethodInvokingFactoryBean -->
 	<!-- LocalValidatorFactoryBean/FormattingConversionServiceFactoryBean/Jackson2ObjectMapperFactoryBean -->
 	<!-- FreeMarkerConfigurationFactoryBean/ContentNegotiationManagerFactoryBean/ProxyFactoryBean etc. -->
-	<!-- 参考 @Component/@Order -->
 
 	<!-- A.7 Switches on the load-time weaving -->
 	<!-- <context:load-time-weaver/> -->
-
 	<!-- <context:spring-configured /> -->
 
-    <!-- ==========B.AOP and Instrumentation========== -->
+    <!-- ==========B.Core:AOP and Instrumentation========== -->
 	<!-- Enabling @AspectJ Support with XML configuration -->
 	<!-- To force the use of CGLIB(against JDK dynamic) proxies set <aop:aspectj-autoproxy proxy-target-class="true">. -->
 	<aop:aspectj-autoproxy />

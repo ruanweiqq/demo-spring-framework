@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.util.Recorder;
 import org.springframework.context.LifecycleProcessor;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @author ruanwei
  *
  */
-@Order(Ordered.LOWEST_PRECEDENCE)
+@Order(0)
 @Component
 public class MyLifecycleProcessor implements LifecycleProcessor {
 	private static Log log = LogFactory.getLog(MyLifecycleProcessor.class);

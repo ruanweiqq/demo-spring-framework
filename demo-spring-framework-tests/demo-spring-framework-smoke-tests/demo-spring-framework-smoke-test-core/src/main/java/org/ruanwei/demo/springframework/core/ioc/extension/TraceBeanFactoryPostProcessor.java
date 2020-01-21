@@ -9,11 +9,10 @@ import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-@Order(Ordered.LOWEST_PRECEDENCE)
+@Order(0)
 @Component
 public class TraceBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 	private static Log log = LogFactory.getLog(TraceBeanFactoryPostProcessor.class);
