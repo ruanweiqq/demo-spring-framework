@@ -339,6 +339,14 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		return conversionService;
 	}
 
+	private JodaTimeFormatterRegistrar makeJodaTimeFormatterRegistrar() {
+		JodaTimeFormatterRegistrar jodaTimeFormatterRegistrar = new JodaTimeFormatterRegistrar();
+		DateTimeFormatterFactoryBean dateTimeFormatterFactoryBean = new DateTimeFormatterFactoryBean();
+		dateTimeFormatterFactoryBean.setPattern("yyyy-MM-dd");
+		jodaTimeFormatterRegistrar.setDateFormatter(dateTimeFormatterFactoryBean.getObject());
+		return jodaTimeFormatterRegistrar;
+	}
+
 	// A.2.2.PropertyEditor-based Conversion
 	// @Bean
 	public static CustomEditorConfigurer customEditorConfigurer() {
@@ -356,14 +364,6 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 
 		log.info("customEditorConfigurer==========" + customEditorConfigurer);
 		return customEditorConfigurer;
-	}
-
-	private JodaTimeFormatterRegistrar makeJodaTimeFormatterRegistrar() {
-		JodaTimeFormatterRegistrar jodaTimeFormatterRegistrar = new JodaTimeFormatterRegistrar();
-		DateTimeFormatterFactoryBean dateTimeFormatterFactoryBean = new DateTimeFormatterFactoryBean();
-		dateTimeFormatterFactoryBean.setPattern("yyyy-MM-dd");
-		jodaTimeFormatterRegistrar.setDateFormatter(dateTimeFormatterFactoryBean.getObject());
-		return jodaTimeFormatterRegistrar;
 	}
 
 	// A.2.3.Validation JSR-303/JSR-349/JSR-380
@@ -412,8 +412,9 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		return messageSource;
 	}
 
-	// A.4.Lifecycle:Initialization/Destruction/Startup/Shutdown callbacks
-	// A.4.1.Bean lifecycle callbacks -->
+	// A.4.Lifecycle: Bean and Context callbacks
+	// A.4.1.Bean lifecycle, see
+	// InitializingBean/DisposableBean/@PostConstruct/@PreDestroy
 	@Bean
 	public MyInitializingBean myInitializingBean() {
 		return new MyInitializingBean();
@@ -424,7 +425,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		return new MyDisposableBean();
 	}
 
-	// A.4.2.Context lifecycle callbacks
+	// A.4.2.Context lifecycle, see SmartLifecycle/@Order/PriorityOrdered/Ordered
 	@Bean
 	public MyLifecycle myLifecycle() {
 		return new MyLifecycle();
@@ -442,9 +443,8 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 
 	// A.5.Environment：Profile and PropertySource
 	// A.5.1.PropertySource：供Environment访问。无对应XML配置，参考@PropertySource
-	// A.5.2.Profile：-Dspring.profiles.active="development"
-	// -Dspring.profiles.default="production"
-	// 参考<beans profile="xx">和@Profile
+	// A.5.2.Profile：参考下面的<beans profile="xx">和@Profile
+	// -Dspring.profiles.active="development" -Dspring.profiles.default="production"
 	@Profile("development")
 	@Bean("house")
 	public House house1(@Value("${house.name.override:RuanHouse_def}") String houseName,
@@ -466,6 +466,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 	}
 
 	// A.6.Extension Points
+	// PriorityOrdered/Ordered/@Order
 	// A.6.1.Customizing beans using a BeanPostProcessor include:
 	// BeanValidationPostProcessor/MethodValidationPostProcessor/AutowiredAnnotationBeanPostProcessor/
 	// CommonAnnotationBeanPostProcessor/RequiredAnnotationBeanPostProcessor etc.

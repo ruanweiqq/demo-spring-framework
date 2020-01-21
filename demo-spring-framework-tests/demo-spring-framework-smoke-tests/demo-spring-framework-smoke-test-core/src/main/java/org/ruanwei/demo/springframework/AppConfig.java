@@ -348,6 +348,10 @@ public class AppConfig {
 	// PropertyOverrideConfigurer/
 	// PropertyPlaceholderConfigurer/PropertySourcesPlaceholderConfigurer/PreferencesPlaceholderConfigurer/
 	// CustomEditorConfigurer/CustomScopeConfigurer/CustomAutowireConfigurer etc.
+	// 注意，由于生命周期的原因，返回BeanFactoryPostProcessor的@Bean方法一定要声明为static，否则无法处理@Autowired、@Value、@PostConstruct等注解.
+	// Static @Bean methods will not be enhanced for scoping and AOP semantics.
+	// A WARN-level log message will be issued for any non-static @Bean methods
+	// having a return type assignable to BeanFactoryPostProcessor.
 
 	// PropertySourcesPlaceholderConfigurer通过将@PropertySource加入到占位符，以替换@Value和XML中的占位符
 	@Order(0)
