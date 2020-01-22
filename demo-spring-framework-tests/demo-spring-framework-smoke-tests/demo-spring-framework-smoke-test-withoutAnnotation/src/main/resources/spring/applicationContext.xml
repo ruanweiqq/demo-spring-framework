@@ -342,7 +342,7 @@
 	<!-- <context:load-time-weaver/> -->
 	<!-- <context:spring-configured /> -->
 
-	<!-- ==========B.Core:AOP and Instrumentation========== -->
+	<!-- ==========A.Core:AOP and Instrumentation========== -->
 	<bean id="myAspect"
 		class="org.ruanwei.demo.springframework.core.aop.MyAspect" />
 	<bean id="aop"

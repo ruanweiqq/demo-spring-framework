@@ -257,7 +257,7 @@
 	<!-- <context:load-time-weaver/> -->
 	<!-- <context:spring-configured /> -->
 
-    <!-- ==========B.Core:AOP and Instrumentation========== -->
+    <!-- ==========A.Core:AOP and Instrumentation========== -->
 	<!-- Enabling @AspectJ Support with XML configuration -->
 	<!-- To force the use of CGLIB(against JDK dynamic) proxies set <aop:aspectj-autoproxy proxy-target-class="true">. -->
 	<aop:aspectj-autoproxy />

@@ -12,7 +12,6 @@ import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.core.ioc.databinding.validation.FamilyName;
 import org.ruanwei.demo.springframework.core.ioc.event.MyApplicationEvent;
 import org.ruanwei.demo.util.Recorder;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;

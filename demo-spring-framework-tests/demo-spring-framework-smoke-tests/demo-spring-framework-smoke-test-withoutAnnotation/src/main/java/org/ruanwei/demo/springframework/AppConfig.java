@@ -514,7 +514,7 @@ public class AppConfig implements EnvironmentAware, InitializingBean {
 		return myFamilyFactoryBean;
 	}
 
-	// B.Core:AOP and Instrumentation
+	// A.Core:AOP and Instrumentation
 	@Bean("myAspect")
 	public MyAspect myAspect() {
 		return new MyAspect();

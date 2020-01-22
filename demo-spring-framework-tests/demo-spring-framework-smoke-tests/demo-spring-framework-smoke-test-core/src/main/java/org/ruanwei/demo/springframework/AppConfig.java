@@ -374,5 +374,5 @@ public class AppConfig {
 
 	// A.7 Switches on the load-time weaving
 
-	// ==========B.Core:AOP and Instrumentation==========
+	// ==========A.Core:AOP and Instrumentation==========
 }
