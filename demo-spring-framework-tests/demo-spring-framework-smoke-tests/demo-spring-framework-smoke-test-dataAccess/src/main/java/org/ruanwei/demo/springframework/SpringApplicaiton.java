@@ -25,7 +25,7 @@ public class SpringApplicaiton {
 	private static void initApplicationContext(ApplicationContextType type) {
 		switch (type) {
 		case ANNOTATION_CONFIG: {// GenericApplicationContext
-			context = new AnnotationConfigApplicationContext(DataAccessConfig.class);
+			context = new AnnotationConfigApplicationContext(AppConfig.class);
 			// 要在getBean之前进行设置并刷新
 			// context.register(AppConfig.class);
 			// context.getEnvironment().setActiveProfiles("development");

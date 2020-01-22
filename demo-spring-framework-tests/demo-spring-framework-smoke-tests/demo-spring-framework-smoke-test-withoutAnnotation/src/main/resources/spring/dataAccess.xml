@@ -30,8 +30,9 @@
 
 	<context:property-placeholder
 		location="classpath*:jdbc.properties" file-encoding="UTF-8" order="0" />
-		
-	<!-- ==========C.0.Transaction========== -->
+	
+	<!-- ==========B.Data Access:DAO/Transaction/JDBC/ORM/OXM/Spring Data========== -->	
+	<!-- B.0.Transaction -->
 	<aop:config>
 		<aop:pointcut id="daoPointcut"
 			expression="execution(* org.ruanwei.demo.springframework.dataAccess.jdbc.*Dao.*(..))" />
@@ -65,7 +66,7 @@
 		</tx:attributes>
 	</tx:advice>
 	
-	<!-- ==========C.1.JDBC========== -->
+	<!-- B.1.JDBC -->
 	<bean id="userJdbcDao"
 		class="org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao">
 		<property name="dataSource" ref="dataSource1" />
@@ -77,7 +78,8 @@
 		<property name="dataSource" ref="dataSource1" />
 	</bean>
 	
-	<!-- ==========C.2.ORM:JPA========== -->
+	<!-- B.2.ORM -->
+	<!-- B.2.1.JPA -->
 	<!-- <bean id="userJpaDao"
 		class="org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao">
 		<property name="entityManagerFactory"
@@ -93,26 +95,27 @@
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource1" />
-		<property name="jpaVendorAdapter">
-			<bean
-				class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
-		</property>
 		<property name="packagesToScan"
 			value="org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity" />
 		<property name="jpaProperties">
 			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">true</prop>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
 		</property>
+		<property name="jpaVendorAdapter">
+			<bean
+				class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
 		<!-- <property name="loadTimeWeaver">
 			<bean
 				class="org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver" />
 		</property> -->
-	</bean> 
+	</bean>
 	
-	<!-- ==========C.3.ORM:Hibernate========== -->
+	<!-- B.2.2.Hibernate -->
 	<!-- <bean id="userHibernateDao"
 		class="org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserHibernateDao">
 		<property name="sessionFactory" ref="sessionFactory" />
@@ -126,19 +129,19 @@
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource1" />
-		<property name="mappingResources">
-			<list>
-				<value>product.hbm.xml</value>
-			</list>
-		</property>
+		<property name="packagesToScan"
+			value="org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity" />
 		<property name="hibernateProperties">
-			<value>
-				hibernate.dialect=org.hibernate.dialect.HSQLDialect
-			</value>
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
 		</property>
 	</bean>  -->
-
-	<!-- ==========C.4.ORM:MyBatis========== -->
+	
+	<!-- B.2.3.MyBatis -->
 	<!-- <bean id="userMybatisDao"
 		class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
@@ -156,20 +159,25 @@
 	<!-- <bean id="jtaTransactionManager"
 		class="org.springframework.transaction.jta.JtaTransactionManager"/> -->
 	
-	<!-- ==========C.5.DataSource========== -->
-	<!-- DataSource:HSQL/H2/DERBY -->
-	<jdbc:embedded-database id="dataSource"
+	<!-- B.3.DataSource -->
+	<jdbc:initialize-database
+		data-source="embeddedDataSource">
+		<jdbc:script location="classpath:db/db-schema-hsql.sql" />
+		<jdbc:script location="classpath:db/db-test-data.sql" />
+	</jdbc:initialize-database>
+	
+	<!-- B.3.1.Embedded DataSource:HSQL/H2/DERBY -->
+	<jdbc:embedded-database id="embeddedDataSource"
 		type="HSQL" generate-name="true">
 		<jdbc:script location="classpath:db/db-schema-hsql.sql" />
 		<jdbc:script location="classpath:db/db-test-data.sql" />
 	</jdbc:embedded-database>
 
-	<!-- DataSource:plain JDBC -->
-	<!-- should only be used for testing purposes since it does not provide pooling -->
-	<bean id="dataSource1"
+	<!-- B.3.2.Plain JDBC DataSource(no pooling for test only) -->
+	<bean id="springDataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
 		primary="true">
-		<qualifier value="jdbcDataSource" />
+		<qualifier value="dataSource1" />
 		<property name="driverClassName"
 			value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
@@ -177,11 +185,49 @@
 		<property name="password" value="${jdbc.password}" />
 	</bean>
 
-	<!-- polled-DataSource:dbcp2, see PoolingDataSource -->
-	<bean id="dataSource2"
-		class="org.apache.commons.dbcp2.BasicDataSource"
+	<!-- B.3.3.Hikari DataSource -->
+	<bean id="hikariDataSource"
+		class="com.zaxxer.hikari.HikariDataSource" lazy-init="true"
 		destroy-method="close">
-		<qualifier value="dbcp2DataSource" />
+		<qualifier value="dataSource2" />
+		<property name="driverClassName"
+			value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="DataSourceClassName"
+			value="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" />
+	</bean>
+
+	<!-- B.3.4.Vibur DataSource -->
+	<bean id="viburDBCPDataSource"
+		class="org.vibur.dbcp.ViburDBCPDataSource" lazy-init="true"
+		destroy-method="close">
+		<qualifier value="dataSource3" />
+		<property name="driverClassName"
+			value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+
+	<!-- B.3.5.Tomcat JDBC DataSource(a replacement or an alternative to dbcp2) -->
+	<bean id="viburDBCPDataSource"
+		class="org.apache.tomcat.jdbc.pool.DataSource" lazy-init="true"
+		destroy-method="close">
+		<qualifier value="dataSource4" />
+		<property name="driverClassName"
+			value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+	
+	<!-- B.3.6.DBCP2 DataSource(Last update:2018-07-16 2.5.0, see PoolingDataSource) -->
+	<bean id="dbcp2DataSource"
+		class="org.apache.commons.dbcp2.BasicDataSource" lazy-init="true"
+		destroy-method="close">
+		<qualifier value="dataSource5" />
 		<property name="driverClassName"
 			value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
@@ -193,12 +239,12 @@
 		<property name="maxIdle" value="100" />
 		<property name="maxWaitMillis" value="-1" />
 	</bean>
-
-	<!-- polled-DataSource:c3p0 -->
-	<bean id="dataSource3"
-		class="com.mchange.v2.c3p0.ComboPooledDataSource"
+	
+	<!-- B.3.7.C3P0 DataSource(Last update:2015-12-09 0.9.5.2) -->
+	<bean id="c3p0DataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource" lazy-init="true"
 		destroy-method="close">
-		<qualifier value="c3p0DataSource" />
+		<qualifier value="dataSource6" />
 		<property name="driverClass" value="${jdbc.driverClassName}" />
 		<property name="jdbcUrl" value="${jdbc.url}" />
 		<property name="user" value="${jdbc.username}" />
@@ -221,25 +267,55 @@
 		<property name="breakAfterAcquireFailure" value="true" />
 		<property name="testConnectionOnCheckout" value="false" />
 	</bean>
+	
+	<!-- B.3.8.JNDI DataSource -->
+	<!-- <jee:jndi-lookup id="jndiDataSource" jndi-name="java:comp/env/jdbc/myds"/> -->
+	
+	<!-- B.4.OXM -->
+	<bean id="marshallerClient"
+		class="org.ruanwei.demo.springframework.dataAccess.oxm.MarshallerClient">
+		<property name="marshaller" ref="castorMarshaller" />
+		<property name="unmarshaller" ref="castorMarshaller" />
+	</bean>
 
-	<jdbc:initialize-database
-		data-source="dataSource">
-		<jdbc:script location="classpath:db/db-schema-hsql.sql" />
-		<jdbc:script location="classpath:db/db-test-data.sql" />
-	</jdbc:initialize-database>
+	<!-- 等价于org.springframework.oxm.castor.CastorMarshaller -->
+	<oxm:castor-marshaller id="castorMarshaller"
+		mapping-location="classpath:mapping.xml" />
+
+	<!-- 等价于org.springframework.oxm.jaxb.Jaxb2Marshaller -->
+	<oxm:jaxb2-marshaller id="jaxb2Marshaller"
+		context-path="org.ruanwei.demo.springframework.dataAccess.oxm">
+		<oxm:class-to-be-bound
+			name="org.ruanwei.demo.springframework.dataAccess.oxm.Settings" />
+	</oxm:jaxb2-marshaller>
+
+	<!-- 等价于org.springframework.oxm.jibx.JibxMarshaller -->
+	<oxm:jibx-marshaller id="jibxMarshaller"
+		target-class="org.ruanwei.demo.springframework.dataAccess.oxm.Settings" />
+
+	<bean id="xstreamMarshaller"
+		class="org.springframework.oxm.xstream.XStreamMarshaller">
+		<property name="supportedClasses"
+			value="org.ruanwei.demo.springframework.dataAccess.oxm.Settings" />
+		<property name="aliases">
+			<props>
+				<prop key="Settings">org.ruanwei.demo.springframework.dataAccess.oxm.Settings
+				</prop>
+			</props>
+		</property>
+	</bean>
 	
-	<!-- <jee:jndi-lookup id="dataSource4" jndi-name="java:comp/env/jdbc/myds"/> -->
-	
-	<!-- ==========D.Spring Data:JDBC========== -->
+	<!-- ==========B.Data Access:Spring Data========== -->
+	<!-- B.1.Spring Data:JDBC -->
 	<!-- <repositories
 		base-package="org.ruanwei.demo.springframework.dataAccess.springdata.jdbc" /> -->
 		
-	<!-- ==========D.Spring Data:JPA========== -->
+	<!-- B.2.Spring Data:JPA -->
 	<!-- <jpa:repositories
 		base-package="org.ruanwei.demo.springframework.dataAccess.springdata.jpa">
 	</jpa:repositories> -->
 	
-	<!-- ==========D.Spring Data:Redis========== -->
+	<!-- B.3.Spring Data:Redis -->
 	<!-- <bean id="redisClient"
 		class="org.ruanwei.demo.springframework.dataAccess.springdata.redis.RedisClient">
 		<property name="redisTemplate" ref="redisTemplate" />
@@ -338,7 +414,4 @@
 			</set>
 		</property>
 	</bean> -->
-	
-	<!-- more bean definitions go here -->
-
 </beans>

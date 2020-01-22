@@ -9,29 +9,38 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao;
+import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserHibernateDao;
+import org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao;
 import org.ruanwei.demo.springframework.dataAccess.oxm.Settings;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.jndi.JndiObjectFactoryBean;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-// import org.springframework.oxm.castor.CastorMarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.oxm.jibx.JibxMarshaller;
 import org.springframework.oxm.xstream.XStreamMarshaller;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.transaction.jta.JtaTransactionManager;
@@ -40,11 +49,23 @@ import org.vibur.dbcp.ViburDBCPDataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.zaxxer.hikari.HikariDataSource;
 
-@EnableTransactionManagement(proxyTargetClass = true)
+/**
+ * 对于事务配置，没有与基于XML的配置元数据相匹配的基于Java的配置元数据,因此此处import了xml配置.
+ * @author ruanwei
+ *
+ */
+@Import(AbstractJdbcConfiguration.class)
+@Profile("development")
 @PropertySource("classpath:jdbc.properties")
+//@EnableJpaRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jpa")
+@EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
+@EnableTransactionManagement(proxyTargetClass = true)
+@ComponentScan(basePackages = { "org.ruanwei.demo.springframework" })
 @Configuration
-public class DataAccessConfig2 {// implements TransactionManagementConfigurer {
-	private static Log log = LogFactory.getLog(DataAccessConfig2.class);
+public class AppConfig {// implements
+						// TransactionManagementConfigurer
+						// {
+	private static Log log = LogFactory.getLog(AppConfig.class);
 
 	@Value("${jdbc.driverClassName}")
 	private String driverClassName;
@@ -55,12 +76,112 @@ public class DataAccessConfig2 {// implements TransactionManagementConfigurer {
 	@Value("${jdbc.password}")
 	private String password;
 
-	// ==========C.Spring JDBC Data Access==========
-	// C.1.JDBC DataSource
+	// ==========C.1.JDBC==========
+	@Bean
+	public UserJdbcDao userJdbcDao() {
+		UserJdbcDao userJdbcDao = new UserJdbcDao();
+		userJdbcDao.setDataSource(springDataSource());
+		return userJdbcDao;
+	}
+
+	// local transaction manager for plain JDBC
+	@Primary
+	@Bean("transactionManager")
+	public PlatformTransactionManager transactionManager() {
+		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+		transactionManager.setDataSource(springDataSource());
+		return transactionManager;
+	}
+
+	// ==========C.2.ORM:JPA==========
+	// @Bean
+	public UserJpaDao userJpaDao() {
+		UserJpaDao userJpaDao = new UserJpaDao();
+		userJpaDao.setEntityManagerFactory(entityManagerFactory().getObject());
+		return userJpaDao;
+	}
+
+	// local transaction manager for JPA
+	// @Bean("jpaTransactionManager")
+	public PlatformTransactionManager jpaTransactionManager() {
+		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
+		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+		// jpaTransactionManager.setJpaDialect(jpaDialect);
+		// jpaTransactionManager.setDataSource(dataSource1());
+		return jpaTransactionManager;
+	}
+
+	@Qualifier("entityManagerFactory")
+	// @Bean("entityManagerFactory")
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
+		entityManagerFactory.setDataSource(springDataSource());
+		entityManagerFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity");
+		entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter()); // EclipseLinkJpaVendorAdapter
+		// entityManagerFactory.setJpaDialect(jpaDialect);
+
+		Properties jpaProperties = new Properties();
+		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
+		jpaProperties.put("hibernate.show_sql", true);
+		jpaProperties.put("hibernate.format_sql", true);
+		jpaProperties.put("hibernate.hbm2ddl.auto", "update");
+		entityManagerFactory.setJpaProperties(jpaProperties);
+
+		// entityManagerFactory.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
+
+		return entityManagerFactory;
+	}
+
+	// ==========C.3.ORM:Hibernate==========
+	// @Bean
+	public UserHibernateDao userHibernateDao() {
+		UserHibernateDao userHibernateDao = new UserHibernateDao();
+		userHibernateDao.setSessionFactory(sessionFactory().getObject());
+		return userHibernateDao;
+	}
+
+	// local transaction manager for Hibernate
+	// @Bean("hibernateTransactionManager")
+	public PlatformTransactionManager hibernateTransactionManager() {
+		HibernateTransactionManager hibernateTransactionManager = new HibernateTransactionManager();
+		hibernateTransactionManager.setSessionFactory(sessionFactory().getObject());
+		hibernateTransactionManager.setDataSource(springDataSource());
+		return hibernateTransactionManager;
+	}
+
+	// @Bean("sessionFactory")
+	@Qualifier("sessionFactory")
+	@Bean("sessionFactory")
+	public LocalSessionFactoryBean sessionFactory() {
+		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		sessionFactory.setDataSource(springDataSource());
+		sessionFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity");
+
+		Properties hibernateProperties = new Properties();
+		hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
+		hibernateProperties.put("hibernate.show_sql", true);
+		hibernateProperties.put("hibernate.format_sql", true);
+		hibernateProperties.put("hibernate.hbm2ddl.auto", "update");
+		sessionFactory.setHibernateProperties(hibernateProperties);
+
+		return sessionFactory;
+	}
+
+	// ==========C.4.ORM:MyBatis==========
+
+	// global transaction manager for JTA
+	// @Bean("jtaTransactionManager")
+	public PlatformTransactionManager jtaTransactionManager() {
+		JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
+		return jtaTransactionManager;
+	}
+
+	// ==========C.5.DataSource==========
+	// DataSource:HSQL/H2/DERBY
 	@Qualifier("embeddedDataSource")
 	@Lazy
 	@Bean
-	public DataSource embeddedDataSource() {
+	public DataSource dataSource() {
 		return new EmbeddedDatabaseBuilder().generateUniqueName(true).setType(EmbeddedDatabaseType.HSQL)
 				.setScriptEncoding("UTF-8").ignoreFailedDrops(true).addScript("classpath:db/db-schema-hsql.sql")
 				.addScripts("classpath:db/db-test-data.sql").build();
@@ -69,7 +190,7 @@ public class DataAccessConfig2 {// implements TransactionManagementConfigurer {
 	// DataSource:plain JDBC
 	// should only be used for testing purposes since no pooling.
 	@Primary
-	@Qualifier("springDataSource")
+	@Qualifier("dataSource1")
 	@Bean
 	public DataSource springDataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -105,8 +226,7 @@ public class DataAccessConfig2 {// implements TransactionManagementConfigurer {
 		return dataSource;
 	}
 
-	// Last Update: 2018-07-16 2.5.0
-	// see PoolingDataSource
+	// polled-DataSource:dbcp2, see PoolingDataSource
 	@Qualifier("dbcp2DataSource")
 	@Lazy
 	@Bean(destroyMethod = "close")
@@ -124,7 +244,7 @@ public class DataAccessConfig2 {// implements TransactionManagementConfigurer {
 		return dataSource;
 	}
 
-	// Last Update: 2015-12-09 0.9.5.2
+	// polled-DataSource:c3p0
 	@Qualifier("c3p0DataSource")
 	@Lazy
 	@Bean(destroyMethod = "close")
@@ -140,84 +260,13 @@ public class DataAccessConfig2 {// implements TransactionManagementConfigurer {
 		return dataSource;
 	}
 
-	// C.2.ORM
-	// C.2.1.Hibernate Native API
-	@Qualifier("sessionFactory")
-	@Bean("sessionFactory")
-	public LocalSessionFactoryBean sessionFactory() {
-		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setDataSource(springDataSource());
-		sessionFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity");
-
-		Properties hibernateProperties = new Properties();
-		hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
-		hibernateProperties.put("hibernate.show_sql", true);
-		hibernateProperties.put("hibernate.format_sql", true);
-		hibernateProperties.put("hibernate.hbm2ddl.auto", "update");
-		sessionFactory.setHibernateProperties(hibernateProperties);
-
-		return sessionFactory;
-	}
-
-	// C.2.2.Java Persistence API
-	@Qualifier("entityManagerFactory")
-	// @Bean("entityManagerFactory")
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-		entityManagerFactory.setDataSource(springDataSource());
-		entityManagerFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity");
-		entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter()); // EclipseLinkJpaVendorAdapter
-		// entityManagerFactory.setJpaDialect(jpaDialect);
-
-		Properties jpaProperties = new Properties();
-		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
-		jpaProperties.put("hibernate.show_sql", true);
-		jpaProperties.put("hibernate.format_sql", true);
-		jpaProperties.put("hibernate.hbm2ddl.auto", "update");
-		entityManagerFactory.setJpaProperties(jpaProperties);
-
-		// entityManagerFactory.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
-
-		return entityManagerFactory;
-	}
-
-	// JndiObjectFactoryBean
-
-	// C.3.Transaction
-	// local transaction manager for plain JDBC
-	@Primary
-	@Bean("transactionManager")
-	public DataSourceTransactionManager transactionManager() {
-		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-		transactionManager.setDataSource(springDataSource());
-		return transactionManager;
-	}
-
-	// local transaction manager for Hibernate
-	@Bean("hibernateTransactionManager")
-	public HibernateTransactionManager hibernateTransactionManager() {
-		HibernateTransactionManager hibernateTransactionManager = new HibernateTransactionManager();
-		hibernateTransactionManager.setSessionFactory(sessionFactory().getObject());
-		// hibernateTransactionManager.setDataSource(dataSource1());
-		return hibernateTransactionManager;
-	}
-
-	// local transaction manager for JPA
-	@Bean("jpaTransactionManager")
-	public JpaTransactionManager jpaTransactionManager() {
-		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
-		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-		// jpaTransactionManager.setJpaDialect(jpaDialect);
-		// jpaTransactionManager.setDataSource(dataSource1());
-		return jpaTransactionManager;
-	}
-
-	// global transaction manager for JTA
-	// @Bean("jtaTransactionManager")
-	public JtaTransactionManager jtaTransactionManager() {
-		JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
-		// jtaTransactionManager.setTransactionManager(transactionManager);
-		return jtaTransactionManager;
+	@Qualifier("jndiDataSource")
+	@Lazy
+	// @Bean(destroyMethod = "close")
+	public JndiObjectFactoryBean jndiDataSource() {
+		JndiObjectFactoryBean jndiObjectFactoryBean = new JndiObjectFactoryBean();
+		jndiObjectFactoryBean.setJndiName("java:comp/env/jdbc/myds");
+		return jndiObjectFactoryBean;
 	}
 
 	// The valid phases are BEFORE_COMMIT, AFTER_COMMIT (default), AFTER_ROLLBACK
@@ -269,5 +318,7 @@ public class DataAccessConfig2 {// implements TransactionManagementConfigurer {
 		xStreamMarshaller.setAliases(aliases);
 		return xStreamMarshaller;
 	}
+
+	// ==========D.Spring Data:Redis==========
 
 }

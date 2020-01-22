@@ -61,8 +61,8 @@ import org.springframework.util.concurrent.ListenableFuture;
 // @Transactional("txManager")
 @ActiveProfiles("development")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-//@SpringJUnitConfig(locations = "classpath:spring/dataAccess.xml")
-@SpringJUnitConfig(DataAccessConfig.class)
+//@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
+@SpringJUnitConfig(AppConfig.class)
 public class DataAccessTest {
 	private static Log log = LogFactory.getLog(DataAccessTest.class);
 
@@ -140,7 +140,7 @@ public class DataAccessTest {
 	@Autowired
 	private UserJdbcDao userJdbcDao;
 
-	// @Autowired
+	@Autowired
 	private UserJdbcRepository userJdbcRepository;
 
 	// @Autowired
@@ -310,7 +310,19 @@ public class DataAccessTest {
 	@Test
 	void testSpringDataJdbcCRUD() {
 		log.info("4======================================================================================");
+		UserJdbcEntity user = userJdbcRepository.save(entityForCreate);
+		log.info("jdbcCrudRepository.save========" + user);
+
+		//Iterable<User> userList = userJdbcRepository.saveAll(listParamForCreate);
+		//userList.forEach(e -> log.info("jdbcCrudRepository.saveAll========" + e));
 		
+		testCreate();
+		testUpdate();
+		testQueryForSingleRow();
+		testQueryForList();
+		testQueryAsync();
+		// testQueryForPagingAndSorting();
+		testDelete();
 	}
 
 	@Disabled
@@ -326,7 +338,7 @@ public class DataAccessTest {
 			log.error("transaction rolled back", e);
 		}
 	}
-
+	
 	private void testCreate() {
 		int count = userJdbcRepository.createUser(beanForCreate.getName(), beanForCreate.getAge(),
 				beanForCreate.getBirthday());
