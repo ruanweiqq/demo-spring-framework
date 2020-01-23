@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -19,11 +20,14 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
@@ -42,7 +46,6 @@ import org.springframework.oxm.jibx.JibxMarshaller;
 import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.transaction.jta.JtaTransactionManager;
 import org.vibur.dbcp.ViburDBCPDataSource;
 
@@ -56,10 +59,11 @@ import com.zaxxer.hikari.HikariDataSource;
  */
 @Import(AbstractJdbcConfiguration.class)
 @Profile("development")
-@PropertySource("classpath:jdbc.properties")
 //@EnableJpaRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jpa")
 @EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
 @EnableTransactionManagement(proxyTargetClass = true)
+@EnableAspectJAutoProxy
+@PropertySource("classpath:jdbc.properties")
 @ComponentScan(basePackages = { "org.ruanwei.demo.springframework" })
 @Configuration
 public class AppConfig {// implements
@@ -76,7 +80,20 @@ public class AppConfig {// implements
 	@Value("${jdbc.password}")
 	private String password;
 
-	// ==========C.1.JDBC==========
+	@Order(0)
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+		PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+		propertySourcesPlaceholderConfigurer.setFileEncoding("UTF-8");
+		// propertySourcesPlaceholderConfigurer.setLocations(new
+		// ClassPathResource("jdbc.properties"));
+		log.info("propertySourcesPlaceholderConfigurer==========" + propertySourcesPlaceholderConfigurer);
+		return propertySourcesPlaceholderConfigurer;
+	}
+
+	// B.Data Access:DAO/Transaction/JDBC/ORM/OXM/Spring Data
+	// B.0.Transaction
+	// B.1.JDBC
 	@Bean
 	public UserJdbcDao userJdbcDao() {
 		UserJdbcDao userJdbcDao = new UserJdbcDao();
@@ -93,11 +110,12 @@ public class AppConfig {// implements
 		return transactionManager;
 	}
 
-	// ==========C.2.ORM:JPA==========
+	// B.2.ORM
+	// B.2.1.JPA==========
 	// @Bean
-	public UserJpaDao userJpaDao() {
+	public UserJpaDao userJpaDao(EntityManagerFactory entityManagerFactory) {
 		UserJpaDao userJpaDao = new UserJpaDao();
-		userJpaDao.setEntityManagerFactory(entityManagerFactory().getObject());
+		userJpaDao.setEntityManagerFactory(entityManagerFactory);
 		return userJpaDao;
 	}
 
@@ -111,7 +129,6 @@ public class AppConfig {// implements
 		return jpaTransactionManager;
 	}
 
-	@Qualifier("entityManagerFactory")
 	// @Bean("entityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
@@ -132,7 +149,7 @@ public class AppConfig {// implements
 		return entityManagerFactory;
 	}
 
-	// ==========C.3.ORM:Hibernate==========
+	// B.2.2.Hibernate==========
 	// @Bean
 	public UserHibernateDao userHibernateDao() {
 		UserHibernateDao userHibernateDao = new UserHibernateDao();
@@ -150,8 +167,6 @@ public class AppConfig {// implements
 	}
 
 	// @Bean("sessionFactory")
-	@Qualifier("sessionFactory")
-	@Bean("sessionFactory")
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(springDataSource());
@@ -167,7 +182,7 @@ public class AppConfig {// implements
 		return sessionFactory;
 	}
 
-	// ==========C.4.ORM:MyBatis==========
+	// B.2.3.MyBatis
 
 	// global transaction manager for JTA
 	// @Bean("jtaTransactionManager")
@@ -176,19 +191,17 @@ public class AppConfig {// implements
 		return jtaTransactionManager;
 	}
 
-	// ==========C.5.DataSource==========
-	// DataSource:HSQL/H2/DERBY
-	@Qualifier("embeddedDataSource")
+	// B.3.DataSource
+	// B.3.1.Embedded DataSource:HSQL/H2/DERBY
 	@Lazy
 	@Bean
-	public DataSource dataSource() {
+	public DataSource embeddedDataSource() {
 		return new EmbeddedDatabaseBuilder().generateUniqueName(true).setType(EmbeddedDatabaseType.HSQL)
 				.setScriptEncoding("UTF-8").ignoreFailedDrops(true).addScript("classpath:db/db-schema-hsql.sql")
 				.addScripts("classpath:db/db-test-data.sql").build();
 	}
 
-	// DataSource:plain JDBC
-	// should only be used for testing purposes since no pooling.
+	// B.3.2.Plain JDBC DataSource(no pooling for test only)
 	@Primary
 	@Qualifier("dataSource1")
 	@Bean
@@ -201,8 +214,9 @@ public class AppConfig {// implements
 		return dataSource;
 	}
 
-	@Qualifier("hikariDataSource")
+	// B.3.3.Hikari DataSource
 	@Lazy
+	@Qualifier("dataSource2")
 	@Bean(destroyMethod = "close")
 	public DataSource hikariDataSource() {
 		HikariDataSource dataSource = new HikariDataSource();
@@ -214,8 +228,9 @@ public class AppConfig {// implements
 		return dataSource;
 	}
 
-	@Qualifier("viburDBCPDataSource")
+	// B.3.4.Vibur DataSource
 	@Lazy
+	@Qualifier("dataSource3")
 	@Bean(destroyMethod = "close")
 	public DataSource viburDBCPDataSource() {
 		ViburDBCPDataSource dataSource = new ViburDBCPDataSource();
@@ -225,10 +240,23 @@ public class AppConfig {// implements
 		dataSource.setPassword(password);
 		return dataSource;
 	}
-
-	// polled-DataSource:dbcp2, see PoolingDataSource
-	@Qualifier("dbcp2DataSource")
+	
+	// B.3.5.Tomcat JDBC DataSource(a replacement or an alternative to dbcp2)
 	@Lazy
+	@Qualifier("dataSource4")
+	@Bean(destroyMethod = "close")
+	public DataSource tomcatDataSource() {
+		org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
+		dataSource.setDriverClassName(driverClassName);
+		dataSource.setUrl(url);
+		dataSource.setUsername(username);
+		dataSource.setPassword(password);
+		return dataSource;
+	}
+	
+	// B.3.6.DBCP2 DataSource(Last update:2018-07-16 2.5.0, see PoolingDataSource)
+	@Lazy
+	@Qualifier("dataSource5")
 	@Bean(destroyMethod = "close")
 	public DataSource dbcp2DataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
@@ -244,9 +272,9 @@ public class AppConfig {// implements
 		return dataSource;
 	}
 
-	// polled-DataSource:c3p0
-	@Qualifier("c3p0DataSource")
+	// B.3.7.C3P0 DataSource(Last update:2015-12-09 0.9.5.2)
 	@Lazy
+	@Qualifier("dataSource6")
 	@Bean(destroyMethod = "close")
 	public DataSource c3p0DataSource() throws Exception {
 		ComboPooledDataSource dataSource = new ComboPooledDataSource();
@@ -260,8 +288,9 @@ public class AppConfig {// implements
 		return dataSource;
 	}
 
-	@Qualifier("jndiDataSource")
+	// B.3.8.JNDI DataSource
 	@Lazy
+	@Qualifier("jndiDataSource")
 	// @Bean(destroyMethod = "close")
 	public JndiObjectFactoryBean jndiDataSource() {
 		JndiObjectFactoryBean jndiObjectFactoryBean = new JndiObjectFactoryBean();
@@ -271,12 +300,12 @@ public class AppConfig {// implements
 
 	// The valid phases are BEFORE_COMMIT, AFTER_COMMIT (default), AFTER_ROLLBACK
 	// and AFTER_COMPLETION.
-	@TransactionalEventListener
+	// @TransactionalEventListener
 	public void handleTransactionalEvent(ApplicationEvent event) {
 		log.info("handleTransactionalEvent======" + event);
 	}
 
-	// C.4.OXM
+	// B.4.OXM
 	// Castor project is not active.
 	/*@Lazy
 	@Qualifier("castorMarshaller")
@@ -289,7 +318,7 @@ public class AppConfig {// implements
 
 	@Lazy
 	@Qualifier("jaxb2Marshaller")
-	@Bean
+	//@Bean
 	public Jaxb2Marshaller jaxb2Marshaller() {
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 		marshaller.setContextPath("org.ruanwei.demo.springframework.dataAccess.oxm");
@@ -298,6 +327,7 @@ public class AppConfig {// implements
 		return marshaller;
 	}
 
+	// JiBX project is not active.
 	@Lazy
 	@Qualifier("jibxMarshaller")
 	@Bean
@@ -319,6 +349,6 @@ public class AppConfig {// implements
 		return xStreamMarshaller;
 	}
 
-	// ==========D.Spring Data:Redis==========
+	// B.Data Access:Spring Data
 
 }

@@ -69,13 +69,13 @@
 	<!-- B.1.JDBC -->
 	<bean id="userJdbcDao"
 		class="org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao">
-		<property name="dataSource" ref="dataSource1" />
+		<property name="dataSource" ref="springDataSource" />
 	</bean>
 	<!-- PlatformTransactionManager:local transaction manager for plain JDBC -->
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
 		primary="true">
-		<property name="dataSource" ref="dataSource1" />
+		<property name="dataSource" ref="springDataSource" />
 	</bean>
 	
 	<!-- B.2.ORM -->
@@ -90,11 +90,11 @@
 		class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory"
 			ref="entityManagerFactory" />
-		<property name="dataSource" ref="dataSource1" />
+		<property name="dataSource" ref="springDataSource" />
 	</bean>
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="dataSource" ref="dataSource1" />
+		<property name="dataSource" ref="springDataSource" />
 		<property name="packagesToScan"
 			value="org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity" />
 		<property name="jpaProperties">
@@ -124,11 +124,11 @@
 	<!-- <bean id="hibernateTransactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
-		<property name="dataSource" ref="dataSource1" />
+		<property name="dataSource" ref="springDataSource" />
 	</bean>
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-		<property name="dataSource" ref="dataSource1" />
+		<property name="dataSource" ref="springDataSource" />
 		<property name="packagesToScan"
 			value="org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity" />
 		<property name="hibernateProperties">
@@ -152,7 +152,7 @@
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="configLocation"
 			value="classpath:mybatis/mybatis-config.xml" />
-		<property name="dataSource" ref="dataSource1" />
+		<property name="dataSource" ref="springDataSource" />
 	</bean> -->
 	
 	<!-- global transaction manager for JTA -->
@@ -212,7 +212,7 @@
 	</bean>
 
 	<!-- B.3.5.Tomcat JDBC DataSource(a replacement or an alternative to dbcp2) -->
-	<bean id="viburDBCPDataSource"
+	<bean id="tomcatDataSource"
 		class="org.apache.tomcat.jdbc.pool.DataSource" lazy-init="true"
 		destroy-method="close">
 		<qualifier value="dataSource4" />
@@ -306,112 +306,5 @@
 	</bean>
 	
 	<!-- ==========B.Data Access:Spring Data========== -->
-	<!-- B.1.Spring Data:JDBC -->
-	<!-- <repositories
-		base-package="org.ruanwei.demo.springframework.dataAccess.springdata.jdbc" /> -->
-		
-	<!-- B.2.Spring Data:JPA -->
-	<!-- <jpa:repositories
-		base-package="org.ruanwei.demo.springframework.dataAccess.springdata.jpa">
-	</jpa:repositories> -->
 	
-	<!-- B.3.Spring Data:Redis -->
-	<!-- <bean id="redisClient"
-		class="org.ruanwei.demo.springframework.dataAccess.springdata.redis.RedisClient">
-		<property name="redisTemplate" ref="redisTemplate" />
-		<property name="stringRedisTemplate"
-			ref="stringRedisTemplate" />
-	</bean>
-
-	<bean id="redisTemplate"
-		class="org.springframework.data.redis.core.RedisTemplate"
-		p:connection-factory-ref="jedisConnectionFactory"
-		p:enable-transaction-support="true"
-		p:key-serializer-ref="stringRedisSerializer"
-		p:value-serializer-ref="stringRedisSerializer"
-		p:hashKey-serializer-ref="stringRedisSerializer"
-		p:hashValue-serializer-ref="stringRedisSerializer" />
-
-	<bean id="stringRedisTemplate"
-		class="org.springframework.data.redis.core.StringRedisTemplate"
-		p:connection-factory-ref="jedisConnectionFactory"
-		p:enable-transaction-support="true" />
-
-	Redis Messaging Receiver:RedisMessageListenerContainer
-	<redis:listener-container
-		connection-factory="jedisConnectionFactory"
-		topic-serializer="stringRedisSerializer">
-		the method attribute can be skipped as the default method name is 
-			"handleMessage"
-		<redis:listener ref="myRedisMessageListener1"
-			topic="myChannel" serializer="stringRedisSerializer" />
-		<redis:listener ref="myRedisMessageListener2"
-			method="handleMessage" topic="myChannel"
-			serializer="stringRedisSerializer" />
-	</redis:listener-container>
-	<bean id="myRedisMessageListener1"
-		class="org.ruanwei.demo.springframework.integration.redis.xml.MyMessageListener" />
-	<bean id="myRedisMessageListener2"
-		class="org.ruanwei.demo.springframework.integration.redis.xml.MyMessageDelegate" /> -->
-	<!-- 等价于上面 -->
-	<!-- <bean id="redisMessageListenerContainer"
-		class="org.springframework.data.redis.listener.RedisMessageListenerContainer">
-		<property name="connectionFactory" ref="jedisConnectionFactory" />
-		<property name="messageListeners">
-			<map>
-				<entry key-ref="myRedisMessageListener1">
-					<bean class="org.springframework.data.redis.listener.ChannelTopic">
-						<constructor-arg value="myChannel" />
-					</bean>
-				</entry>
-			</map>
-		</property>
-	</bean> -->
-
-	<!-- <bean id="stringRedisSerializer"
-		class="org.springframework.data.redis.serializer.StringRedisSerializer" />
-
-	<bean id="jedisConnectionFactory"
-		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-		p:host-name="localhost" p:port="6379" p:use-pool="true"
-		p:pool-config-ref="jedisPoolConfig" />
-	<bean id="lettuceConnectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory" 
-		p:host-name="localhost" p:port="6379" />
-
-	<bean id="jedisPoolConfig"
-		class="redis.clients.jedis.JedisPoolConfig">
-		<property name="maxTotal" value="32" />
-		<property name="maxIdle" value="6" />
-		<property name="testOnBorrow" value="true" />
-	</bean>
-
-	<bean id="sentinelConfiguration"
-		class="org.springframework.data.redis.connection.RedisSentinelConfiguration">
-		<property name="master" value="myMaster" />
-		<property name="sentinels">
-			<set>
-				<bean
-					class="org.springframework.data.redis.connection.RedisNode"
-					p:host="localhost" p:port="26379" />
-				<bean
-					class="org.springframework.data.redis.connection.RedisNode"
-					p:host="localhost" p:port="26380" />
-			</set>
-		</property>
-	</bean>
-
-	<bean id="clusterConfiguration"
-		class="org.springframework.data.redis.connection.RedisClusterConfiguration">
-		<property name="maxRedirects" value="" />
-		<property name="clusterNodes">
-			<set>
-				<bean
-					class="org.springframework.data.redis.connection.RedisNode"
-					p:host="localhost" p:port="6379" />
-				<bean
-					class="org.springframework.data.redis.connection.RedisNode"
-					p:host="localhost" p:port="6380" />
-			</set>
-		</property>
-	</bean> -->
 </beans>
