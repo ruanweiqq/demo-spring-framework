@@ -51,5 +51,5 @@ public interface CrudDao2<T, ID> {
 
 	// 5.Save or Update
 	int saveOrUpdate(T entity);
-	
+
 }

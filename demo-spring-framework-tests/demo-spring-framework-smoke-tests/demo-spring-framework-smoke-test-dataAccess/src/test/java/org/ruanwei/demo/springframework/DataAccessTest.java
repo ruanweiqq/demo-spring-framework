@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,22 +67,33 @@ import org.springframework.util.concurrent.ListenableFuture;
 public class DataAccessTest {
 	private static Log log = LogFactory.getLog(DataAccessTest.class);
 
+	// create
 	private static final User beanForCreate;
-	private static final UserJdbcEntity entityForCreate;
 	private static final Map<String, Object> mapForCreate;
+	// batch create
+	private static final User[] beanArrayForBatchCreate;
+	private static final Collection<User> beanCollForBatchCreate;
+	private static final Map<String, Object>[] mapArrayForBatchCreate;
+	private static final List<Object[]> objArrayForBatchCreate;
 
+	// update
 	private static final User beanForUpdate;
 	private static final Map<String, Object> mapForUpdate;
-
-	private static final User beanForDelete;
-	private static final UserJdbcEntity entityForDelete;
-	private static final Map<String, Object> mapForDelete;
-
-	private static final User[] beanArrayForBatchCreate;
+	// batch update
 	private static final User[] beanArrayForBatchUpdate;
-	private static final Collection<User> beanCollForBatchCreate;
 	private static final Collection<User> beanCollForBatchUpdate;
 	private static final Map<String, Object>[] mapArrayForBatchUpdate;
+	private static final List<Object[]> objArrayForBatchUpdate;
+
+	// delete
+	private static final User beanForDelete;
+	private static final Map<String, Object> mapForDelete;
+	// batch delete:same as update
+	
+	// JPA entity
+	private static final UserJdbcEntity entityForCreate;
+	private static final UserJdbcEntity entityForUpdate;
+	private static final UserJdbcEntity entityForDelete;
 
 	private static final int gt0 = 0;
 	private static final int gt1 = 1;
@@ -90,11 +102,21 @@ public class DataAccessTest {
 	static {
 		// create
 		beanForCreate = new User("ruanwei_tmp", 36, Date.valueOf("1983-07-06"));
-		entityForCreate = new UserJdbcEntity("ruanwei_tmp", 36, Date.valueOf("1983-07-06"));
 		mapForCreate = new HashMap<>();
 		mapForCreate.put("name", beanForCreate.getName());
 		mapForCreate.put("age", beanForCreate.getAge());
 		mapForCreate.put("birthday", beanForCreate.getBirthday());
+		// batch create
+		beanArrayForBatchCreate = new User[] { beanForCreate, beanForCreate, beanForCreate };
+		beanCollForBatchCreate = Arrays.asList(beanArrayForBatchCreate);
+		mapArrayForBatchCreate = new HashMap[3];
+		mapArrayForBatchCreate[0] = mapForCreate;
+		mapArrayForBatchCreate[1] = mapForCreate;
+		mapArrayForBatchCreate[2] = mapForCreate;
+		objArrayForBatchCreate = new ArrayList<Object[]>();
+		objArrayForBatchCreate.add(new Object[] { beanForCreate.getName(),beanForCreate.getAge(),beanForCreate.getBirthday() });
+		objArrayForBatchCreate.add(new Object[] { beanForCreate.getName(),beanForCreate.getAge(),beanForCreate.getBirthday() });
+		objArrayForBatchCreate.add(new Object[] { beanForCreate.getName(),beanForCreate.getAge(),beanForCreate.getBirthday() });
 
 		// update
 		beanForUpdate = new User("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
@@ -102,38 +124,31 @@ public class DataAccessTest {
 		mapForUpdate.put("name", beanForUpdate.getName());
 		mapForUpdate.put("age", beanForUpdate.getAge());
 		mapForUpdate.put("birthday", beanForUpdate.getBirthday());
+		// batch update
+		beanArrayForBatchUpdate = new User[] { beanForUpdate, beanForUpdate, beanForUpdate };
+		beanCollForBatchUpdate = Arrays.asList(beanArrayForBatchUpdate);
+		mapArrayForBatchUpdate = new HashMap[3];
+		mapArrayForBatchUpdate[0] = mapForUpdate;
+		mapArrayForBatchUpdate[1] = mapForUpdate;
+		mapArrayForBatchUpdate[2] = mapForUpdate;
+		objArrayForBatchUpdate = new ArrayList<Object[]>();
+		objArrayForBatchUpdate.add(new Object[] { beanForUpdate.getName(),beanForUpdate.getAge(),beanForUpdate.getBirthday() });
+		objArrayForBatchUpdate.add(new Object[] { beanForUpdate.getName(),beanForUpdate.getAge(),beanForUpdate.getBirthday() });
+		objArrayForBatchUpdate.add(new Object[] { beanForUpdate.getName(),beanForUpdate.getAge(),beanForUpdate.getBirthday() });
 
 		// delete
 		beanForDelete = new User("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
-		entityForDelete = new UserJdbcEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
 		mapForDelete = new HashMap<>();
 		mapForDelete.put("name", beanForDelete.getName());
 		mapForDelete.put("age", beanForDelete.getAge());
 		mapForDelete.put("birthday", beanForDelete.getBirthday());
+		// batch delete:same as update
+	}
 
-		// batch update
-		beanArrayForBatchCreate = new User[] { new User("ruanwei_tmp", 36, Date.valueOf("1983-07-06")),
-				new User("ruanwei_tmp", 36, Date.valueOf("1983-07-06")) };
-		// batch update
-		beanArrayForBatchUpdate = new User[] { new User("ruanwei_tmp", 18, Date.valueOf("1983-07-06")),
-				new User("ruanwei_tmp", 18, Date.valueOf("1983-07-06")) };
-
-		beanCollForBatchCreate = Arrays.asList(beanArrayForBatchCreate);
-		beanCollForBatchUpdate = Arrays.asList(beanArrayForBatchUpdate);
-
-		Map<String, Object> mapForUpdate1 = new HashMap<>();
-		mapForUpdate1.put("name", "ruanwei_tmp");
-		mapForUpdate1.put("age", 18);
-		mapForUpdate1.put("birthday", Date.valueOf("1983-07-06"));
-
-		Map<String, Object> mapForUpdate2 = new HashMap<>();
-		mapForUpdate2.put("name", "ruanwei_tmp");
-		mapForUpdate2.put("age", 18);
-		mapForUpdate2.put("birthday", Date.valueOf("1983-07-06"));
-
-		mapArrayForBatchUpdate = new HashMap[2];
-		mapArrayForBatchUpdate[0] = mapForUpdate1;
-		mapArrayForBatchUpdate[1] = mapForUpdate2;
+	static {
+		entityForCreate = new UserJdbcEntity("ruanwei_tmp", 36, Date.valueOf("1983-07-06"));
+		entityForUpdate = new UserJdbcEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
+		entityForDelete = new UserJdbcEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
 	}
 
 	// 若实现接口则被代理，注入失败
@@ -155,12 +170,15 @@ public class DataAccessTest {
 	void beforeEach() {
 		log.info("beforeEach()");
 		assertNotNull(userJdbcDao, "userJdbcDao should not be null");
-		// assertNotNull(userJdbcRepository, "userJdbcRepository should not be null");
+		assertNotNull(userJdbcRepository, "userJdbcRepository should not be null");
 		// assertNotNull(userJpaRepository, "userJpaRepository should not be null");
 
-		userJdbcDao.deleteByName(beanForDelete);
-		userJdbcDao.deleteByName(mapForDelete);
-		userJdbcDao.batchDeleteByName(beanCollForBatchUpdate);
+		userJdbcDao.delete(beanForDelete);
+		userJdbcDao.delete(mapForDelete);
+		userJdbcDao.delete(beanForDelete.getName(), beanForDelete.getAge(), beanForDelete.getBirthday());
+		userJdbcDao.batchDelete(beanArrayForBatchUpdate);
+		userJdbcDao.batchDelete(beanCollForBatchUpdate);
+		userJdbcDao.batchDelete(mapArrayForBatchUpdate);
 
 		List<User> users = userJdbcDao.findAllById(gt0);
 		assertEquals(1, users.size(), "user size should be 1");
@@ -175,50 +193,51 @@ public class DataAccessTest {
 		userJdbcDao.save(beanForCreate);
 		userJdbcDao.saveWithKey(beanForCreate);
 
-		userJdbcDao.saveMap(mapForCreate);
-		userJdbcDao.saveMapWithKey(mapForCreate);
+		userJdbcDao.save(mapForCreate);
+		userJdbcDao.saveWithKey(mapForCreate);
 
-		userJdbcDao.save2(beanForCreate);
-		userJdbcDao.save3(beanForCreate);
-		userJdbcDao.saveWithKey2(beanForCreate);
+		userJdbcDao.save(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
+		userJdbcDao.saveWithKey(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
 
 		User user = userJdbcDao.findById(eq1);
-		Map<String, ?> userMap = userJdbcDao.findMapById(eq1);
 		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
 		assertEquals(36, user.getAge(), "user age should be 36");
+
+		Map<String, ?> userMap = userJdbcDao.findMapById(eq1);
 		assertEquals(1, userMap.get("id"), "user id should be 1983-07-06");
 		assertEquals("ruanwei", userMap.get("name"), "user name should be ruanwei");
 		assertEquals(36, userMap.get("age"), "user age should be 36");
 
 		List<User> users = userJdbcDao.findAllById(gt1);
 		List<Map<String, Object>> userMaps = userJdbcDao.findAllMapById(gt1);
-		List<String> names = userJdbcDao.findAllNamesById(gt1);
 		List<User> allUsers = userJdbcDao.findAll();
 		assertEquals(0, users.size() - userMaps.size(), "user list size should be equal");
-		assertEquals(0, users.size() - names.size(), "user list size should be equal");
 		assertEquals(1, allUsers.size() - users.size(), "user list size diff should be 1");
 		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
 		users.forEach(u -> assertEquals(36, u.getAge(), "user age should be 36"));
 
 		// 2.根据name更新age
-		userJdbcDao.updateAgeByName(beanForUpdate);
-		userJdbcDao.updateAgeByName(mapForUpdate);
+		userJdbcDao.updateAge(beanForUpdate);
+		userJdbcDao.updateAge(mapForUpdate);
 
 		user = userJdbcDao.findById(eq1);
-		users = userJdbcDao.findAllById(gt1);
+		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
 		assertEquals(36, user.getAge(), "user age should be 36");
+
+		users = userJdbcDao.findAllById(gt1);
 		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 
-		// 3.根据name删除
-		userJdbcDao.deleteByName(beanForDelete);
-		userJdbcDao.deleteByName(mapForDelete);
+		// 3.删除
+		userJdbcDao.delete(beanForDelete);
+		userJdbcDao.delete(mapForDelete);
+		userJdbcDao.delete(beanForDelete.getName(), beanForDelete.getAge(), beanForDelete.getBirthday());
 
 		user = userJdbcDao.findById(eq1);
 		assertNotNull(user, "user should not be null");
@@ -239,45 +258,52 @@ public class DataAccessTest {
 
 		// 1.批量创建
 		userJdbcDao.batchSave(beanArrayForBatchCreate);
-		userJdbcDao.batchSave2(Arrays.asList(beanCollForBatchCreate.toArray(new User[0])));
-		userJdbcDao.batchSave3(beanCollForBatchCreate);
+		userJdbcDao.batchSave(beanCollForBatchCreate);
+		userJdbcDao.batchSave(mapArrayForBatchCreate);
+		userJdbcDao.batchSave(objArrayForBatchCreate);
 
 		User user = userJdbcDao.findById(eq1);
-		List<User> users = userJdbcDao.findAllById(gt1);
-		Map<String, ?> userMap = userJdbcDao.findMapById(eq1);
 		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
 		assertEquals(36, user.getAge(), "user age should be 36");
+
+		Map<String, ?> userMap = userJdbcDao.findMapById(eq1);
 		assertEquals(1, userMap.get("id"), "user id should be 1983-07-06");
 		assertEquals("ruanwei", userMap.get("name"), "user name should be ruanwei");
 		assertEquals(36, userMap.get("age"), "user age should be 36");
 
-		users = userJdbcDao.findAllById(gt1);
+		List<User> users = userJdbcDao.findAllById(gt1);
 		List<Map<String, Object>> userMaps = userJdbcDao.findAllMapById(gt1);
-		List<String> names = userJdbcDao.findAllNamesById(gt1);
 		List<User> allUsers = userJdbcDao.findAll();
 		assertEquals(0, users.size() - userMaps.size(), "user list size should be equal");
-		assertEquals(0, users.size() - names.size(), "user list size should be equal");
 		assertEquals(1, allUsers.size() - users.size(), "user list size diff should be 1");
 		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
 		users.forEach(u -> assertEquals(36, u.getAge(), "user age should be 36"));
 
-		// 2.根据name批量更新age
-		userJdbcDao.batchUpdateAgeByName(mapArrayForBatchUpdate);
+		// 2.批量更新age
+		userJdbcDao.batchUpdateAge(beanArrayForBatchUpdate);
+		userJdbcDao.batchUpdateAge(beanCollForBatchUpdate);
+		userJdbcDao.batchUpdateAge(mapArrayForBatchUpdate);
+		userJdbcDao.batchUpdateAge(objArrayForBatchUpdate);
 
 		user = userJdbcDao.findById(eq1);
-		users = userJdbcDao.findAllById(gt1);
+		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
 		assertEquals(36, user.getAge(), "user age should be 36");
+
+		users = userJdbcDao.findAllById(gt1);
 		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 
-		// 3.根据name批量删除
-		userJdbcDao.batchDeleteByName(beanCollForBatchUpdate);
+		// 3.批量删除 
+		userJdbcDao.batchDelete(beanArrayForBatchUpdate);
+		userJdbcDao.batchDelete(beanCollForBatchUpdate);
+		userJdbcDao.batchDelete(mapArrayForBatchUpdate);
+		userJdbcDao.batchDelete(objArrayForBatchUpdate);
 
 		user = userJdbcDao.findById(eq1);
 		assertNotNull(user, "user should not be null");
@@ -310,12 +336,21 @@ public class DataAccessTest {
 	@Test
 	void testSpringDataJdbcCRUD() {
 		log.info("4======================================================================================");
-		UserJdbcEntity user = userJdbcRepository.save(entityForCreate);
-		log.info("jdbcCrudRepository.save========" + user);
+		// 1.创建
+		userJdbcRepository.save(entityForCreate);
 
-		//Iterable<User> userList = userJdbcRepository.saveAll(listParamForCreate);
-		//userList.forEach(e -> log.info("jdbcCrudRepository.saveAll========" + e));
-		
+		UserJdbcEntity user = userJdbcRepository.findUserById(eq1);
+		assertNotNull(user, "user should not be null");
+		assertEquals(1, user.getId(), "user id should be 1983-07-06");
+		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
+		assertEquals(36, user.getAge(), "user age should be 36");
+
+		Iterable<UserJdbcEntity> allUsers = userJdbcRepository.findAll();
+		allUsers.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
+		allUsers.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
+		allUsers.forEach(u -> assertEquals(36, u.getAge(), "user age should be 36"));
+
+		// 2.根据name更新age
 		testCreate();
 		testUpdate();
 		testQueryForSingleRow();
@@ -330,7 +365,7 @@ public class DataAccessTest {
 	@Test
 	void testSpringDataJdbcWithTransaction() {
 		log.info("5======================================================================================");
-		
+
 		assertNotNull(userJdbcRepository, "userJdbcRepository should npt be null");
 		try {
 			userJdbcRepository.transactionalMethod1(new UserJdbcEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
@@ -338,7 +373,7 @@ public class DataAccessTest {
 			log.error("transaction rolled back", e);
 		}
 	}
-	
+
 	private void testCreate() {
 		int count = userJdbcRepository.createUser(beanForCreate.getName(), beanForCreate.getAge(),
 				beanForCreate.getBirthday());
@@ -346,9 +381,6 @@ public class DataAccessTest {
 
 		UserJdbcEntity user = userJdbcRepository.save(entityForCreate);
 		log.info("jdbcCrudRepository.save========" + user);
-
-		// Iterable<User> userList = userJdbcRepository.saveAll(listParamForCreate);
-		// userList.forEach(e -> log.info("jdbcCrudRepository.saveAll========" + e));
 	}
 
 	private void testUpdate() {
