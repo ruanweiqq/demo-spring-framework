@@ -62,7 +62,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Transactional
-@Repository
+//@Repository
 public class UserJpaDao implements CrudDao2<UserEntity, Integer> {
 	private static Log log = LogFactory.getLog(UserJpaDao.class);
 

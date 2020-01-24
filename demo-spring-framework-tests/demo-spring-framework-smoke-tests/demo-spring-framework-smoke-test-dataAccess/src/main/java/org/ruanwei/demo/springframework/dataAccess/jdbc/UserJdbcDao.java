@@ -39,6 +39,9 @@ import org.springframework.jdbc.object.StoredProcedure;
 import org.springframework.jdbc.object.UpdatableSqlQuery;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * JdbcDaoSupport提供了setDataSource支持 NamedParameterJdbcTemplate支持IN表达式
@@ -46,6 +49,8 @@ import org.springframework.jdbc.support.KeyHolder;
  * @author ruanwei
  *
  */
+@Transactional("transactionManager")
+@Repository
 public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 	private static Log log = LogFactory.getLog(UserJdbcDao.class);
 
@@ -64,6 +69,9 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 	private UpdatableSqlQuery<User> updatableSqlQuery;
 	private SqlUpdate sqlUpdate;
 	private StoredProcedure storedProcedure;
+	
+	@Autowired
+	private UserJdbcDao2 userJdbcDao2;
 
 	private static final String sql_select_by_id1 = "select * from user where id = ?";
 	private static final String sql_select_by_id_namedParam1 = "select * from user where id = :id";
@@ -88,13 +96,13 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 	private static final String sql_update_age = "update user set age = ? where name = ? and birthday = ?";
 	private static final String sql_update_age_namedParam = "update user set age = :age where name = :name and birthday = :birthday";
 
-	private static final String sql_delete = "delete from user where name = :name and age = :age and birthday = :birthday";
+	private static final String sql_delete = "delete from user where name = ? and age = ? and birthday = ?";
 	private static final String sql_delete_namedParam = "delete from user where name = :name and age = :age and birthday = :birthday";
 
 	private static final String sql_delete_all = "delete from user";
 
 	@Autowired
-	public void setDataSource(@Qualifier("jdbcDataSource") DataSource dataSource) {
+	public void setDataSource(@Qualifier("springDataSource") DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 
@@ -172,7 +180,8 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 		Map<String, Integer> paramMap = new HashMap<String, Integer>();
 		paramMap.put("id", id);
 
-		User user = namedParameterJdbcTemplate.queryForObject(sql_select_by_id_namedParam1, paramMap, User.class);
+		User user = namedParameterJdbcTemplate.queryForObject(sql_select_by_id_namedParam1, paramMap,
+				new BeanPropertyRowMapper<User>(User.class));
 
 		log.info("user=" + user);
 		return user;
@@ -200,8 +209,8 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 	public List<User> findAll() {
 		log.info("findAll()");
 
-		List<User> userList = namedParameterJdbcTemplate.queryForList(sql_select_all1, EmptySqlParameterSource.INSTANCE,
-				User.class);
+		List<User> userList = namedParameterJdbcTemplate.query(sql_select_all1, EmptySqlParameterSource.INSTANCE,
+				new BeanPropertyRowMapper<User>(User.class));
 
 		userList.forEach(user -> log.info("user=" + user));
 		return userList;
@@ -220,12 +229,12 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 
 	// @Override
 	public List<User> findAllById(Integer id) {
-		log.info("findAllById(Iterable<Integer> ids)");
+		log.info("findAllById(Integer id)");
 
 		Map<String, Integer> paramMap = new HashMap<String, Integer>();
 		paramMap.put("id", id);
-		List<User> userList = namedParameterJdbcTemplate.queryForList(sql_select_by_gt_id_namedParam2, paramMap,
-				User.class);
+		List<User> userList = namedParameterJdbcTemplate.query(sql_select_by_gt_id_namedParam2, paramMap,
+				new BeanPropertyRowMapper<User>(User.class));
 
 		userList.forEach(user -> log.info("user=" + user));
 		return userList;
@@ -573,10 +582,10 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 		return namedParameterJdbcTemplate.batchUpdate(sql, batch);
 	}
 
-	private int[] _batchUpdate(List<Object[]> batchArgs) {
+	private int[] _batchUpdate(String sql, List<Object[]> batchArgs) {
 		log.info("_batchUpdate(List<Object[]> batchArgs");
 
-		int[] updateCounts = jdbcTemplate.batchUpdate(sql_insert, batchArgs);
+		int[] updateCounts = jdbcTemplate.batchUpdate(sql, batchArgs);
 
 		BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
 			@Override
@@ -591,14 +600,14 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 				return batchArgs.size();
 			}
 		};
-		updateCounts = jdbcTemplate.batchUpdate(sql_insert, bpss);
+		updateCounts = jdbcTemplate.batchUpdate(sql, bpss);
 
 		ParameterizedPreparedStatementSetter<Object[]> uppss = (ps, args) -> {
 			ps.setString(1, (String) args[0]);
 			ps.setInt(2, (Integer) args[1]);
 			ps.setDate(3, (Date) args[2]);
 		};
-		int[][] updateCounts2 = jdbcTemplate.batchUpdate(sql_insert, batchArgs, 2, uppss);
+		int[][] updateCounts2 = jdbcTemplate.batchUpdate(sql, batchArgs, 2, uppss);
 
 		return updateCounts;
 	}
@@ -640,20 +649,17 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 	}
 
 	// ====================transaction====================
+	// transactionalMethod1会回滚，transactionalMethod2不会回滚
 	// 不能在事务方法中进行try-catch
-	// REQUIRED
+	@Transactional(rollbackFor = ArithmeticException.class)
 	public void transactionalMethod1(User user) {
+		log.info("transactionalMethod1(User user)" + user);
+		
 		save(user);
-
-		// REQUIRES_NEW，理论上这个方法不回滚
-		transactionalMethod2(new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
-
+		
+		// 注意：由于默认使用代理的原因，调用同一类中事务方法时会忽略其的事务，因此需要把事务方法置于另一个类中
+		userJdbcDao2.transactionalMethod2(new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+		
 		int i = 1 / 0;
 	}
-
-	// 不能在事务方法中进行try-catch
-	public void transactionalMethod2(User user) {
-		save(user);
-	}
-
 }

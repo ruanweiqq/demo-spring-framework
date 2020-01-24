@@ -45,10 +45,6 @@
 		transaction-manager="txManager" />
 	
 	<!-- B.1.JDBC -->
-	<bean id="userJdbcDao"
-		class="org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao">
-		<property name="dataSource" ref="springDataSource" />
-	</bean>
 	<!-- PlatformTransactionManager:local transaction manager for plain JDBC -->
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
@@ -58,11 +54,6 @@
 	
 	<!-- B.2.ORM -->
 	<!-- B.2.1.JPA -->
-	<!-- <bean id="userJpaDao"
-		class="org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao">
-		<property name="entityManagerFactory"
-			ref="entityManagerFactory" />
-	</bean>-->
 	<!-- PlatformTransactionManager:local transaction manager for JPA -->
 	<bean id="jpaTransactionManager"
 		class="org.springframework.orm.jpa.JpaTransactionManager">
@@ -94,10 +85,6 @@
 	</bean>
 	
 	<!-- B.2.2.Hibernate -->
-	<!-- <bean id="userHibernateDao"
-		class="org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserHibernateDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean> -->
 	<!-- PlatformTransactionManager:local transaction manager for Hibernate -->
 	<!-- <bean id="hibernateTransactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">

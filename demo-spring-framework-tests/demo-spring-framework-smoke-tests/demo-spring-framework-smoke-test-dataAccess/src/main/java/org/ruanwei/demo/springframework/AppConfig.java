@@ -4,15 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao;
-import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserHibernateDao;
-import org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao;
 import org.ruanwei.demo.springframework.dataAccess.oxm.Settings;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +16,6 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -29,8 +23,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
-import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -46,6 +38,7 @@ import org.springframework.oxm.jibx.JibxMarshaller;
 import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.transaction.jta.JtaTransactionManager;
 import org.vibur.dbcp.ViburDBCPDataSource;
 
@@ -57,12 +50,11 @@ import com.zaxxer.hikari.HikariDataSource;
  * @author ruanwei
  *
  */
-@Import(AbstractJdbcConfiguration.class)
 @Profile("development")
+//@Import(AbstractJdbcConfiguration.class)
 //@EnableJpaRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jpa")
-@EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
-@EnableTransactionManagement(proxyTargetClass = true)
-@EnableAspectJAutoProxy
+//@EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
+@EnableTransactionManagement
 @PropertySource("classpath:jdbc.properties")
 @ComponentScan(basePackages = { "org.ruanwei.demo.springframework" })
 @Configuration
@@ -94,13 +86,6 @@ public class AppConfig {// implements
 	// B.Data Access:DAO/Transaction/JDBC/ORM/OXM/Spring Data
 	// B.0.Transaction
 	// B.1.JDBC
-	@Bean
-	public UserJdbcDao userJdbcDao() {
-		UserJdbcDao userJdbcDao = new UserJdbcDao();
-		userJdbcDao.setDataSource(springDataSource());
-		return userJdbcDao;
-	}
-
 	// local transaction manager for plain JDBC
 	@Primary
 	@Bean("transactionManager")
@@ -112,20 +97,13 @@ public class AppConfig {// implements
 
 	// B.2.ORM
 	// B.2.1.JPA==========
-	// @Bean
-	public UserJpaDao userJpaDao(EntityManagerFactory entityManagerFactory) {
-		UserJpaDao userJpaDao = new UserJpaDao();
-		userJpaDao.setEntityManagerFactory(entityManagerFactory);
-		return userJpaDao;
-	}
-
 	// local transaction manager for JPA
 	// @Bean("jpaTransactionManager")
 	public PlatformTransactionManager jpaTransactionManager() {
 		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
 		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 		// jpaTransactionManager.setJpaDialect(jpaDialect);
-		// jpaTransactionManager.setDataSource(dataSource1());
+		jpaTransactionManager.setDataSource(springDataSource());
 		return jpaTransactionManager;
 	}
 
@@ -150,13 +128,6 @@ public class AppConfig {// implements
 	}
 
 	// B.2.2.Hibernate==========
-	// @Bean
-	public UserHibernateDao userHibernateDao() {
-		UserHibernateDao userHibernateDao = new UserHibernateDao();
-		userHibernateDao.setSessionFactory(sessionFactory().getObject());
-		return userHibernateDao;
-	}
-
 	// local transaction manager for Hibernate
 	// @Bean("hibernateTransactionManager")
 	public PlatformTransactionManager hibernateTransactionManager() {
@@ -240,7 +211,7 @@ public class AppConfig {// implements
 		dataSource.setPassword(password);
 		return dataSource;
 	}
-	
+
 	// B.3.5.Tomcat JDBC DataSource(a replacement or an alternative to dbcp2)
 	@Lazy
 	@Qualifier("dataSource4")
@@ -253,7 +224,7 @@ public class AppConfig {// implements
 		dataSource.setPassword(password);
 		return dataSource;
 	}
-	
+
 	// B.3.6.DBCP2 DataSource(Last update:2018-07-16 2.5.0, see PoolingDataSource)
 	@Lazy
 	@Qualifier("dataSource5")
@@ -300,7 +271,7 @@ public class AppConfig {// implements
 
 	// The valid phases are BEFORE_COMMIT, AFTER_COMMIT (default), AFTER_ROLLBACK
 	// and AFTER_COMPLETION.
-	// @TransactionalEventListener
+	@TransactionalEventListener
 	public void handleTransactionalEvent(ApplicationEvent event) {
 		log.info("handleTransactionalEvent======" + event);
 	}
@@ -318,7 +289,7 @@ public class AppConfig {// implements
 
 	@Lazy
 	@Qualifier("jaxb2Marshaller")
-	//@Bean
+	// @Bean
 	public Jaxb2Marshaller jaxb2Marshaller() {
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 		marshaller.setContextPath("org.ruanwei.demo.springframework.dataAccess.oxm");

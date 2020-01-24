@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Transactional
-@Repository
+//@Repository
 public class UserHibernateDao implements CrudDao2<UserEntity, Integer> {
 	private static Log log = LogFactory.getLog(UserHibernateDao.class);
 
