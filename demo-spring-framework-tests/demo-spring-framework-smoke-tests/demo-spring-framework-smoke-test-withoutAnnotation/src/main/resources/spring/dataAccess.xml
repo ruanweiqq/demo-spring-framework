@@ -35,7 +35,7 @@
 	<!-- B.0.Transaction -->
 	<aop:config>
 		<aop:pointcut id="daoPointcut"
-			expression="execution(* org.ruanwei.demo.springframework.dataAccess.jdbc.*Dao.*(..))" />
+			expression="execution(* org.ruanwei.demo.springframework.dataAccess.jdbc.*Dao*.*(..))" />
 		<aop:pointcut id="repositoryPointcut"
 			expression="execution(* org.ruanwei.demo.springframework.dataAccess.springdata.*.*Repository.*(..))" />
 		<aop:advisor advice-ref="txAdvice"
@@ -55,7 +55,7 @@
 		transaction-manager="transactionManager">
 		<tx:attributes>
 			<!-- all methods starting with 'query' are read only -->
-			<tx:method name="query*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
 			<tx:method name="transactionalMethod1"
 				propagation="REQUIRED" rollback-for="java.lang.ArithmeticException" />
 			<tx:method name="transactionalMethod2"
@@ -69,6 +69,11 @@
 	<!-- B.1.JDBC -->
 	<bean id="userJdbcDao"
 		class="org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao">
+		<property name="dataSource" ref="springDataSource" />
+		<property name="userJdbcDao2" ref="userJdbcDao2" />
+	</bean>
+	<bean id="userJdbcDao2"
+		class="org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao2">
 		<property name="dataSource" ref="springDataSource" />
 	</bean>
 	<!-- PlatformTransactionManager:local transaction manager for plain JDBC -->
@@ -177,7 +182,7 @@
 	<bean id="springDataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
 		primary="true">
-		<qualifier value="dataSource1" />
+		<qualifier value="springDataSource" />
 		<property name="driverClassName"
 			value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
@@ -189,7 +194,7 @@
 	<bean id="hikariDataSource"
 		class="com.zaxxer.hikari.HikariDataSource" lazy-init="true"
 		destroy-method="close">
-		<qualifier value="dataSource2" />
+		<qualifier value="hikariDataSource" />
 		<property name="driverClassName"
 			value="${jdbc.driverClassName}" />
 		<property name="jdbcUrl" value="${jdbc.url}" />
@@ -203,7 +208,7 @@
 	<bean id="viburDBCPDataSource"
 		class="org.vibur.dbcp.ViburDBCPDataSource" lazy-init="true"
 		destroy-method="close">
-		<qualifier value="dataSource3" />
+		<qualifier value="viburDBCPDataSource" />
 		<property name="driverClassName"
 			value="${jdbc.driverClassName}" />
 		<property name="jdbcUrl" value="${jdbc.url}" />
@@ -215,7 +220,7 @@
 	<bean id="tomcatDataSource"
 		class="org.apache.tomcat.jdbc.pool.DataSource" lazy-init="true"
 		destroy-method="close">
-		<qualifier value="dataSource4" />
+		<qualifier value="tomcatDataSource" />
 		<property name="driverClassName"
 			value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
@@ -227,7 +232,7 @@
 	<bean id="dbcp2DataSource"
 		class="org.apache.commons.dbcp2.BasicDataSource" lazy-init="true"
 		destroy-method="close">
-		<qualifier value="dataSource5" />
+		<qualifier value="dbcp2DataSource" />
 		<property name="driverClassName"
 			value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
@@ -244,7 +249,7 @@
 	<bean id="c3p0DataSource"
 		class="com.mchange.v2.c3p0.ComboPooledDataSource" lazy-init="true"
 		destroy-method="close">
-		<qualifier value="dataSource6" />
+		<qualifier value="c3p0DataSource" />
 		<property name="driverClass" value="${jdbc.driverClassName}" />
 		<property name="jdbcUrl" value="${jdbc.url}" />
 		<property name="user" value="${jdbc.username}" />
@@ -272,28 +277,28 @@
 	<!-- <jee:jndi-lookup id="jndiDataSource" jndi-name="java:comp/env/jdbc/myds"/> -->
 	
 	<!-- B.4.OXM -->
-	<bean id="marshallerClient"
+	<!-- <bean id="marshallerClient"
 		class="org.ruanwei.demo.springframework.dataAccess.oxm.MarshallerClient">
 		<property name="marshaller" ref="castorMarshaller" />
 		<property name="unmarshaller" ref="castorMarshaller" />
 	</bean>
-
+ -->
 	<!-- 等价于org.springframework.oxm.castor.CastorMarshaller -->
-	<oxm:castor-marshaller id="castorMarshaller"
-		mapping-location="classpath:mapping.xml" />
+	<!-- <oxm:castor-marshaller id="castorMarshaller"
+		mapping-location="classpath:mapping.xml" /> -->
 
 	<!-- 等价于org.springframework.oxm.jaxb.Jaxb2Marshaller -->
-	<oxm:jaxb2-marshaller id="jaxb2Marshaller"
+	<!-- <oxm:jaxb2-marshaller id="jaxb2Marshaller"
 		context-path="org.ruanwei.demo.springframework.dataAccess.oxm">
 		<oxm:class-to-be-bound
 			name="org.ruanwei.demo.springframework.dataAccess.oxm.Settings" />
-	</oxm:jaxb2-marshaller>
+	</oxm:jaxb2-marshaller> -->
 
 	<!-- 等价于org.springframework.oxm.jibx.JibxMarshaller -->
-	<oxm:jibx-marshaller id="jibxMarshaller"
-		target-class="org.ruanwei.demo.springframework.dataAccess.oxm.Settings" />
+	<!-- <oxm:jibx-marshaller id="jibxMarshaller"
+		target-class="org.ruanwei.demo.springframework.dataAccess.oxm.Settings" /> -->
 
-	<bean id="xstreamMarshaller"
+	<!-- <bean id="xstreamMarshaller"
 		class="org.springframework.oxm.xstream.XStreamMarshaller">
 		<property name="supportedClasses"
 			value="org.ruanwei.demo.springframework.dataAccess.oxm.Settings" />
@@ -303,7 +308,7 @@
 				</prop>
 			</props>
 		</property>
-	</bean>
+	</bean> -->
 	
 	<!-- ==========B.Data Access:Spring Data========== -->
 	
