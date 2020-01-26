@@ -23,7 +23,7 @@
 	<!-- org.springframework.context.event.EventListenerMethodProcessor process @EventListener -->
 	<!-- org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor for @Required. -->
 	<!-- org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor for @Autowired/@Value/@Lookup/JSR-330:@Inject. -->
-	<!-- org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor process @PersistenceContext -->
+	<!-- org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor process @PersistenceContext/@PersistenceUnit -->
 	<context:component-scan
 		base-package="org.ruanwei.demo.springframework">
 		<!-- <context:exclude-filter/> -->

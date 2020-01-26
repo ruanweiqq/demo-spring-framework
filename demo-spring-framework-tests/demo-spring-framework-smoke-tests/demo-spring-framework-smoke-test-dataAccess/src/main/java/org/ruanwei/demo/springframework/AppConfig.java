@@ -2,11 +2,13 @@ package org.ruanwei.demo.springframework;
 
 import java.util.Properties;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEvent;
@@ -19,6 +21,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -28,6 +32,7 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -91,22 +96,27 @@ public class AppConfig {// implements
 	// B.2.ORM
 	// B.2.1.JPA==========
 	// local transaction manager for JPA
+	// see HibernateTransactionManager
 	@Bean("jpaTransactionManager")
-	public PlatformTransactionManager jpaTransactionManager() {
+	public PlatformTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
 		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
-		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-		// jpaTransactionManager.setJpaDialect(jpaDialect);
+		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory);
 		jpaTransactionManager.setDataSource(springDataSource());
+		jpaTransactionManager.setJpaDialect(new HibernateJpaDialect());
 		return jpaTransactionManager;
 	}
 
+	// see LocalSessionFactoryBean
 	@Bean("entityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+		// see also LocalEntityManagerFactoryBean
 		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactory.setDataSource(springDataSource());
 		entityManagerFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity");
 		entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter()); // EclipseLinkJpaVendorAdapter
-		// entityManagerFactory.setJpaDialect(jpaDialect);
+		entityManagerFactory.setJpaDialect(new HibernateJpaDialect()); // EclipseLinkJpaDialect
+		entityManagerFactory.setBootstrapExecutor(new SimpleAsyncTaskExecutor());
+		entityManagerFactory.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());// ReflectiveLoadTimeWeaver
 
 		Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
@@ -115,17 +125,16 @@ public class AppConfig {// implements
 		jpaProperties.put("hibernate.hbm2ddl.auto", "update");
 		entityManagerFactory.setJpaProperties(jpaProperties);
 
-		// entityManagerFactory.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
-
 		return entityManagerFactory;
 	}
 
 	// B.2.2.Hibernate==========
+	// LocalSessionFactoryBean and HibernateTransactionManager are alternative to LocalContainerEntityManagerFactoryBean and JpaTransactionManager for common JPA purposes.
 	// local transaction manager for Hibernate
 	// @Bean("hibernateTransactionManager")
-	public PlatformTransactionManager hibernateTransactionManager() {
+	public PlatformTransactionManager hibernateTransactionManager(SessionFactory sessionFactory) {
 		HibernateTransactionManager hibernateTransactionManager = new HibernateTransactionManager();
-		hibernateTransactionManager.setSessionFactory(sessionFactory().getObject());
+		hibernateTransactionManager.setSessionFactory(sessionFactory);
 		hibernateTransactionManager.setDataSource(springDataSource());
 		return hibernateTransactionManager;
 	}
@@ -135,6 +144,7 @@ public class AppConfig {// implements
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(springDataSource());
 		sessionFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity");
+		sessionFactory.setBootstrapExecutor(new SimpleAsyncTaskExecutor());
 
 		Properties hibernateProperties = new Properties();
 		hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");

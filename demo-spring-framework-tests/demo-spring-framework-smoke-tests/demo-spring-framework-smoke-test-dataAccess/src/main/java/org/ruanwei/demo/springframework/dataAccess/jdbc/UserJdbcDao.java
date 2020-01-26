@@ -14,7 +14,6 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ruanwei.demo.springframework.dataAccess.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -110,13 +109,13 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 	}
 
 	// =====Create=====
-	// @Override
+	@Override
 	public int save(User user) {
 		log.info("save(User user)");
 		return _update(sql_insert_namedParam, user, null);
 	}
 
-	// @Override
+	@Override
 	public Integer saveWithKey(User user) {
 		log.info("saveWithKey(User user)");
 
@@ -127,13 +126,13 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return key;
 	}
 
-	// @Override
+	@Override
 	public int save(Map<String, ?> paramMap) {
 		log.info("save(Map<String, ?> userMap)");
 		return _update(sql_insert_namedParam, paramMap, null);
 	}
 
-	// @Override
+	@Override
 	public Integer saveWithKey(Map<String, ?> userMap) {
 		log.info("saveWithKey(Map<String, ?> userMap)");
 
@@ -142,7 +141,7 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return key;
 	}
 
-	// @Override
+	@Override
 	public int save(String name, int age, Date birthday) {
 		log.info("save(String name, int age, Date birthday)");
 
@@ -150,7 +149,7 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return rows;
 	}
 
-	// @Override
+	@Override
 	public Integer saveWithKey(String name, int age, Date birthday) {
 		log.info("saveWithKey(String name, int age, Date birthday)");
 
@@ -159,7 +158,7 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return key;
 	}
 
-	// @Override
+	@Override
 	public int saveAll(Iterable<User> users) {
 		log.info("saveAll(Iterable<User> users)");
 
@@ -172,7 +171,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 	}
 
 	// =====Read 1=====
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public User findById(Integer id) {
 		log.info("findById(Integer id)");
 
@@ -186,7 +186,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return user;
 	}
 
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public Map<String, ?> findMapById(Integer id) {
 		log.info("findMapById(Integer id)");
 
@@ -198,13 +199,15 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return columnMap;
 	}
 
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public boolean existsById(Integer id) {
 		log.info("existsById(Integer id)");
 		return findById(id) == null;
 	}
 
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public List<User> findAll() {
 		log.info("findAll()");
 
@@ -215,7 +218,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return userList;
 	}
 
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public List<Map<String, Object>> findAllMap() {
 		log.info("findAllMap()");
 
@@ -226,7 +230,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return columnMapList;
 	}
 
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public List<User> findAllById(Integer id) {
 		log.info("findAllById(Integer id)");
 
@@ -239,7 +244,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return userList;
 	}
 
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public List<Map<String, Object>> findAllMapById(Integer id) {
 		log.info("findAllMapById(Integer id)");
 
@@ -253,7 +259,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 	}
 
 	// RowMapperResultSetExtractor & SingleColumnRowMapper
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public long count() {
 		log.info("count()");
 
@@ -266,7 +273,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 
 	// =====Read 2=====
 	// RowMapperResultSetExtractor & BeanPropertyRowMapper
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public User findById2(Integer id) {
 		log.info("findById2(Integer id)");
 
@@ -277,7 +285,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 	}
 
 	// RowMapperResultSetExtractor & ColumnMapRowMapper
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public Map<String, ?> findMapById2(Integer id) {
 		log.info("findMapById2(Integer id)");
 
@@ -287,13 +296,15 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return columnMap;
 	}
 
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public boolean existsById2(Integer id) {
 		log.info("existsById2(Integer id)");
 		return findById2(id) == null;
 	}
 
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public List<User> findAll2() {
 		log.info("findAll2()");
 
@@ -303,7 +314,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return userList;
 	}
 
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public List<Map<String, Object>> findAllMap2() {
 		log.info("findAllMap2()");
 
@@ -314,7 +326,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return columnMapList;
 	}
 
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public List<User> findAllById2(Integer id) {
 		log.info("findAllById2(Integer id)");
 
@@ -328,7 +341,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return userList;
 	}
 
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public List<Map<String, Object>> findAllMapById2(Integer id) {
 		log.info("findAllMapById2(Integer id)");
 
@@ -343,7 +357,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 	}
 
 	// RowMapperResultSetExtractor & SingleColumnRowMapper
-	// @Override
+	@Transactional(readOnly = true)
+	@Override
 	public long count2() {
 		log.info("count2()");
 
@@ -354,26 +369,26 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 	}
 
 	// =====Update=====
-	// @Override
+	@Override
 	public int updateAge(User user) {
 		log.info("updateAge(User user)");
 		return _update(sql_update_age_namedParam, user, null);
 	}
 
-	// @Override
+	@Override
 	public int updateAge(Map<String, ?> userMap) {
 		log.info("updateAge(Map<String, ?> userMap)");
 		return _update(sql_update_age_namedParam, userMap, null);
 	}
 
-	// @Override
+	@Override
 	public int updateAge(String name, int age, Date birthday) {
 		log.info("updateAge(String name, int age, Date birthday)");
 		return _update(sql_update_age, name, age, birthday, null);
 	}
 
 	// =====Delete=====
-	// @Override
+	@Override
 	public int deleteById(Integer id) {
 		log.info("deleteById(Integer id)");
 
@@ -384,25 +399,25 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return _update(sql, paramMap, null);
 	}
 
-	// @Override
+	@Override
 	public int delete(User user) {
 		log.info("delete(User user)");
 		return _update(sql_delete_namedParam, user, null);
 	}
 
-	// @Override
+	@Override
 	public int delete(Map<String, ?> mapUser) {
 		log.info("delete(Map<String, ?> mapUser)");
 		return _update(sql_delete_namedParam, mapUser, null);
 	}
 
-	// @Override
+	@Override
 	public int delete(String name, int age, Date birthday) {
 		log.info("delete(String name, int age, Date birthday)");
 		return _update(sql_delete, name, age, birthday, null);
 	}
 
-	// @Override
+	@Override
 	public int deleteAll(Iterable<? extends User> users) {
 		log.info("deleteAll(Iterable<? extends User> users");
 
@@ -414,82 +429,82 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 		return rows;
 	}
 
-	// @Override
+	@Override
 	public int deleteAll() {
 		log.info("deleteAll()");
 		return _update(sql_delete_all, Collections.emptyMap(), null);
 	}
 
 	// =====Batch Create=====
-	// @Override
+	@Override
 	public int[] batchSave(User[] users) {
 		log.info("batchSave(User[] users)");
 		return _batchUpdate(sql_insert_namedParam, users);
 	}
 
-	// @Override
+	@Override
 	public int[] batchSave(Map<String, Object>[] users) {
 		log.info("batchSave(Map<String, Object>[] users)");
 		return _batchUpdate(sql_insert_namedParam, users);
 	}
 
-	// @Override
+	@Override
 	public int[] batchSave(Collection<User> users) {
 		log.info("batchSave(Collection<User> users)");
 		return _batchUpdate(sql_insert_namedParam, users);
 	}
 
-	// @Override
+	@Override
 	public int[] batchSave(List<Object[]> batchArgs) {
 		log.info("batchSave(List<Object[]> batchArgs");
 		return _batchUpdate(sql_insert, batchArgs);
 	}
 
 	// B=====atch Update=====
-	// @Override
+	@Override
 	public int[] batchUpdateAge(User[] users) {
 		log.info("batchUpdateAge(User[] users)");
 		return _batchUpdate(sql_update_age_namedParam, users);
 	}
 
-	// @Override
+	@Override
 	public int[] batchUpdateAge(Collection<User> users) {
 		log.info("batchUpdateAge(Collection<User> users)");
 		return _batchUpdate(sql_update_age_namedParam, users);
 	}
 
-	// @Override
+	@Override
 	public int[] batchUpdateAge(Map<String, Object>[] users) {
 		log.info("batchUpdateAge(Map<String, User>[] users)");
 		return _batchUpdate(sql_update_age_namedParam, users);
 	}
 
-	// @Override
+	@Override
 	public int[] batchUpdateAge(List<Object[]> batchArgs) {
 		log.info("batchUpdateAge(List<Object[]> batchArgs)");
 		return _batchUpdate(sql_update_age, batchArgs);
 	}
 
 	// ======Batch Delete=====
-	// @Override
+	@Override
 	public int[] batchDelete(User[] users) {
 		log.info("batchDelete(User[] users)");
 		return _batchUpdate(sql_delete_namedParam, users);
 	}
 
-	// @Override
+	@Override
 	public int[] batchDelete(Collection<User> users) {
 		log.info("batchDelete(Collection<User> users)");
 		return _batchUpdate(sql_delete_namedParam, users);
 	}
 
-	// @Override
+	@Override
 	public int[] batchDelete(Map<String, Object>[] users) {
 		log.info("batchDelete(Map<String, Object>[] users)");
 		return _batchUpdate(sql_delete_namedParam, users);
 	}
 
-	// @Override
+	@Override
 	public int[] batchDelete(List<Object[]> batchArgs) {
 		log.info("batchDelete(List<Object[]> batchArgs)");
 		return _batchUpdate(sql_delete, batchArgs);

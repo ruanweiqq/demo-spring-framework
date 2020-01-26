@@ -16,12 +16,12 @@ import org.hibernate.annotations.GenericGenerator;
 import lombok.Data;
 
 @Data
-@NamedQueries({ @NamedQuery(name = "findAll", query = "select u from UserEntity u"),
-		@NamedQuery(name = "countAll", query = "select count(u) from UserEntity u") })
+@NamedQueries({ @NamedQuery(name = "findAll", query = "select u from UserJpaEntity u"),
+		@NamedQuery(name = "countAll", query = "select count(u) from UserJpaEntity u") })
 @DynamicUpdate
 @Table(name = "user")
 @Entity
-public class UserEntity {
+public class UserJpaEntity {
 
 	@GenericGenerator(name = "increment", strategy = "increment")
 	@GeneratedValue(generator = "increment")
@@ -38,10 +38,10 @@ public class UserEntity {
 	@Column(name = "birthday")
 	private Date birthday;
 
-	public UserEntity() {
+	public UserJpaEntity() {
 	}
 
-	public UserEntity(String name, int age, Date birthday) {
+	public UserJpaEntity(String name, int age, Date birthday) {
 		this.name = name;
 		this.age = age;
 		this.birthday = birthday;
@@ -49,7 +49,7 @@ public class UserEntity {
 
 	@Override
 	public String toString() {
-		return "User [name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
+		return "UserJpaEntity [name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
 	}
 
 }

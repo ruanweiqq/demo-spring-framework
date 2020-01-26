@@ -27,8 +27,9 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.ruanwei.demo.springframework.dataAccess.CrudDao2;
-import org.ruanwei.demo.springframework.dataAccess.User;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.CrudDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.User;
+import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jpa.UserJpaRepository;
@@ -59,8 +60,8 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 @ActiveProfiles("development")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-//@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
-@SpringJUnitConfig(AppConfig.class)
+@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
+//@SpringJUnitConfig(AppConfig.class)
 public class DataAccessTest {
 	private static Log log = LogFactory.getLog(DataAccessTest.class);
 
@@ -87,9 +88,14 @@ public class DataAccessTest {
 	private static final User beanForDelete2;
 
 	// JPA entity
-	private static final UserJdbcEntity entityForCreate;
-	private static final UserJdbcEntity entityForUpdate;
-	private static final UserJdbcEntity entityForDelete;
+	private static final UserJpaEntity jpaEntityForCreate;
+	private static final UserJpaEntity jpaEntityForUpdate;
+	private static final UserJpaEntity jpaEntityForDelete;
+
+	// Spring JDBC entity
+	private static final UserJdbcEntity jdbcEntityForCreate = null;
+	private static final UserJdbcEntity jdbcEntityForUpdate = null;
+	private static final UserJdbcEntity jdbcEntityForDelete = null;
 
 	private static final int gt0 = 0;
 	private static final int gt1 = 1;
@@ -145,18 +151,18 @@ public class DataAccessTest {
 	}
 
 	static {
-		entityForCreate = new UserJdbcEntity("ruanwei_tmp", 36, Date.valueOf("1983-07-06"));
-		entityForUpdate = new UserJdbcEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
-		entityForDelete = new UserJdbcEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
+		jpaEntityForCreate = new UserJpaEntity("ruanwei_tmp", 36, Date.valueOf("1983-07-06"));
+		jpaEntityForUpdate = new UserJpaEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
+		jpaEntityForDelete = new UserJpaEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
 	}
 
 	@Autowired
 	private CrudDao<User, Integer> userJdbcDao;
-	
-	@Autowired
-	private CrudDao2 userJpaDao;
 
-	//@Autowired
+	@Autowired
+	private CrudDao2<UserJpaEntity, Integer> userJpaDao;
+
+	// @Autowired
 	private UserJdbcRepository userJdbcRepository;
 
 	// @Autowired
@@ -186,6 +192,8 @@ public class DataAccessTest {
 		userJdbcDao.batchDelete(beanCollForBatchUpdateAndDelete);
 		userJdbcDao.batchDelete(mapArrayForBatchUpdateAndDelete);
 		userJdbcDao.batchDelete(objArrayForBatchUpdateAndDelete);
+		
+		//userJpaDao.delete(jpaEntityForCreate);
 
 		List<User> allUsers = userJdbcDao.findAll();
 		assertEquals(1, allUsers.size(), "size of all users should be 1");
@@ -200,7 +208,7 @@ public class DataAccessTest {
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
 	}
 
-	//@Disabled
+	@Disabled
 	@Order(1)
 	@Test
 	void testSpringJdbcCRUD() {
@@ -252,7 +260,7 @@ public class DataAccessTest {
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}
 
-	//@Disabled
+	@Disabled
 	@Order(2)
 	@Test
 	void testSpringJdbcBatchCRUD() {
@@ -303,6 +311,7 @@ public class DataAccessTest {
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}
 
+	@Disabled
 	@Order(3)
 	@Test
 	void testSpringJdbcWithTransaction() {
@@ -317,13 +326,54 @@ public class DataAccessTest {
 		}
 	}
 
-	@Disabled
 	@Order(4)
 	@Test
-	void testSpringDataJdbcCRUD() {
+	void testSpringJpaCRUD() {
 		log.info("4======================================================================================");
+
 		// 1.创建
-		userJdbcRepository.save(entityForCreate);
+		userJpaDao.save(jpaEntityForUpdate);
+
+		UserJpaEntity user = userJpaDao.findById(eq1);
+		assertNotNull(user, "user should not be null");
+		assertEquals(1, user.getId(), "user id should be 1983-07-06");
+		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
+		assertEquals(36, user.getAge(), "user age should be 36");
+
+		
+
+		/*List<User> users = userJpaDao.findAllById(gt1);
+		List<Map<String, Object>> userMaps = userJpaDao.findAllMapById(gt1);
+		List<User> allUsers = userJpaDao.findAll();
+		assertEquals(0, users.size() - userMaps.size(), "user list size should be equal");
+		assertEquals(1, allUsers.size() - users.size(), "user list size diff should be 1");
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
+		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
+		users.forEach(u -> assertEquals(36, u.getAge(), "user age should be 36"));
+		
+		// 2.更新age
+		userJpaDao.updateAge(beanForUpdateAndDelete);
+		userJpaDao.updateAge(mapForUpdateAndDelete);
+		
+		user = userJpaDao.findById(eq1);
+		assertNotNull(user, "user should not be null");
+		assertEquals(1, user.getId(), "user id should be 1983-07-06");
+		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
+		assertEquals(36, user.getAge(), "user age should be 36");
+		
+		users = userJpaDao.findAllById(gt1);
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
+		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
+		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));*/
+	}
+
+	@Disabled
+	@Order(6)
+	@Test
+	void testSpringDataJdbcCRUD() {
+		log.info("6======================================================================================");
+		// 1.创建
+		userJdbcRepository.save(jdbcEntityForUpdate);
 
 		UserJdbcEntity user = userJdbcRepository.findUserById(eq1);
 		assertNotNull(user, "user should not be null");
@@ -347,10 +397,10 @@ public class DataAccessTest {
 	}
 
 	@Disabled
-	@Order(5)
+	@Order(7)
 	@Test
 	void testSpringDataJdbcWithTransaction() {
-		log.info("5======================================================================================");
+		log.info("7======================================================================================");
 
 		assertNotNull(userJdbcRepository, "userJdbcRepository should npt be null");
 		try {
@@ -365,7 +415,7 @@ public class DataAccessTest {
 				beanForCreate.getBirthday());
 		log.info("jdbcRepository.createUser========" + count);
 
-		UserJdbcEntity user = userJdbcRepository.save(entityForCreate);
+		UserJdbcEntity user = userJdbcRepository.save(jdbcEntityForCreate);
 		log.info("jdbcCrudRepository.save========" + user);
 	}
 
@@ -443,7 +493,7 @@ public class DataAccessTest {
 		log.info("jdbcRepository.deleteUser========" + count);
 
 		userJdbcRepository.deleteById(3);
-		userJdbcRepository.delete(entityForDelete);
+		userJdbcRepository.delete(jdbcEntityForDelete);
 		// userJdbcRepository.deleteAll(listParamForDelete);
 		// userJdbcRepository.deleteAll();
 	}

@@ -17,15 +17,15 @@ public interface CrudDao2<T, ID> {
 	int update(T entity);
 
 	// 3.1.Read single row
-	Optional<T> findById(ID id);
+	T findById(ID id);
 
 	boolean existsById(ID id);
 
 	boolean exists(T entity);
 
-	Optional<T> findByExample(String sql, Object... argValues);
+	T findByExample(String sql, Object... argValues);
 
-	Optional<T> findByExample(String sql, Map<String, ?> namedParams);
+	T findByExample(String sql, Map<String, ?> namedParams);
 
 	// 3.2 Read multiple row
 	List<T> findAll();

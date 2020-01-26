@@ -26,7 +26,7 @@
 	<!-- org.springframework.context.event.EventListenerMethodProcessor process 
 		@EventListener -->
 	<!-- org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor 
-		process @PersistenceContext -->
+		process @PersistenceContext/@PersistenceUnit -->
 	<!-- org.springframework.context.annotation.ConfigurationClassPostProcessor 
 		process @Configuration -->
 	<context:component-scan base-package="org.ruanwei.demo.springframework">

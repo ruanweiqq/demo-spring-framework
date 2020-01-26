@@ -53,7 +53,7 @@ public class UserJdbcEntity {
 
 	@Override
 	public String toString() {
-		return "UserEntity [id=" + id + ", name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
+		return "UserJdbcEntity [id=" + id + ", name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
 	}
 
 }

@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.ruanwei.demo.springframework.dataAccess.User;
-
 public interface CrudDao<T, ID> extends TransactionnalDao<T> {
 
 	// Create

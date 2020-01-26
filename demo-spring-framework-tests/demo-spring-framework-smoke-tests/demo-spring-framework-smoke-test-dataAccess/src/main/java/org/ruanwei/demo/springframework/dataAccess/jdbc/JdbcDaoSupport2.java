@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ruanwei.demo.springframework.dataAccess.User;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
@@ -26,8 +25,8 @@ import org.springframework.jdbc.object.SqlUpdate;
 import org.springframework.jdbc.object.StoredProcedure;
 import org.springframework.jdbc.object.UpdatableSqlQuery;
 
-public abstract class JdbcDaoSupport {
-	private static Log log = LogFactory.getLog(JdbcDaoSupport.class);
+public abstract class JdbcDaoSupport2 {
+	private static Log log = LogFactory.getLog(JdbcDaoSupport2.class);
 
 	// 1.core JdbcTemplate & NamedParameterJdbcTemplate thread-safe
 	protected JdbcTemplate jdbcTemplate;
