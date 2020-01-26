@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.CrudDao2;
+import org.ruanwei.demo.springframework.dataAccess.CrudDao2;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

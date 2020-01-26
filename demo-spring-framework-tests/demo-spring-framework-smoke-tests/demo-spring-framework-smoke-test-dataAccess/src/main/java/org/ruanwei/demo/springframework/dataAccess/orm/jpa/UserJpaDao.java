@@ -15,7 +15,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.CrudDao2;
+import org.ruanwei.demo.springframework.dataAccess.CrudDao2;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;

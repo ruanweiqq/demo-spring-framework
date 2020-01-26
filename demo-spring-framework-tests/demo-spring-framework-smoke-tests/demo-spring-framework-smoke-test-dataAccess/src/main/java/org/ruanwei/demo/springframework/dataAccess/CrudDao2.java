@@ -1,4 +1,4 @@
-package org.ruanwei.demo.springframework.dataAccess.jdbc;
+package org.ruanwei.demo.springframework.dataAccess;
 
 import java.util.List;
 import java.util.Map;
