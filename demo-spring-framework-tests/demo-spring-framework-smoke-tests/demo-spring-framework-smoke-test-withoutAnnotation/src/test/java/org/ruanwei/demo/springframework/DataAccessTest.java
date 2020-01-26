@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.ruanwei.demo.springframework.dataAccess.User;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.CrudDao;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jpa.UserJpaRepository;
@@ -149,9 +149,8 @@ public class DataAccessTest {
 		entityForDelete = new UserJdbcEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
 	}
 
-	// 若实现接口则被代理，注入失败
 	@Autowired
-	private UserJdbcDao userJdbcDao;
+	private CrudDao<User, Integer> userJdbcDao;
 
 	// @Autowired
 	private UserJdbcRepository userJdbcRepository;
@@ -197,7 +196,7 @@ public class DataAccessTest {
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
 	}
 
-	//@Disabled
+	// @Disabled
 	@Order(1)
 	@Test
 	void testSpringJdbcCRUD() {
@@ -249,7 +248,7 @@ public class DataAccessTest {
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}
 
-	//@Disabled
+	// @Disabled
 	@Order(2)
 	@Test
 	void testSpringJdbcBatchCRUD() {

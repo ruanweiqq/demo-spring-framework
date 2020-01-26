@@ -26,8 +26,9 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.ruanwei.demo.springframework.dataAccess.CrudDao2;
 import org.ruanwei.demo.springframework.dataAccess.User;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.CrudDao;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jpa.UserJpaRepository;
@@ -149,11 +150,13 @@ public class DataAccessTest {
 		entityForDelete = new UserJdbcEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
 	}
 
-	// 若实现接口则被代理，注入失败
 	@Autowired
-	private UserJdbcDao userJdbcDao;
+	private CrudDao<User, Integer> userJdbcDao;
+	
+	@Autowired
+	private CrudDao2 userJpaDao;
 
-	// @Autowired
+	//@Autowired
 	private UserJdbcRepository userJdbcRepository;
 
 	// @Autowired

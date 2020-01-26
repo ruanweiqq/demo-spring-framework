@@ -50,7 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional("transactionManager")
 @Repository
-public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
+public class UserJdbcDao implements CrudDao<User, Integer> {
 	private static Log log = LogFactory.getLog(UserJdbcDao.class);
 
 	// 1.core JdbcTemplate & NamedParameterJdbcTemplate thread-safe
@@ -68,9 +68,9 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 	private UpdatableSqlQuery<User> updatableSqlQuery;
 	private SqlUpdate sqlUpdate;
 	private StoredProcedure storedProcedure;
-	
+
 	@Autowired
-	private UserJdbcDao2 userJdbcDao2;
+	private TransactionnalDao<User> userJdbcDao2;
 
 	private static final String sql_select_by_id1 = "select * from user where id = ?";
 	private static final String sql_select_by_id_namedParam1 = "select * from user where id = :id";
@@ -650,15 +650,16 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 	// ====================transaction====================
 	// transactionalMethod1会回滚，transactionalMethod2不会回滚
 	// 不能在事务方法中进行try-catch
+	@Override
 	@Transactional(rollbackFor = ArithmeticException.class)
 	public void transactionalMethod1(User user) {
 		log.info("transactionalMethod1(User user)" + user);
-		
+
 		save(user);
-		
+
 		// 注意：由于默认使用代理的原因，调用同一类中事务方法时会忽略其的事务，因此需要把事务方法置于另一个类中
 		userJdbcDao2.transactionalMethod2(new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
-		
+
 		int i = 1 / 0;
 	}
 }

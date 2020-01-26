@@ -91,7 +91,7 @@ public class AppConfig {// implements
 	// B.2.ORM
 	// B.2.1.JPA==========
 	// local transaction manager for JPA
-	// @Bean("jpaTransactionManager")
+	@Bean("jpaTransactionManager")
 	public PlatformTransactionManager jpaTransactionManager() {
 		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
 		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
@@ -100,7 +100,7 @@ public class AppConfig {// implements
 		return jpaTransactionManager;
 	}
 
-	// @Bean("entityManagerFactory")
+	@Bean("entityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactory.setDataSource(springDataSource());

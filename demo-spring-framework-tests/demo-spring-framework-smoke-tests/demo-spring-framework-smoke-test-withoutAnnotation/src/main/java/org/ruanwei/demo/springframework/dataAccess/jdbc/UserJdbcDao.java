@@ -15,7 +15,6 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.User;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -45,7 +44,7 @@ import org.springframework.jdbc.support.KeyHolder;
  * @author ruanwei
  *
  */
-public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
+public class UserJdbcDao implements CrudDao<User, Integer> {
 	private static Log log = LogFactory.getLog(UserJdbcDao.class);
 
 	// 1.core JdbcTemplate & NamedParameterJdbcTemplate thread-safe
@@ -64,7 +63,7 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 	private SqlUpdate sqlUpdate;
 	private StoredProcedure storedProcedure;
 
-	private UserJdbcDao2 userJdbcDao2;
+	private TransactionnalDao<User> userJdbcDao2;
 
 	private static final String sql_select_by_id1 = "select * from user where id = ?";
 	private static final String sql_select_by_id_namedParam1 = "select * from user where id = :id";
@@ -102,7 +101,7 @@ public class UserJdbcDao /*implements CrudDao<User, Integer>*/ {
 		this.simpleJdbcCall = new SimpleJdbcCall(dataSource);
 	}
 
-	public void setUserJdbcDao2(UserJdbcDao2 userJdbcDao2) {
+	public void setUserJdbcDao2(TransactionnalDao<User> userJdbcDao2) {
 		this.userJdbcDao2 = userJdbcDao2;
 	}
 

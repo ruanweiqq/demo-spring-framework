@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.ruanwei.demo.springframework.dataAccess.User;
 
-public interface CrudDao<T, ID> {
+public interface CrudDao<T, ID> extends TransactionnalDao<T> {
 
 	// Create
 	int save(T entity);
@@ -16,7 +16,7 @@ public interface CrudDao<T, ID> {
 
 	int save(Map<String, ?> map);
 
-	ID saveMapWithKey(Map<String, ?> map);
+	ID saveWithKey(Map<String, ?> map);
 
 	int save(String name, int age, Date birthday);
 
@@ -59,11 +59,11 @@ public interface CrudDao<T, ID> {
 	long count2();// JdbcTemplate
 
 	// Update
-	int updateAgeByName(User user);
+	int updateAge(User user);
 
-	int updateAgeByName(Map<String, ?> userMap);
+	int updateAge(Map<String, ?> userMap);
 
-	int updateAgeByName(String name, int age, Date birthday);// JdbcTemplate
+	int updateAge(String name, int age, Date birthday);// JdbcTemplate
 
 	// Delete
 	int deleteById(ID id);

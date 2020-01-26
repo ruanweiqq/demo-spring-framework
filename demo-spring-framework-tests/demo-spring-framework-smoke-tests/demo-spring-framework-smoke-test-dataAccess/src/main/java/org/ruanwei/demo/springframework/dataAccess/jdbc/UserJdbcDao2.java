@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional("transactionManager")
 @Repository
-public class UserJdbcDao2 /*implements CrudDao<User, Integer>*/ {
+public class UserJdbcDao2 implements TransactionnalDao<User> {
 	private static Log log = LogFactory.getLog(UserJdbcDao2.class);
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -36,7 +36,7 @@ public class UserJdbcDao2 /*implements CrudDao<User, Integer>*/ {
 	}
 
 	// =====Create=====
-	// @Override
+	@Override
 	public int save(User user) {
 		log.info("save(User user)");
 		return _update(sql_insert_namedParam, user, null);
@@ -44,6 +44,7 @@ public class UserJdbcDao2 /*implements CrudDao<User, Integer>*/ {
 
 	// ====================transaction====================
 	// 不能在事务方法中进行try-catch
+	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void transactionalMethod2(User user) {
 		log.info("transactionalMethod2(User user)" + user);
