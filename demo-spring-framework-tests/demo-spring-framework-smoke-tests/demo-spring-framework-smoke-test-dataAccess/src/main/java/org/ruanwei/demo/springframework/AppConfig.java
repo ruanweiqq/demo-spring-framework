@@ -174,7 +174,7 @@ public class AppConfig {// implements
 
 	// B.3.2.Plain JDBC DataSource(no pooling for test only)
 	@Primary
-	@Qualifier("dataSource1")
+	@Qualifier("springDataSource")
 	@Bean
 	public DataSource springDataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -187,7 +187,7 @@ public class AppConfig {// implements
 
 	// B.3.3.Hikari DataSource
 	@Lazy
-	@Qualifier("dataSource2")
+	@Qualifier("hikariDataSource")
 	@Bean(destroyMethod = "close")
 	public DataSource hikariDataSource() {
 		HikariDataSource dataSource = new HikariDataSource();
@@ -201,7 +201,7 @@ public class AppConfig {// implements
 
 	// B.3.4.Vibur DataSource
 	@Lazy
-	@Qualifier("dataSource3")
+	@Qualifier("viburDBCPDataSource")
 	@Bean(destroyMethod = "close")
 	public DataSource viburDBCPDataSource() {
 		ViburDBCPDataSource dataSource = new ViburDBCPDataSource();
@@ -214,7 +214,7 @@ public class AppConfig {// implements
 
 	// B.3.5.Tomcat JDBC DataSource(a replacement or an alternative to dbcp2)
 	@Lazy
-	@Qualifier("dataSource4")
+	@Qualifier("tomcatDataSource")
 	@Bean(destroyMethod = "close")
 	public DataSource tomcatDataSource() {
 		org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
@@ -227,7 +227,7 @@ public class AppConfig {// implements
 
 	// B.3.6.DBCP2 DataSource(Last update:2018-07-16 2.5.0, see PoolingDataSource)
 	@Lazy
-	@Qualifier("dataSource5")
+	@Qualifier("dbcp2DataSource")
 	@Bean(destroyMethod = "close")
 	public DataSource dbcp2DataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
@@ -245,7 +245,7 @@ public class AppConfig {// implements
 
 	// B.3.7.C3P0 DataSource(Last update:2015-12-09 0.9.5.2)
 	@Lazy
-	@Qualifier("dataSource6")
+	@Qualifier("c3p0DataSource")
 	@Bean(destroyMethod = "close")
 	public DataSource c3p0DataSource() throws Exception {
 		ComboPooledDataSource dataSource = new ComboPooledDataSource();
@@ -287,28 +287,28 @@ public class AppConfig {// implements
 		return castorMarshaller;
 	}*/
 
-	@Lazy
+	/*@Lazy
 	@Qualifier("jaxb2Marshaller")
-	// @Bean
+	@Bean
 	public Jaxb2Marshaller jaxb2Marshaller() {
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 		marshaller.setContextPath("org.ruanwei.demo.springframework.dataAccess.oxm");
 		marshaller.setClassesToBeBound(Settings.class);
 		marshaller.setSchema(new ClassPathResource("schema.xsd"));
 		return marshaller;
-	}
+	}*/
 
 	// JiBX project is not active.
-	@Lazy
+	/*@Lazy
 	@Qualifier("jibxMarshaller")
 	@Bean
 	public JibxMarshaller jibxMarshaller() {
 		JibxMarshaller jibxMarshaller = new JibxMarshaller();
 		jibxMarshaller.setTargetClass(Settings.class);
 		return jibxMarshaller;
-	}
+	}*/
 
-	@Lazy
+	/*@Lazy
 	@Qualifier("xStreamMarshaller")
 	@Bean
 	public XStreamMarshaller xStreamMarshaller() {
@@ -318,7 +318,7 @@ public class AppConfig {// implements
 		aliases.put("Settings", Settings.class);
 		xStreamMarshaller.setAliases(aliases);
 		return xStreamMarshaller;
-	}
+	}*/
 
 	// B.Data Access:Spring Data
 

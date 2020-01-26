@@ -197,7 +197,7 @@ public class DataAccessTest {
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
 	}
 
-	@Disabled
+	//@Disabled
 	@Order(1)
 	@Test
 	void testSpringJdbcCRUD() {
@@ -249,7 +249,7 @@ public class DataAccessTest {
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}
 
-	@Disabled
+	//@Disabled
 	@Order(2)
 	@Test
 	void testSpringJdbcBatchCRUD() {
