@@ -26,8 +26,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.ruanwei.demo.springframework.dataAccess.CrudDao2;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.CrudDao;
+import org.ruanwei.demo.springframework.dataAccess.CrudDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.User;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcEntity;
@@ -60,8 +59,8 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 @ActiveProfiles("development")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
-//@SpringJUnitConfig(AppConfig.class)
+//@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
+@SpringJUnitConfig(AppConfig.class)
 public class DataAccessTest {
 	private static Log log = LogFactory.getLog(DataAccessTest.class);
 
@@ -160,7 +159,7 @@ public class DataAccessTest {
 	private CrudDao<User, Integer> userJdbcDao;
 
 	@Autowired
-	private CrudDao2<UserJpaEntity, Integer> userJpaDao;
+	private CrudDao<UserJpaEntity, Integer> userJpaDao;
 
 	// @Autowired
 	private UserJdbcRepository userJdbcRepository;

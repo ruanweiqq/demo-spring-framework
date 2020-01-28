@@ -14,6 +14,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
+import org.ruanwei.demo.springframework.dataAccess.TransactionnalDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -49,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional("transactionManager")
 @Repository
-public class UserJdbcDao implements CrudDao<User, Integer> {
+public class UserJdbcDao extends DefaultCrudDao<User, Integer> {
 	private static Log log = LogFactory.getLog(UserJdbcDao.class);
 
 	// 1.core JdbcTemplate & NamedParameterJdbcTemplate thread-safe
@@ -69,7 +71,7 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 	private StoredProcedure storedProcedure;
 
 	@Autowired
-	private TransactionnalDao<User> userJdbcDao2;
+	private TransactionnalDao<User> userTransactionnalDao;
 
 	private static final String sql_select_by_id1 = "select * from user where id = ?";
 	private static final String sql_select_by_id_namedParam1 = "select * from user where id = :id";
@@ -203,7 +205,7 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 	@Override
 	public boolean existsById(Integer id) {
 		log.info("existsById(Integer id)");
-		return findById(id) == null;
+		return findById(id) != null;
 	}
 
 	@Transactional(readOnly = true)
@@ -418,8 +420,8 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 	}
 
 	@Override
-	public int deleteAll(Iterable<? extends User> users) {
-		log.info("deleteAll(Iterable<? extends User> users");
+	public int deleteAll(Iterable<User> users) {
+		log.info("deleteAll(Iterable<User> users");
 
 		int rows = 0;
 		for (User user : users) {
@@ -508,6 +510,22 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 	public int[] batchDelete(List<Object[]> batchArgs) {
 		log.info("batchDelete(List<Object[]> batchArgs)");
 		return _batchUpdate(sql_delete, batchArgs);
+	}
+
+	// =====transaction=====
+	// transactionalMethod1会回滚，transactionalMethod2不会回滚
+	// 不能在事务方法中进行try-catch
+	@Override
+	@Transactional(rollbackFor = ArithmeticException.class)
+	public void transactionalMethod1(User user) {
+		log.info("transactionalMethod1(User user)" + user);
+
+		save(user);
+
+		// 注意：由于默认使用代理的原因，调用同一类中事务方法时会忽略其的事务，因此需要把事务方法置于另一个类中
+		userTransactionnalDao.transactionalMethod2(new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+
+		int i = 1 / 0;
 	}
 
 	// ====================private====================
@@ -660,21 +678,5 @@ public class UserJdbcDao implements CrudDao<User, Integer> {
 			jdbcTemplate.execute(sql);
 		}
 		throw new UnsupportedOperationException();
-	}
-
-	// ====================transaction====================
-	// transactionalMethod1会回滚，transactionalMethod2不会回滚
-	// 不能在事务方法中进行try-catch
-	@Override
-	@Transactional(rollbackFor = ArithmeticException.class)
-	public void transactionalMethod1(User user) {
-		log.info("transactionalMethod1(User user)" + user);
-
-		save(user);
-
-		// 注意：由于默认使用代理的原因，调用同一类中事务方法时会忽略其的事务，因此需要把事务方法置于另一个类中
-		userJdbcDao2.transactionalMethod2(new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
-
-		int i = 1 / 0;
 	}
 }

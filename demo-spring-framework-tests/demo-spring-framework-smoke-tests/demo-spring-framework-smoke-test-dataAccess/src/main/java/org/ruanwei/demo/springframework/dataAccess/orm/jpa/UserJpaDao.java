@@ -1,8 +1,8 @@
 package org.ruanwei.demo.springframework.dataAccess.orm.jpa;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -15,7 +15,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ruanwei.demo.springframework.dataAccess.CrudDao2;
+import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -63,7 +63,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional("jpaTransactionManager")
 @Repository
-public class UserJpaDao implements CrudDao2<UserJpaEntity, Integer> {
+public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	private static Log log = LogFactory.getLog(UserJpaDao.class);
 
 	private static final String jpql_12 = "from User as u where u.age = ?1";
@@ -73,7 +73,7 @@ public class UserJpaDao implements CrudDao2<UserJpaEntity, Integer> {
 	@PersistenceContext
 	private EntityManager entityManager; // implemented by Hibernate Session.
 	private EntityManagerFactory entityManagerFactory; // Thread-safe,implemented by Hibernate SessionFactory,.
-	
+
 	private PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
 	private PersistenceUnitUtil persistenceUnitUtil;
 
@@ -83,63 +83,51 @@ public class UserJpaDao implements CrudDao2<UserJpaEntity, Integer> {
 		this.persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
 	}
 
-	// 1.Create
+	// ==========Create==========
 	@Override
-	public int save(UserJpaEntity entity) {
-		entityManager.persist(entity);
+	public int save(UserJpaEntity user) {
+		log.info("save(UserJpaEntity user)");
+		
+		entityManager.persist(user);
 		return 0;
 	}
 
 	@Override
-	public int[] saveAll(List<UserJpaEntity> entities) {
-		entities.forEach(entity -> entityManager.persist(entity));
-		return null;
+	public int saveAll(Iterable<UserJpaEntity> users) {
+		log.info("saveAll(Iterable<UserJpaEntity> users)");
+
+		int rows = 0;
+		for (UserJpaEntity user : users) {
+			int row = save(user);
+			rows += row;
+		}
+		return rows;
 	}
 
-	// 2.Update
-	@Override
-	public int update(UserJpaEntity entity) {
-		return 0;
-	}
-
-	// 3.1.Read a single row
+	// =====Read 1=====
 	@Transactional(readOnly = true)
 	@Override
 	public UserJpaEntity findById(Integer id) {
+		log.info("findById(Integer id)");
+
 		// entityManager.getReference(UserEntity.class, id)返回的是代理
 		UserJpaEntity userEntity = entityManager.find(UserJpaEntity.class, id);
-		//return Optional.of(userEntity);
+		// return Optional.of(userEntity);
 		return userEntity;
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public boolean existsById(Integer id) {
-		return findById(id)!=null;
+		log.info("existsById(Integer id)");
+		return findById(id) != null;
 	}
 
-	@Transactional(readOnly = true)
-	@Override
-	public boolean exists(UserJpaEntity entity) {
-		return entityManager.contains(entity);
-	}
-
-	@Override
-	public UserJpaEntity findByExample(String sql, Object... argValues) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public UserJpaEntity findByExample(String sql, Map<String, ?> namedParams) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	// 3.2.Read multiple rows
 	@Transactional(readOnly = true)
 	@Override
 	public List<UserJpaEntity> findAll() {
+		log.info("findAll()");
+
 		// always creates a new EntityManager
 		// EntityManager entityManager = entityManagerFactory.createEntityManager();
 		// Query query = entityManager.createNamedQuery("findAll");
@@ -152,9 +140,69 @@ public class UserJpaDao implements CrudDao2<UserJpaEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
+	public List<UserJpaEntity> findAllById(Integer id) {
+		log.info("findAllById(Integer id)");
+		return null;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
 	public long count() {
+		log.info("count()");
+
 		TypedQuery<Integer> query = entityManager.createNamedQuery("countAll", Integer.class);
 		return query.getSingleResult();
+	}
+
+	// =====Update=====
+	@Override
+	public int updateAge(UserJpaEntity user) {
+		log.info("updateAge(UserJpaEntity user)");
+		return 0;
+	}
+
+	// =====Delete=====
+	@Override
+	public int deleteById(Integer id) {
+		log.info("deleteById(Integer id)");
+
+		String sql = "delete from user where id = :id";
+		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		paramMap.put("id", id);
+
+		return 0;
+	}
+
+	@Override
+	public int delete(UserJpaEntity entity) {
+		log.info("delete(UserJpaEntity user)");
+		entityManager.remove(entity);
+		return 0;
+	}
+
+	@Override
+	public int deleteAll(Iterable<UserJpaEntity> users) {
+		log.info("deleteAll(Iterable<UserJpaEntity> users");
+
+		int rows = 0;
+		for (UserJpaEntity user : users) {
+			int row = delete(user);
+			rows += row;
+		}
+		return rows;
+	}
+
+	@Override
+	public int deleteAll() {
+		log.info("deleteAll()");
+		return 0;
+	}
+
+	// ======================================================
+	@Transactional(readOnly = true)
+	@Override
+	public boolean exists(UserJpaEntity entity) {
+		return entityManager.contains(entity);
 	}
 
 	@Transactional(readOnly = true)
@@ -165,49 +213,4 @@ public class UserJpaDao implements CrudDao2<UserJpaEntity, Integer> {
 		query.setParameter("ids", ids);
 		return query.getResultList();
 	}
-
-	@Override
-	public List<UserJpaEntity> findAllByExample(String sql, Object... argValues) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<UserJpaEntity> findAllByExample(String sql, Map<String, ?> namedParams) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	// 4.Delete
-	@Override
-	public int deleteById(Integer id) {
-		return 0;
-	}
-
-	@Override
-	public int delete(UserJpaEntity entity) {
-		entityManager.remove(entity);
-		return 0;
-	}
-
-	@Override
-	public int[] deleteAll(List<UserJpaEntity> entities) {
-		return null;
-	}
-
-	@Override
-	public int deleteAll() {
-		return 0;
-	}
-
-	// 5.Save or Update
-	@Override
-	public int saveOrUpdate(UserJpaEntity entity) {
-		if (entity.getId() == 0) {
-			return save(entity);
-		} else {
-			return update(entity);
-		}
-	}
-
 }

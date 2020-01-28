@@ -4,20 +4,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.persistence.TypedQuery;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.ruanwei.demo.springframework.dataAccess.CrudDao2;
+import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.orm.hibernate5.HibernateTemplate;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -29,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 //@Repository
-public class UserHibernateDao implements CrudDao2<UserJpaEntity, Integer> {
+public class UserHibernateDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	private static Log log = LogFactory.getLog(UserHibernateDao.class);
 
 	private static final String hql = "from demo.User user where user.id=?";
@@ -83,7 +80,7 @@ public class UserHibernateDao implements CrudDao2<UserJpaEntity, Integer> {
 	}
 
 	@Transactional(readOnly = true)
-	public Optional<UserJpaEntity> findById2(Integer id) {
+	public Optional<UserJpaEntity> findById3(Integer id) {
 		return currentSession().byId(UserJpaEntity.class).loadOptional(id);
 	}
 
@@ -177,6 +174,30 @@ public class UserHibernateDao implements CrudDao2<UserJpaEntity, Integer> {
 	@Override
 	public int saveOrUpdate(UserJpaEntity entity) {
 		currentSession().saveOrUpdate(entity);
+		return 0;
+	}
+
+	@Override
+	public int saveAll(Iterable<UserJpaEntity> entities) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<UserJpaEntity> findAllById(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int updateAge(UserJpaEntity entity) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int deleteAll(Iterable<UserJpaEntity> entities) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 

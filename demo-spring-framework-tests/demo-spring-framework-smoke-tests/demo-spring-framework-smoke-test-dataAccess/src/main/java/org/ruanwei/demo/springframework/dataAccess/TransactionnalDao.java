@@ -1,14 +1,14 @@
-package org.ruanwei.demo.springframework.dataAccess.jdbc;
+package org.ruanwei.demo.springframework.dataAccess;
 
 public interface TransactionnalDao<T> {
 
-	// Create
-	int save(T entity);
-
 	// Transaction
 	default void transactionalMethod1(T user) {
+		throw new UnsupportedOperationException();
 	};
 
 	default void transactionalMethod2(T user) {
+		throw new UnsupportedOperationException();
 	};
+
 }

@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.springframework.dataAccess.TransactionnalDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -22,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional("transactionManager")
 @Repository
-public class UserJdbcDao2 implements TransactionnalDao<User> {
-	private static Log log = LogFactory.getLog(UserJdbcDao2.class);
+public class UserTransactionDao implements TransactionnalDao<User> {
+	private static Log log = LogFactory.getLog(UserTransactionDao.class);
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -32,13 +33,6 @@ public class UserJdbcDao2 implements TransactionnalDao<User> {
 	@Autowired
 	public void setDataSource(@Qualifier("springDataSource") DataSource dataSource) {
 		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-	}
-
-	// =====Create=====
-	@Override
-	public int save(User user) {
-		log.info("save(User user)");
-		return _update(sql_insert_namedParam, user, null);
 	}
 
 	// ====================transaction====================
@@ -51,6 +45,12 @@ public class UserJdbcDao2 implements TransactionnalDao<User> {
 	}
 
 	// ====================private====================
+
+	private int save(User user) {
+		log.info("save(User user)");
+		return _update(sql_insert_namedParam, user, null);
+	}
+
 	private int _update(String sql, Object candidate, KeyHolder keyHolder) {
 		log.info("_update(String sql, Object candidate, KeyHolder keyHolder)");
 
