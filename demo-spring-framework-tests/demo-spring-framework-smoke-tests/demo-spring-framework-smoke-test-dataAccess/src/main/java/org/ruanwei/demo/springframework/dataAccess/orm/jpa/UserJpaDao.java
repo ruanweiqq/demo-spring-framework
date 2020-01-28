@@ -1,5 +1,6 @@
 package org.ruanwei.demo.springframework.dataAccess.orm.jpa;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,12 +12,16 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.PersistenceUtil;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
+import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.User;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,8 +73,9 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 
 	private static final String jpql_12 = "from User as u where u.age = ?1";
 
-	// transaction-scoped persistence context(default), entityManager is thread-safe
-	// extended persistence context, entityManager is Not thread-safe
+	// transaction-scoped persistence context(default), entityManager is
+	// thread-safe.
+	// extended persistence context, entityManager is Not thread-safe.
 	@PersistenceContext
 	private EntityManager entityManager; // implemented by Hibernate Session.
 	private EntityManagerFactory entityManagerFactory; // Thread-safe,implemented by Hibernate SessionFactory,.
@@ -77,17 +83,22 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	private PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
 	private PersistenceUnitUtil persistenceUnitUtil;
 
+	@Autowired
+	private TransactionalDao<UserJpaEntity> userTransactionnalJpaDao;
+
 	@PersistenceUnit
 	public void setEntityManagerFactory(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
 		this.persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
+		// creates a new EntityManager every time
+		// this.entityManager = entityManagerFactory.createEntityManager();
 	}
 
 	// ==========Create==========
 	@Override
 	public int save(UserJpaEntity user) {
 		log.info("save(UserJpaEntity user)");
-		
+
 		entityManager.persist(user);
 		return 0;
 	}
@@ -128,12 +139,11 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	public List<UserJpaEntity> findAll() {
 		log.info("findAll()");
 
-		// always creates a new EntityManager
-		// EntityManager entityManager = entityManagerFactory.createEntityManager();
 		// Query query = entityManager.createNamedQuery("findAll");
 		TypedQuery<UserJpaEntity> query1 = entityManager.createNamedQuery("findAll", UserJpaEntity.class);
 		TypedQuery<UserJpaEntity> query2 = entityManager.createQuery("from UserJpaEntity", UserJpaEntity.class);
 		List<UserJpaEntity> list = query1.getResultList();
+
 		list.forEach(e -> log.info("e========" + e));
 		return list;
 	}
@@ -142,7 +152,14 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	@Override
 	public List<UserJpaEntity> findAllById(Integer id) {
 		log.info("findAllById(Integer id)");
-		return null;
+
+		TypedQuery<UserJpaEntity> query = entityManager.createQuery("select u from UserJpaEntity u where u.id > :id",
+				UserJpaEntity.class);
+		query.setParameter("id", id);
+		List<UserJpaEntity> list = query.getResultList();
+
+		list.forEach(e -> log.info("e========" + e));
+		return list;
 	}
 
 	@Transactional(readOnly = true)
@@ -158,7 +175,14 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	@Override
 	public int updateAge(UserJpaEntity user) {
 		log.info("updateAge(UserJpaEntity user)");
-		return 0;
+
+		Query query = entityManager
+				.createQuery("update UserJpaEntity u set u.age = :age where u.name = :name and u.birthday = :birthday");
+		query.setParameter("age", user.getAge());
+		query.setParameter("name", user.getName());
+		query.setParameter("birthday", user.getBirthday());
+
+		return query.executeUpdate();
 	}
 
 	// =====Delete=====
@@ -170,7 +194,10 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 		Map<String, Integer> paramMap = new HashMap<String, Integer>();
 		paramMap.put("id", id);
 
-		return 0;
+		Query query = entityManager.createQuery("delete UserJpaEntity u where u.id = :id");
+		query.setParameter("id", id);
+
+		return query.executeUpdate();
 	}
 
 	@Override
@@ -195,7 +222,10 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	@Override
 	public int deleteAll() {
 		log.info("deleteAll()");
-		return 0;
+
+		Query query = entityManager.createQuery("delete UserJpaEntity u");
+
+		return query.executeUpdate();
 	}
 
 	// ======================================================
@@ -212,5 +242,23 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 				UserJpaEntity.class);
 		query.setParameter("ids", ids);
 		return query.getResultList();
+	}
+
+	@Transactional(rollbackFor = ArithmeticException.class)
+	@Override
+	public void transactionalMethod1(UserJpaEntity user) {
+		log.info("transactionalMethod1(UserJpaEntity user)" + user);
+
+		save(user);
+
+		// 注意：由于默认使用代理的原因，调用同一类中事务方法时会忽略其的事务，因此需要把事务方法置于另一个类中
+		userTransactionnalJpaDao.transactionalMethod2(new UserJpaEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+
+		int i = 1 / 0;
+	}
+
+	@Override
+	public void transactionalMethod2(UserJpaEntity user) {
+		throw new UnsupportedOperationException();
 	}
 }

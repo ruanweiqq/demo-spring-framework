@@ -201,4 +201,16 @@ public class UserHibernateDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 		return 0;
 	}
 
+	@Override
+	public void transactionalMethod1(UserJpaEntity user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void transactionalMethod2(UserJpaEntity user) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

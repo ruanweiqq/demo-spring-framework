@@ -94,11 +94,13 @@ public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 	};
 
 	// ==========Update==========
+	@Override
 	public int updateAge(Map<String, ?> args) {
 		throw new UnsupportedOperationException();
 	};
 
 	// JdbcTemplate
+	@Override
 	public int updateAge(String name, int age, Date birthday) {
 		throw new UnsupportedOperationException();
 	};

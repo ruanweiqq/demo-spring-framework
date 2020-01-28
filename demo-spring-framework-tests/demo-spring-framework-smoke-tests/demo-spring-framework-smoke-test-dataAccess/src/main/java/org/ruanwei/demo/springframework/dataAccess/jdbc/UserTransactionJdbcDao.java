@@ -4,7 +4,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ruanwei.demo.springframework.dataAccess.TransactionnalDao;
+import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -21,10 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
  * @author ruanwei
  *
  */
-@Transactional("transactionManager")
+@Transactional(transactionManager = "transactionManager", propagation = Propagation.REQUIRES_NEW)
 @Repository
-public class UserTransactionDao implements TransactionnalDao<User> {
-	private static Log log = LogFactory.getLog(UserTransactionDao.class);
+public class UserTransactionJdbcDao implements TransactionalDao<User> {
+	private static Log log = LogFactory.getLog(UserTransactionJdbcDao.class);
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -36,9 +36,14 @@ public class UserTransactionDao implements TransactionnalDao<User> {
 	}
 
 	// ====================transaction====================
+	@Override
+	public void transactionalMethod1(User user) {
+		log.info("transactionalMethod1(User user)" + user);
+		throw new UnsupportedOperationException();
+	}
+
 	// 不能在事务方法中进行try-catch
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void transactionalMethod2(User user) {
 		log.info("transactionalMethod2(User user)" + user);
 		save(user);

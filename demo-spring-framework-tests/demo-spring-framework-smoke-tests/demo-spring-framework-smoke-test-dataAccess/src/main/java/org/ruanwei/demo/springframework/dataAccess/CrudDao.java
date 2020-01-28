@@ -5,10 +5,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public interface CrudDao<T, ID> extends TransactionnalDao<T> {
+/**
+ * 一共有12个接口是必须实现的
+ * 
+ * @author ruanwei
+ *
+ * @param <T>
+ * @param <ID>
+ */
+public interface CrudDao<T, ID> extends TransactionalDao<T> {
 
 	// ==========Create==========
-	int save(T entity);
+	int save(T entity); // 1
 
 	ID saveWithKey(T entity);
 
@@ -20,24 +28,24 @@ public interface CrudDao<T, ID> extends TransactionnalDao<T> {
 
 	ID saveWithKey(String name, int age, Date birthday);
 
-	int saveAll(Iterable<T> entities);
+	int saveAll(Iterable<T> entities); // 2
 
 	// ==========Read 1==========
-	T findById(ID id);
+	T findById(ID id); // 3
 
 	Map<String, ?> findMapById(ID id);
 
-	boolean existsById(ID id);
+	boolean existsById(ID id); // 4
 
-	List<T> findAll();
+	List<T> findAll(); // 5
 
 	List<Map<String, Object>> findAllMap();
 
-	List<T> findAllById(ID id);
+	List<T> findAllById(ID id); // 6
 
 	List<Map<String, Object>> findAllMapById(ID id);
 
-	long count();
+	long count(); // 7
 
 	// ==========Read 2 with JdbcTemplate==========
 	T findById2(ID id);
@@ -57,7 +65,7 @@ public interface CrudDao<T, ID> extends TransactionnalDao<T> {
 	long count2();
 
 	// ==========Update==========
-	int updateAge(T entity);
+	int updateAge(T entity); // 8
 
 	int updateAge(Map<String, ?> args);
 
@@ -65,18 +73,18 @@ public interface CrudDao<T, ID> extends TransactionnalDao<T> {
 	int updateAge(String name, int age, Date birthday);
 
 	// ==========Delete==========
-	int deleteById(ID id);
-
-	int delete(T entity);
+	int deleteById(ID id); // 9
+ 
+	int delete(T entity);  // 10
 
 	int delete(Map<String, ?> args);
 
 	// JdbcTemplate
 	int delete(String name, int age, Date birthday);
 
-	int deleteAll(Iterable<T> entities);
+	int deleteAll(Iterable<T> entities); // 11
 
-	int deleteAll();
+	int deleteAll(); // 12
 
 	// ==========Batch Create==========
 	public int[] batchSave(T[] entities);

@@ -24,7 +24,7 @@ import lombok.Data;
 public class UserJpaEntity {
 
 	@GenericGenerator(name = "increment", strategy = "increment")
-	@GeneratedValue(generator = "increment")
+	@GeneratedValue(generator = "increment")//查询最大值
 	@Id
 	private int id;
 

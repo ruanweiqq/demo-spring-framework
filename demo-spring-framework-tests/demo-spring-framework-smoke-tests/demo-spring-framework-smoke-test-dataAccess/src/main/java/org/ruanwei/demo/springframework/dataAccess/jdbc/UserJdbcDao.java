@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
-import org.ruanwei.demo.springframework.dataAccess.TransactionnalDao;
+import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -71,7 +71,7 @@ public class UserJdbcDao extends DefaultCrudDao<User, Integer> {
 	private StoredProcedure storedProcedure;
 
 	@Autowired
-	private TransactionnalDao<User> userTransactionnalDao;
+	private TransactionalDao<User> userTransactionnalJdbcDao;
 
 	private static final String sql_select_by_id1 = "select * from user where id = ?";
 	private static final String sql_select_by_id_namedParam1 = "select * from user where id = :id";
@@ -523,9 +523,15 @@ public class UserJdbcDao extends DefaultCrudDao<User, Integer> {
 		save(user);
 
 		// 注意：由于默认使用代理的原因，调用同一类中事务方法时会忽略其的事务，因此需要把事务方法置于另一个类中
-		userTransactionnalDao.transactionalMethod2(new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+		userTransactionnalJdbcDao.transactionalMethod2(new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 
 		int i = 1 / 0;
+	}
+	
+	@Override
+	public void transactionalMethod2(User user) {
+		log.info("transactionalMethod2(User user)" + user);
+		throw new UnsupportedOperationException();
 	}
 
 	// ====================private====================
