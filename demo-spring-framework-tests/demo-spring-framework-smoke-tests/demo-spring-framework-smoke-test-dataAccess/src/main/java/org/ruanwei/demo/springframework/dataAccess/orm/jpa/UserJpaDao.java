@@ -134,9 +134,7 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	public List<UserJpaEntity> findAll() {
 		log.info("findAll()");
 
-		// Query query = entityManager.createNamedQuery("findAll");
 		TypedQuery<UserJpaEntity> query1 = entityManager.createNamedQuery("findAll", UserJpaEntity.class);
-		TypedQuery<UserJpaEntity> query2 = entityManager.createQuery("from UserJpaEntity", UserJpaEntity.class);
 		List<UserJpaEntity> list = query1.getResultList();
 
 		list.forEach(e -> log.info("e========" + e));
@@ -147,19 +145,27 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	@Override
 	public List<UserJpaEntity> findAllById(Integer id) {
 		log.info("findAllById(Integer id)");
-		String jpql_1 = "select u from UserJpaEntity u where u.id > :id";
-		TypedQuery<UserJpaEntity> query = entityManager.createQuery(jpql_1, UserJpaEntity.class);
+
+		// String jpql_1 = "select u from UserJpaEntity u where u.id > :id";
+		String jpql_1 = "from UserJpaEntity as u where u.id > :id";
+		TypedQuery<UserJpaEntity> query1 = entityManager.createQuery(jpql_1, UserJpaEntity.class);
+		query1.setParameter("id", id);
+		List<UserJpaEntity> list1 = query1.getResultList();
+
+		String jpql_2 = "from UserJpaEntity as u where u.id > ?1";
+		TypedQuery<UserJpaEntity> query2 = entityManager.createQuery(jpql_2, UserJpaEntity.class);
+		query2.setParameter(1, id);
+		List<UserJpaEntity> list2 = query2.getResultList();
+
+		String sql = "select * from user where id > :id";
+		Query query = entityManager.createNativeQuery(sql, UserJpaEntity.class);
 		query.setParameter("id", id);
 		List<UserJpaEntity> list = query.getResultList();
-		
-//		String jpql_2 = "from UserJpaEntity as u where u.id > ?1";
-//		TypedQuery<UserJpaEntity> query2 = entityManager.createQuery(jpql_2, UserJpaEntity.class);
-//		query.setParameter(1, id);
-//		List<UserJpaEntity> list2 = query2.getResultList();
-		
+
+		list1.forEach(e -> log.info("e========" + e));
+		list2.forEach(e -> log.info("e========" + e));
 		list.forEach(e -> log.info("e========" + e));
-//		list2.forEach(e -> log.info("e========" + e));
-		return list;
+		return list1;
 	}
 
 	@Transactional(readOnly = true)
@@ -176,8 +182,11 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	public int updateAge(UserJpaEntity user) {
 		log.info("updateAge(UserJpaEntity user)");
 
-		Query query = entityManager
-				.createQuery("update UserJpaEntity u set u.age = :age where u.name = :name and u.birthday = :birthday");
+		// String sql = "update user u set u.age = :age where u.name = :name and
+		// u.birthday = :birthday";
+		// Query query = entityManager.createNativeQuery(sql, UserJpaEntity.class);
+		String jpql = "update UserJpaEntity u set u.age = :age where u.name = :name and u.birthday = :birthday";
+		Query query = entityManager.createQuery(jpql);
 		query.setParameter("age", user.getAge());
 		query.setParameter("name", user.getName());
 		query.setParameter("birthday", user.getBirthday());
@@ -190,11 +199,10 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	public int deleteById(Integer id) {
 		log.info("deleteById(Integer id)");
 
-		String sql = "delete from user where id = :id";
-		Map<String, Integer> paramMap = new HashMap<String, Integer>();
-		paramMap.put("id", id);
-
-		Query query = entityManager.createQuery("delete UserJpaEntity u where u.id = :id");
+		// String sql = "delete from user u where u.id = :id";
+		// Query query = entityManager.createNativeQuery(sql, UserJpaEntity.class);
+		String jpql = "delete UserJpaEntity u where u.id = :id";
+		Query query = entityManager.createQuery(jpql);
 		query.setParameter("id", id);
 
 		return query.executeUpdate();
@@ -223,6 +231,8 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	public int deleteAll() {
 		log.info("deleteAll()");
 
+		// String sql = "delete from user";
+		// Query query = entityManager.createNativeQuery(sql, UserJpaEntity.class);
 		Query query = entityManager.createQuery("delete UserJpaEntity u");
 		return query.executeUpdate();
 	}

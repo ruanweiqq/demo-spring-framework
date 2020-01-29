@@ -49,7 +49,7 @@
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
 		primary="true">
-		<property name="dataSource" ref="hikariDataSource" />
+		<property name="dataSource" ref="springDataSource" />
 	</bean>
 	
 	<!-- B.2.ORM -->
