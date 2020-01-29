@@ -7,11 +7,8 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.PersistenceUnitUtil;
-import javax.persistence.PersistenceUtil;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -19,7 +16,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.User;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -71,17 +67,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	private static Log log = LogFactory.getLog(UserJpaDao.class);
 
-	private static final String jpql_12 = "from User as u where u.age = ?1";
-
-	// transaction-scoped persistence context(default), entityManager is
-	// thread-safe.
-	// extended persistence context, entityManager is Not thread-safe.
+	// 1.EntityManagerFactory is thread-safe,but EntityManager is NOT thread-safe.
+	// 2.@PersistenceContext inject a shared and thread-safe EntityManager proxy.
+	// because the default persistence context type is transaction-scoped,otherwise
+	// entityManager is NOT thread-safe.
 	@PersistenceContext
 	private EntityManager entityManager; // implemented by Hibernate Session.
-	private EntityManagerFactory entityManagerFactory; // Thread-safe,implemented by Hibernate SessionFactory,.
+	private EntityManagerFactory entityManagerFactory; // implemented by Hibernate SessionFactory,.
 
-	private PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
-	private PersistenceUnitUtil persistenceUnitUtil;
+	// private PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
+	// private PersistenceUnitUtil persistenceUnitUtil;
 
 	@Autowired
 	private TransactionalDao<UserJpaEntity> userTransactionnalJpaDao;
@@ -89,7 +84,7 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	@PersistenceUnit
 	public void setEntityManagerFactory(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
-		this.persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
+		// this.persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
 		// creates a new EntityManager every time
 		// this.entityManager = entityManagerFactory.createEntityManager();
 	}
@@ -152,13 +147,18 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	@Override
 	public List<UserJpaEntity> findAllById(Integer id) {
 		log.info("findAllById(Integer id)");
-
-		TypedQuery<UserJpaEntity> query = entityManager.createQuery("select u from UserJpaEntity u where u.id > :id",
-				UserJpaEntity.class);
+		String jpql_1 = "select u from UserJpaEntity u where u.id > :id";
+		TypedQuery<UserJpaEntity> query = entityManager.createQuery(jpql_1, UserJpaEntity.class);
 		query.setParameter("id", id);
 		List<UserJpaEntity> list = query.getResultList();
-
+		
+//		String jpql_2 = "from UserJpaEntity as u where u.id > ?1";
+//		TypedQuery<UserJpaEntity> query2 = entityManager.createQuery(jpql_2, UserJpaEntity.class);
+//		query.setParameter(1, id);
+//		List<UserJpaEntity> list2 = query2.getResultList();
+		
 		list.forEach(e -> log.info("e========" + e));
+//		list2.forEach(e -> log.info("e========" + e));
 		return list;
 	}
 
@@ -224,8 +224,26 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 		log.info("deleteAll()");
 
 		Query query = entityManager.createQuery("delete UserJpaEntity u");
-
 		return query.executeUpdate();
+	}
+
+	@Transactional(rollbackFor = ArithmeticException.class)
+	@Override
+	public void transactionalMethod1(UserJpaEntity user) {
+		log.info("transactionalMethod1(UserJpaEntity user)" + user);
+
+		save(user);
+
+		// 注意：由于默认使用代理的原因，调用同一类中事务方法时会忽略其的事务，因此需要把事务方法置于另一个类中
+		// 2:不能使用单线程的数据源，也不能与其他的DAO共享数据源，否则这里启动事务失败，参考JpaTransactionManager.doBegin方法第403行
+		userTransactionnalJpaDao.transactionalMethod2(new UserJpaEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+
+		int i = 1 / 0;
+	}
+
+	@Override
+	public void transactionalMethod2(UserJpaEntity user) {
+		throw new UnsupportedOperationException();
 	}
 
 	// ======================================================
@@ -237,28 +255,10 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserJpaEntity> findAllById(List<Integer> ids) {
+	public List<UserJpaEntity> findAllByIds(List<Integer> ids) {
 		TypedQuery<UserJpaEntity> query = entityManager.createQuery("select u from UserJpaEntity u where u.id in :ids",
 				UserJpaEntity.class);
 		query.setParameter("ids", ids);
 		return query.getResultList();
-	}
-
-	@Transactional(rollbackFor = ArithmeticException.class)
-	@Override
-	public void transactionalMethod1(UserJpaEntity user) {
-		log.info("transactionalMethod1(UserJpaEntity user)" + user);
-
-		save(user);
-
-		// 注意：由于默认使用代理的原因，调用同一类中事务方法时会忽略其的事务，因此需要把事务方法置于另一个类中
-		userTransactionnalJpaDao.transactionalMethod2(new UserJpaEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
-
-		int i = 1 / 0;
-	}
-
-	@Override
-	public void transactionalMethod2(UserJpaEntity user) {
-		throw new UnsupportedOperationException();
 	}
 }

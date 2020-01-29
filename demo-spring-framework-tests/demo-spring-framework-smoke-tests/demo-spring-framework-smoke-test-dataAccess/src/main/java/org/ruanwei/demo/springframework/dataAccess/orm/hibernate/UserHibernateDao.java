@@ -128,7 +128,7 @@ public class UserHibernateDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserJpaEntity> findAllById(List<Integer> ids) {
+	public List<UserJpaEntity> findAllByIds(List<Integer> ids) {
 		Query<UserJpaEntity> query = currentSession().createQuery("select u from UserEntity u where u.id in :ids",
 				UserJpaEntity.class);
 		query.setParameter("ids", ids);

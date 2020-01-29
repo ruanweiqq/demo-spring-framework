@@ -1,15 +1,12 @@
 package org.ruanwei.demo.springframework.dataAccess.orm.jpa;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,19 +56,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserTransactionJpaDao implements TransactionalDao<UserJpaEntity> {
 	private static Log log = LogFactory.getLog(UserTransactionJpaDao.class);
 
-	// transaction-scoped persistence context(default), entityManager is
-	// thread-safe.
-	// extended persistence context, entityManager is Not thread-safe.
 	@PersistenceContext
-	private EntityManager entityManager; // implemented by Hibernate Session.
-	private EntityManagerFactory entityManagerFactory; // Thread-safe,implemented by Hibernate SessionFactory,.
-
-	@PersistenceUnit
-	public void setEntityManagerFactory(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
-		this.entityManagerFactory = entityManagerFactory;
-		// creates a new EntityManager every time
-		// this.entityManager = entityManagerFactory.createEntityManager();
-	}
+	private EntityManager entityManager;
 
 	@Override
 	public void transactionalMethod1(UserJpaEntity user) {
@@ -82,7 +68,6 @@ public class UserTransactionJpaDao implements TransactionalDao<UserJpaEntity> {
 	@Override
 	public void transactionalMethod2(UserJpaEntity user) {
 		log.info("transactionalMethod2(UserJpaEntity user)" + user);
-		//entityManager.persist(user);
-		entityManagerFactory.createEntityManager().persist(user);
+		entityManager.persist(user);
 	}
 }

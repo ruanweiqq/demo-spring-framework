@@ -101,7 +101,7 @@ public class AppConfig {// implements
 	public PlatformTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
 		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
 		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory);
-		jpaTransactionManager.setDataSource(springDataSource());
+		jpaTransactionManager.setDataSource(hikariDataSource());
 		jpaTransactionManager.setJpaDialect(new HibernateJpaDialect());
 		return jpaTransactionManager;
 	}
@@ -111,7 +111,7 @@ public class AppConfig {// implements
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		// see also LocalEntityManagerFactoryBean
 		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-		entityManagerFactory.setDataSource(springDataSource());
+		entityManagerFactory.setDataSource(hikariDataSource());
 		entityManagerFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity");
 		entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter()); // EclipseLinkJpaVendorAdapter
 		entityManagerFactory.setJpaDialect(new HibernateJpaDialect()); // EclipseLinkJpaDialect
@@ -135,14 +135,14 @@ public class AppConfig {// implements
 	public PlatformTransactionManager hibernateTransactionManager(SessionFactory sessionFactory) {
 		HibernateTransactionManager hibernateTransactionManager = new HibernateTransactionManager();
 		hibernateTransactionManager.setSessionFactory(sessionFactory);
-		hibernateTransactionManager.setDataSource(springDataSource());
+		hibernateTransactionManager.setDataSource(hikariDataSource());
 		return hibernateTransactionManager;
 	}
 
 	// @Bean("sessionFactory")
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setDataSource(springDataSource());
+		sessionFactory.setDataSource(hikariDataSource());
 		sessionFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity");
 		sessionFactory.setBootstrapExecutor(new SimpleAsyncTaskExecutor());
 
@@ -198,7 +198,7 @@ public class AppConfig {// implements
 		dataSource.setJdbcUrl(url);
 		dataSource.setUsername(username);
 		dataSource.setPassword(password);
-		dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+		//dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
 		return dataSource;
 	}
 

@@ -198,19 +198,33 @@ public class DataAccessTest {
 		userJpaDao.delete(jpaEntityForTransactionDelete2);
 
 		List<User> allUsers = userJdbcDao.findAll();
+		List<Map<String, Object>> allMapUsers = userJdbcDao.findAllMap();
+		long count = userJdbcDao.count();
 		assertEquals(1, allUsers.size(), "size of all users should be 1");
+		assertEquals(1, allMapUsers.size(), "size of all users should be 1");
+		assertEquals(1, count, "size of all users should be 1");
 
 		List<User> users = userJdbcDao.findAllById(gt1);
+		List<Map<String, Object>> mapUsers = userJdbcDao.findAllMapById(gt1);
 		assertEquals(0, users.size(), "size of users which id > 1 should be 0");
+		assertEquals(0, mapUsers.size(), "size of users which id > 1 should be 0");
+
+		boolean exist = userJdbcDao.existsById(eq1);
+		assertTrue(exist, "user which id = 1 should exist");
 
 		User user = userJdbcDao.findById(eq1);
 		assertNotNull(user, "user which id = 1 should not be null");
 		assertEquals(1, user.getId(), "user id should be 1");
 		assertEquals(36, user.getAge(), "user age should be 36");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
+
+		Map<String, ?> userMap = userJdbcDao.findMapById(eq1);
+		assertEquals(1, userMap.get("id"), "user id should be 1");
+		assertEquals("ruanwei", userMap.get("name"), "user name should be ruanwei");
+		assertEquals(36, userMap.get("age"), "user age should be 36");
 	}
 
-	@Disabled
+	//@Disabled
 	@Order(1)
 	@Test
 	void testSpringJdbcCRUD() {
@@ -226,23 +240,10 @@ public class DataAccessTest {
 		userJdbcDao.save(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
 		userJdbcDao.saveWithKey(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
 
-		User user = userJdbcDao.findById(eq1);
-		assertNotNull(user, "user should not be null");
-		assertEquals(1, user.getId(), "user id should be 1983-07-06");
-		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
-		assertEquals(36, user.getAge(), "user age should be 36");
-
-		Map<String, ?> userMap = userJdbcDao.findMapById(eq1);
-		assertEquals(1, userMap.get("id"), "user id should be 1983-07-06");
-		assertEquals("ruanwei", userMap.get("name"), "user name should be ruanwei");
-		assertEquals(36, userMap.get("age"), "user age should be 36");
-
-		List<User> users = userJdbcDao.findAllById(gt1);
-		List<Map<String, Object>> userMaps = userJdbcDao.findAllMapById(gt1);
 		List<User> allUsers = userJdbcDao.findAll();
-		assertEquals(0, users.size() - userMaps.size(), "user list size should be equal");
-		assertEquals(1, allUsers.size() - users.size(), "user list size diff should be 1");
-		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
+		List<User> users = userJdbcDao.findAllById(gt1);
+		assertTrue(allUsers.size() > 1, "size of all users should be > 1");
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
 		users.forEach(u -> assertEquals(36, u.getAge(), "user age should be 36"));
 
@@ -250,19 +251,19 @@ public class DataAccessTest {
 		userJdbcDao.updateAge(beanForUpdateOrDelete);
 		userJdbcDao.updateAge(mapForUpdateOrDelete);
 
-		user = userJdbcDao.findById(eq1);
+		User user = userJdbcDao.findById(eq1);
 		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
 		assertEquals(36, user.getAge(), "user age should be 36");
 
 		users = userJdbcDao.findAllById(gt1);
-		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}
 
-	@Disabled
+	//@Disabled
 	@Order(2)
 	@Test
 	void testSpringJdbcBatchCRUD() {
@@ -274,23 +275,10 @@ public class DataAccessTest {
 		userJdbcDao.batchSave(mapArrayForBatchCreate);
 		userJdbcDao.batchSave(objArrayForBatchCreate);
 
-		User user = userJdbcDao.findById(eq1);
-		assertNotNull(user, "user should not be null");
-		assertEquals(1, user.getId(), "user id should be 1983-07-06");
-		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
-		assertEquals(36, user.getAge(), "user age should be 36");
-
-		Map<String, ?> userMap = userJdbcDao.findMapById(eq1);
-		assertEquals(1, userMap.get("id"), "user id should be 1983-07-06");
-		assertEquals("ruanwei", userMap.get("name"), "user name should be ruanwei");
-		assertEquals(36, userMap.get("age"), "user age should be 36");
-
-		List<User> users = userJdbcDao.findAllById(gt1);
-		List<Map<String, Object>> userMaps = userJdbcDao.findAllMapById(gt1);
 		List<User> allUsers = userJdbcDao.findAll();
-		assertEquals(0, users.size() - userMaps.size(), "user list size should be equal");
-		assertEquals(1, allUsers.size() - users.size(), "user list size diff should be 1");
-		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
+		List<User> users = userJdbcDao.findAllById(gt1);
+		assertTrue(allUsers.size() > 1, "size of all users should be > 1");
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
 		users.forEach(u -> assertEquals(36, u.getAge(), "user age should be 36"));
 
@@ -301,19 +289,19 @@ public class DataAccessTest {
 		// TODO:这个方法调用的SQL有问题
 		// userJdbcDao.batchUpdateAge(objArrayForBatchUpdateAndDelete);
 
-		user = userJdbcDao.findById(eq1);
+		User user = userJdbcDao.findById(eq1);
 		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
 		assertEquals(36, user.getAge(), "user age should be 36");
 
 		users = userJdbcDao.findAllById(gt1);
-		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}
 
-	@Disabled
+	//@Disabled
 	@Order(3)
 	@Test
 	void testSpringJdbcWithTransaction() {
@@ -322,13 +310,15 @@ public class DataAccessTest {
 			userJdbcDao.transactionalMethod1(new User("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
 		} catch (ArithmeticException e) {
 			log.error("transaction rolled back for ArithmeticException", e);
+		} catch (Exception e) {
+			log.error("transaction rolled back for Exception", e);
 		} finally {
 			List<User> users = userJdbcDao.findAllById(gt0);
 			assertEquals(2, users.size(), "user size should be 2");
 		}
 	}
 
-	@Disabled
+	//@Disabled
 	@Order(4)
 	@Test
 	void testSpringJpaCRUD() {
@@ -337,30 +327,24 @@ public class DataAccessTest {
 		// 1.创建
 		userJpaDao.save(jpaEntityForCreate);
 
-		UserJpaEntity user = userJpaDao.findById(eq1);
-		assertNotNull(user, "user should not be null");
-		assertEquals(1, user.getId(), "user id should be 1983-07-06");
-		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
-		assertEquals(36, user.getAge(), "user age should be 36");
-
-		List<UserJpaEntity> users = userJpaDao.findAllById(gt1);
 		List<UserJpaEntity> allUsers = userJpaDao.findAll();
-		assertEquals(1, allUsers.size() - users.size(), "user list size diff should be 1");
-		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
+		List<UserJpaEntity> users = userJpaDao.findAllById(gt1);
+		assertTrue(allUsers.size() > 1, "size of all users should be > 1");
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
 		users.forEach(u -> assertEquals(36, u.getAge(), "user age should be 36"));
 
 		// 2.更新age
 		userJpaDao.updateAge(jpaEntityForUpdateOrDelete);
 
-		user = userJpaDao.findById(eq1);
+		UserJpaEntity user = userJpaDao.findById(eq1);
 		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
 		assertEquals(36, user.getAge(), "user age should be 36");
 
 		users = userJpaDao.findAllById(gt1);
-		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be gt 1"));
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}

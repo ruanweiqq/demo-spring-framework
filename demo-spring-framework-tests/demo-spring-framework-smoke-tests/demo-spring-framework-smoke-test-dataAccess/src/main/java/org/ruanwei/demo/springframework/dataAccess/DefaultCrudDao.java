@@ -200,7 +200,7 @@ public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 		throw new UnsupportedOperationException();
 	};
 
-	public List<T> findAllById(List<ID> ids) {
+	public List<T> findAllByIds(List<ID> ids) {
 		throw new UnsupportedOperationException();
 	};
 
