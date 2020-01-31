@@ -23,7 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
  * <b>Hibernate Native API (implements JPA) :</b><br/>
  * <li>org.hibernate.SessionFactory (javax.persistence.EntityManagerFactory).
  * <li>org.hibernate.Session (javax.persistence.EntityManager).
- * <li>org.hibernate.Transaction (javax.persistence.Transaction).<br/>
+ * <li>org.hibernate.Transaction (javax.persistence.Transaction).<br/><br/>
+ * 
  * EntityManagerFactory is thread-safe,but EntityManager is NOT thread-safe.<br/><br/>
  * 
  * Hibernate 的 HibernateTransactionManager + SessionFactory + Session类比于：<br/>
@@ -109,14 +110,14 @@ public class UserHibernateDao extends DefaultCrudDao<UserHibernateEntity, Intege
 	public List<UserHibernateEntity> findAllById(Integer id) {
 		log.info("findAllById(Integer id)");
 
-		// String jpql_1 = "select u from UserHibernateEntity u where u.id > :id";
-		String jpql_1 = "from UserHibernateEntity as u where u.id > :id";
-		Query<UserHibernateEntity> query1 = currentSession().createQuery(jpql_1, UserHibernateEntity.class);
+		// String hql_1 = "select u from UserHibernateEntity u where u.id > :id";
+		String hql_1 = "from UserHibernateEntity as u where u.id > :id";
+		Query<UserHibernateEntity> query1 = currentSession().createQuery(hql_1, UserHibernateEntity.class);
 		query1.setParameter("id", id);
 		List<UserHibernateEntity> list1 = query1.getResultList();
 
-		String jpql_2 = "from UserHibernateEntity as u where u.id > ?1";
-		Query<UserHibernateEntity> query2 = currentSession().createQuery(jpql_2, UserHibernateEntity.class);
+		String hql_2 = "from UserHibernateEntity as u where u.id > ?1";
+		Query<UserHibernateEntity> query2 = currentSession().createQuery(hql_2, UserHibernateEntity.class);
 		query2.setParameter(1, id);
 		List<UserHibernateEntity> list2 = query2.getResultList();
 
@@ -149,8 +150,8 @@ public class UserHibernateDao extends DefaultCrudDao<UserHibernateEntity, Intege
 		// u.birthday = :birthday";
 		// NativeQuery query = currentSession().createNativeQuery(sql,
 		// UserHibernateEntity.class);
-		String jpql = "update UserHibernateEntity u set u.age = :age where u.name = :name and u.birthday = :birthday";
-		Query<?> query = currentSession().createQuery(jpql);
+		String hql = "update UserHibernateEntity u set u.age = :age where u.name = :name and u.birthday = :birthday";
+		Query<?> query = currentSession().createQuery(hql);
 		query.setParameter("age", user.getAge());
 		query.setParameter("name", user.getName());
 		query.setParameter("birthday", user.getBirthday());
@@ -166,8 +167,8 @@ public class UserHibernateDao extends DefaultCrudDao<UserHibernateEntity, Intege
 		// String sql = "delete from user u where u.id = :id";
 		// NativeQuery query = currentSession().createNativeQuery(sql,
 		// UserHibernateEntity.class);
-		String jpql = "delete UserHibernateEntity u where u.id = :id";
-		Query<?> query = currentSession().createQuery(jpql);
+		String hql = "delete UserHibernateEntity u where u.id = :id";
+		Query<?> query = currentSession().createQuery(hql);
 		query.setParameter("id", id);
 
 		return query.executeUpdate();

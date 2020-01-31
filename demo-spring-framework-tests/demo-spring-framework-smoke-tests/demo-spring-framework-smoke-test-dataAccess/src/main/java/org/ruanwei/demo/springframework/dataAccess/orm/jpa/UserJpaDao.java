@@ -24,7 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
  * <b>Java Persistence API (implemented by Hibernate):</b><br/>
  * <li>javax.persistence.EntityManagerFactory (org.hibernate.SessionFactory).
  * <li>javax.persistence.EntityManager (org.hibernate.Session).
- * <li>javax.persistence.Transaction (org.hibernate.Transaction).<br/>
+ * <li>javax.persistence.Transaction (org.hibernate.Transaction).<br/><br/>
+ * 
  * EntityManagerFactory is thread-safe,but EntityManager is NOT thread-safe.<br/><br/>
  * 
  * Hibernate 的 HibernateTransactionManager + SessionFactory + Session类比于：<br/>
@@ -68,13 +69,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	private static Log log = LogFactory.getLog(UserJpaDao.class);
 
-	// 1.EntityManagerFactory is thread-safe,but EntityManager is NOT thread-safe.
-	// 2.@PersistenceContext inject a shared and thread-safe EntityManager proxy.
-	// because the default persistence context type is transaction-scoped,otherwise
-	// entityManager is NOT thread-safe.
+	// @PersistenceContext inject a shared and thread-safe EntityManager proxy.
+	// because the default persistence context type is transaction-scoped,otherwise NOT thread-safe.
 	@PersistenceContext
-	private EntityManager entityManager; // .
-	private EntityManagerFactory entityManagerFactory; // .
+	private EntityManager entityManager; 
+	private EntityManagerFactory entityManagerFactory; 
 
 	// private PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
 	// private PersistenceUnitUtil persistenceUnitUtil;
@@ -82,7 +81,7 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	@Autowired
 	private TransactionalDao<UserJpaEntity> userTransactionnalJpaDao;
 
-	// TODO:这里@Qualifier和@Autowired都不生效，因此使用了@Primary
+	// TODO:这里@Qualifier和@Autowired都不生效，因此使用了@Primary，使其注入SessionFactory
 	@PersistenceUnit
 	public void setEntityManagerFactory(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
