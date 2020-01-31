@@ -55,13 +55,17 @@
 	<!-- B.2.ORM -->
 	<!-- B.2.1.JPA -->
 	<!-- PlatformTransactionManager:local transaction manager for JPA -->
-	<!-- see  -->
+	<!-- see HibernateTransactionManager -->
 	<bean id="jpaTransactionManager"
 		class="org.springframework.orm.jpa.JpaTransactionManager">
+		<!-- <property name="entityManagerFactory"
+			ref="entityManagerFactory" /> -->
+		<!-- 注意：这里使用的是sessionFactory而不是entityManagerFactory -->
 		<property name="entityManagerFactory"
-			ref="entityManagerFactory" />
+			ref="sessionFactory" />
 		<property name="dataSource" ref="hikariDataSource" />
 		<property name="jpaDialect">
+			<!-- org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect -->
 			<bean
 				class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
 		</property>
@@ -69,14 +73,17 @@
 	<!-- see LocalSessionFactoryBean -->
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<qualifier value="entityManagerFactory" />
 		<property name="dataSource" ref="hikariDataSource" />
 		<property name="packagesToScan"
 			value="org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity" />
 		<property name="jpaVendorAdapter">
+			<!-- org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter -->
 			<bean
 				class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
 		</property>
 		<property name="jpaDialect">
+			<!-- org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect -->
 			<bean
 				class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
 		</property>
@@ -85,7 +92,7 @@
 				class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
 		</property>
 		<property name="loadTimeWeaver">
-		<!-- org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver -->
+			<!-- org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver -->
 			<bean
 				class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
 		</property>
@@ -105,16 +112,20 @@
 	<!-- B.2.2.Hibernate -->
 	<!-- LocalSessionFactoryBean and HibernateTransactionManager are alternative to LocalContainerEntityManagerFactoryBean and JpaTransactionManager for common JPA purposes -->
 	<!-- PlatformTransactionManager:local transaction manager for Hibernate -->
-	<!-- <bean id="hibernateTransactionManager"
+	<bean id="hibernateTransactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
-		<property name="dataSource" ref="springDataSource" />
+		<property name="dataSource" ref="hikariDataSource" />
 	</bean>
+
+	<!-- implements JPA EntityManagerFactory -->
 	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-		<property name="dataSource" ref="springDataSource" />
+	class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+	primary="true">
+		<qualifier value="sessionFactory" />
+		<property name="dataSource" ref="hikariDataSource" />
 		<property name="packagesToScan"
-			value="org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity" />
+			value="org.ruanwei.demo.springframework.dataAccess.orm.*.entity" />
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</prop>
@@ -123,7 +134,7 @@
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
 		</property>
-	</bean>  -->
+	</bean>
 	
 	<!-- B.2.3.MyBatis -->
 	<!-- <bean id="userMybatisDao"

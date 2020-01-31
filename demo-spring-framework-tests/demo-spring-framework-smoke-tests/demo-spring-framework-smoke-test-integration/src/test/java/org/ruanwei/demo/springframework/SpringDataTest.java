@@ -39,7 +39,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 // @Commit
 @ActiveProfiles("development")
 //@SpringJUnitConfig(locations = "classpath:spring/applicationContext2.xml")
-@SpringJUnitConfig(AppConfig2.class)
+//@SpringJUnitConfig(AppConfig2.class)
 public class SpringDataTest {
 	private static Log log = LogFactory.getLog(SpringDataTest.class);
 

@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.ruanwei.demo.springframework.dataAccess.CrudDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.User;
+import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibernateEntity;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
@@ -92,6 +93,12 @@ public class DataAccessTest {
 	private static final UserJpaEntity jpaEntityForTransactionDelete1;
 	private static final UserJpaEntity jpaEntityForTransactionDelete2;
 
+	// Spring Hibernate entity
+	private static final UserHibernateEntity hibernateEntityForCreate;
+	private static final UserHibernateEntity hibernateEntityForUpdateOrDelete;
+	private static final UserHibernateEntity hibernateEntityForTransactionDelete1;
+	private static final UserHibernateEntity hibernateEntityForTransactionDelete2;
+
 	// Spring Data JDBC entity
 	private static final UserJdbcEntity jdbcEntityForCreate = null;
 	private static final UserJdbcEntity jdbcEntityForUpdate = null;
@@ -154,6 +161,11 @@ public class DataAccessTest {
 		jpaEntityForUpdateOrDelete = new UserJpaEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
 		jpaEntityForTransactionDelete1 = new UserJpaEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06"));
 		jpaEntityForTransactionDelete2 = new UserJpaEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06"));
+
+		hibernateEntityForCreate = new UserHibernateEntity("ruanwei_tmp", 36, Date.valueOf("1983-07-06"));
+		hibernateEntityForUpdateOrDelete = new UserHibernateEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
+		hibernateEntityForTransactionDelete1 = new UserHibernateEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06"));
+		hibernateEntityForTransactionDelete2 = new UserHibernateEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06"));
 	}
 
 	@Autowired
@@ -161,6 +173,9 @@ public class DataAccessTest {
 
 	@Autowired
 	private CrudDao<UserJpaEntity, Integer> userJpaDao;
+
+	@Autowired
+	private CrudDao<UserHibernateEntity, Integer> userHibernateDao;
 
 	// @Autowired
 	private UserJdbcRepository userJdbcRepository;
@@ -178,6 +193,7 @@ public class DataAccessTest {
 		log.info("beforeEach()==============================");
 		assertNotNull(userJdbcDao, "userJdbcDao should not be null");
 		assertNotNull(userJpaDao, "userJpaDao should not be null");
+		assertNotNull(userHibernateDao, "userHibernateDao should not be null");
 		// assertNotNull(userJdbcRepository, "userJdbcRepository should not be null");
 		// assertNotNull(userJpaRepository, "userJpaRepository should not be null");
 
@@ -196,6 +212,9 @@ public class DataAccessTest {
 
 		userJpaDao.delete(jpaEntityForTransactionDelete1);
 		userJpaDao.delete(jpaEntityForTransactionDelete2);
+
+		userHibernateDao.delete(hibernateEntityForTransactionDelete1);
+		userHibernateDao.delete(hibernateEntityForTransactionDelete2);
 
 		List<User> allUsers = userJdbcDao.findAll();
 		List<Map<String, Object>> allMapUsers = userJdbcDao.findAllMap();
@@ -224,7 +243,7 @@ public class DataAccessTest {
 		assertEquals(36, userMap.get("age"), "user age should be 36");
 	}
 
-	//@Disabled
+	// @Disabled
 	@Order(1)
 	@Test
 	void testSpringJdbcCRUD() {
@@ -263,7 +282,7 @@ public class DataAccessTest {
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}
 
-	//@Disabled
+	// @Disabled
 	@Order(2)
 	@Test
 	void testSpringJdbcBatchCRUD() {
@@ -301,7 +320,7 @@ public class DataAccessTest {
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}
 
-	//@Disabled
+	// @Disabled
 	@Order(3)
 	@Test
 	void testSpringJdbcWithTransaction() {
@@ -315,10 +334,13 @@ public class DataAccessTest {
 		} finally {
 			List<User> users = userJdbcDao.findAllById(gt0);
 			assertEquals(2, users.size(), "user size should be 2");
+			
+			users = userJdbcDao.findAllById(gt1);
+			users.forEach(u -> assertEquals(2, u.getAge(), "user age should be 2."));
 		}
 	}
 
-	//@Disabled
+	// @Disabled
 	@Order(4)
 	@Test
 	void testSpringJpaCRUD() {
@@ -349,6 +371,7 @@ public class DataAccessTest {
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}
 
+	// @Disabled
 	@Order(5)
 	@Test
 	void testSpringJpaWithTransaction() {
@@ -362,14 +385,69 @@ public class DataAccessTest {
 		} finally {
 			List<UserJpaEntity> users = userJpaDao.findAllById(gt0);
 			assertEquals(2, users.size(), "user size should be 2");
+
+			users = userJpaDao.findAllById(gt1);
+			users.forEach(u -> assertEquals(2, u.getAge(), "user age should be 2."));
+		}
+	}
+
+	// @Disabled
+	@Order(6)
+	@Test
+	void testSpringHibernateCRUD() {
+		log.info("6======================================================================================");
+
+		// 1.创建
+		userHibernateDao.save(hibernateEntityForCreate);
+
+		List<UserHibernateEntity> allUsers = userHibernateDao.findAll();
+		List<UserHibernateEntity> users = userHibernateDao.findAllById(gt1);
+		assertTrue(allUsers.size() > 1, "size of all users should be > 1");
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
+		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
+		users.forEach(u -> assertEquals(36, u.getAge(), "user age should be 36"));
+
+		// 2.更新age
+		userHibernateDao.updateAge(hibernateEntityForUpdateOrDelete);
+
+		UserHibernateEntity user = userHibernateDao.findById(eq1);
+		assertNotNull(user, "user should not be null");
+		assertEquals(1, user.getId(), "user id should be 1983-07-06");
+		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
+		assertEquals(36, user.getAge(), "user age should be 36");
+
+		users = userHibernateDao.findAllById(gt1);
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
+		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
+		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
+	}
+
+	// @Disabled
+	@Order(7)
+	@Test
+	void testSpringHibernateWithTransaction() {
+		log.info("7======================================================================================");
+		try {
+			userHibernateDao
+					.transactionalMethod1(new UserHibernateEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
+		} catch (ArithmeticException e) {
+			log.error("transaction rolled back for ArithmeticException", e);
+		} catch (Exception e) {
+			log.error("transaction rolled back for Exception", e);
+		} finally {
+			List<UserHibernateEntity> users = userHibernateDao.findAllById(gt0);
+			assertEquals(2, users.size(), "user size should be 2");
+			
+			users = userHibernateDao.findAllById(gt1);
+			users.forEach(u -> assertEquals(2, u.getAge(), "user age should be 2."));
 		}
 	}
 
 	@Disabled
-	@Order(6)
+	@Order(8)
 	@Test
 	void testSpringDataJdbcCRUD() {
-		log.info("6======================================================================================");
+		log.info("8======================================================================================");
 		// 1.创建
 		userJdbcRepository.save(jdbcEntityForUpdate);
 
@@ -395,10 +473,10 @@ public class DataAccessTest {
 	}
 
 	@Disabled
-	@Order(7)
+	@Order(9)
 	@Test
 	void testSpringDataJdbcWithTransaction() {
-		log.info("7======================================================================================");
+		log.info("9======================================================================================");
 
 		assertNotNull(userJdbcRepository, "userJdbcRepository should npt be null");
 		try {

@@ -44,7 +44,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.zaxxer.hikari.HikariDataSource;
 
 /**
- * 对于事务配置，没有与基于XML的配置元数据相匹配的基于Java的配置元数据,因此此处import了xml配置.
+ * 
  * @author ruanwei
  *
  */
@@ -102,11 +102,12 @@ public class AppConfig {// implements
 		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
 		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory);
 		jpaTransactionManager.setDataSource(hikariDataSource());
-		jpaTransactionManager.setJpaDialect(new HibernateJpaDialect());
+		jpaTransactionManager.setJpaDialect(new HibernateJpaDialect()); // EclipseLinkJpaDialect
 		return jpaTransactionManager;
 	}
 
 	// see LocalSessionFactoryBean
+	@Qualifier("entityManagerFactory")
 	@Bean("entityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		// see also LocalEntityManagerFactoryBean
@@ -129,9 +130,11 @@ public class AppConfig {// implements
 	}
 
 	// B.2.2.Hibernate==========
-	// LocalSessionFactoryBean and HibernateTransactionManager are alternative to LocalContainerEntityManagerFactoryBean and JpaTransactionManager for common JPA purposes.
+	// LocalSessionFactoryBean and HibernateTransactionManager are alternative to
+	// LocalContainerEntityManagerFactoryBean and JpaTransactionManager for common
+	// JPA purposes.
 	// local transaction manager for Hibernate
-	// @Bean("hibernateTransactionManager")
+	@Bean("hibernateTransactionManager")
 	public PlatformTransactionManager hibernateTransactionManager(SessionFactory sessionFactory) {
 		HibernateTransactionManager hibernateTransactionManager = new HibernateTransactionManager();
 		hibernateTransactionManager.setSessionFactory(sessionFactory);
@@ -139,11 +142,14 @@ public class AppConfig {// implements
 		return hibernateTransactionManager;
 	}
 
-	// @Bean("sessionFactory")
+	// implements JPA EntityManagerFactory
+	@Primary
+	@Qualifier("sessionFactory")
+	@Bean("sessionFactory")
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(hikariDataSource());
-		sessionFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity");
+		sessionFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.*.entity");
 		sessionFactory.setBootstrapExecutor(new SimpleAsyncTaskExecutor());
 
 		Properties hibernateProperties = new Properties();
@@ -198,7 +204,7 @@ public class AppConfig {// implements
 		dataSource.setJdbcUrl(url);
 		dataSource.setUsername(username);
 		dataSource.setPassword(password);
-		//dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+		// dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
 		return dataSource;
 	}
 

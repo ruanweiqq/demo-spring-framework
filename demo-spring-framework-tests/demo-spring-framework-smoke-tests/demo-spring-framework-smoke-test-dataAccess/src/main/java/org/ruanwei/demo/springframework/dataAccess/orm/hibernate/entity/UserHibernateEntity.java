@@ -1,4 +1,4 @@
-package org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity;
+package org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity;
 
 import java.sql.Date;
 
@@ -16,15 +16,15 @@ import org.hibernate.annotations.GenericGenerator;
 import lombok.Data;
 
 @Data
-@NamedQueries({ @NamedQuery(name = "findAll", query = "select u from UserEntity u"),
-		@NamedQuery(name = "countAll", query = "select count(u) from UserEntity u") })
+@NamedQueries({ @NamedQuery(name = "hibernate.findAll", query = "select u from UserHibernateEntity u"),
+		@NamedQuery(name = "hibernate.countAll", query = "select count(u) from UserHibernateEntity u") })
 @DynamicUpdate
 @Table(name = "user")
 @Entity
-public class UserEntity {
+public class UserHibernateEntity {
 
 	@GenericGenerator(name = "increment", strategy = "increment")
-	@GeneratedValue(generator = "increment")
+	@GeneratedValue(generator = "increment")//查询最大值
 	@Id
 	private int id;
 
@@ -38,10 +38,10 @@ public class UserEntity {
 	@Column(name = "birthday")
 	private Date birthday;
 
-	public UserEntity() {
+	public UserHibernateEntity() {
 	}
 
-	public UserEntity(String name, int age, Date birthday) {
+	public UserHibernateEntity(String name, int age, Date birthday) {
 		this.name = name;
 		this.age = age;
 		this.birthday = birthday;
@@ -49,7 +49,7 @@ public class UserEntity {
 
 	@Override
 	public String toString() {
-		return "User [name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
+		return "UserHibernateEntity [name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
 	}
 
 }

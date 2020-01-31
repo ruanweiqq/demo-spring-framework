@@ -1,9 +1,7 @@
 package org.ruanwei.demo.springframework.dataAccess.orm.jpa;
 
 import java.sql.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -23,10 +21,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * <b>Java Persistence API implemented by Hibernate:</b><br/>
+ * <b>Java Persistence API (implemented by Hibernate):</b><br/>
  * <li>javax.persistence.EntityManagerFactory (org.hibernate.SessionFactory).
  * <li>javax.persistence.EntityManager (org.hibernate.Session).
- * <li>javax.persistence.Transaction (org.hibernate.Transaction).<br/><br/>
+ * <li>javax.persistence.Transaction (org.hibernate.Transaction).<br/>
+ * EntityManagerFactory is thread-safe,but EntityManager is NOT thread-safe.<br/><br/>
+ * 
+ * Hibernate 的 HibernateTransactionManager + SessionFactory + Session类比于：<br/>
+ * JPA 的 JpaTransactionManager + EntityManagerFactory + EntityManager<br/><br/>
  * 
  * <b>persistence context:</b><br/>
  * Both the org.hibernate.Session API and javax.persistence.EntityManager API represent a context for dealing with persistent data. <br/><br/>
@@ -57,7 +59,6 @@ import org.springframework.transaction.annotation.Transactional;
  * <li>detach all instance: session.clear() / entityManager.clear().
  * <li>merge detached instance: session.merge(entity) / entityManager.merge(entity).
  * <li>update detached instance: session.update(entity) / session.saveOrUpdate(entity).
-
  * 
  * @author ruanwei
  *
@@ -72,8 +73,8 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	// because the default persistence context type is transaction-scoped,otherwise
 	// entityManager is NOT thread-safe.
 	@PersistenceContext
-	private EntityManager entityManager; // implemented by Hibernate Session.
-	private EntityManagerFactory entityManagerFactory; // implemented by Hibernate SessionFactory,.
+	private EntityManager entityManager; // .
+	private EntityManagerFactory entityManagerFactory; // .
 
 	// private PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
 	// private PersistenceUnitUtil persistenceUnitUtil;
@@ -81,12 +82,16 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	@Autowired
 	private TransactionalDao<UserJpaEntity> userTransactionnalJpaDao;
 
+	// TODO:这里@Qualifier和@Autowired都不生效，因此使用了@Primary
 	@PersistenceUnit
 	public void setEntityManagerFactory(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
 		// this.persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
+	}
+
+	private EntityManager createEntityManager() {
 		// creates a new EntityManager every time
-		// this.entityManager = entityManagerFactory.createEntityManager();
+		return entityManagerFactory.createEntityManager();
 	}
 
 	// ==========Create==========
@@ -134,8 +139,8 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	public List<UserJpaEntity> findAll() {
 		log.info("findAll()");
 
-		TypedQuery<UserJpaEntity> query1 = entityManager.createNamedQuery("findAll", UserJpaEntity.class);
-		List<UserJpaEntity> list = query1.getResultList();
+		TypedQuery<UserJpaEntity> query = entityManager.createNamedQuery("findAll", UserJpaEntity.class);
+		List<UserJpaEntity> list = query.getResultList();
 
 		list.forEach(e -> log.info("e========" + e));
 		return list;
@@ -253,6 +258,7 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 
 	@Override
 	public void transactionalMethod2(UserJpaEntity user) {
+		log.info("transactionalMethod2(UserJpaEntity user)" + user);
 		throw new UnsupportedOperationException();
 	}
 

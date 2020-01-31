@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
-
 public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 
 	// ==========Create==========
@@ -224,7 +222,7 @@ public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 		throw new UnsupportedOperationException();
 	};
 
-	public Optional<UserJpaEntity> findById3(Integer id) {
+	public Optional<T> findById3(Integer id) {
 		throw new UnsupportedOperationException();
 	};
 
