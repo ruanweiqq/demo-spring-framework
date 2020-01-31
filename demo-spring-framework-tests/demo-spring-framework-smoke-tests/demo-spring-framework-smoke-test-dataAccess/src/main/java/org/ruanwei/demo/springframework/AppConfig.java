@@ -8,7 +8,11 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.hibernate.SessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEvent;
@@ -36,8 +40,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.config.JtaTransactionManagerFactoryBean;
 import org.springframework.transaction.event.TransactionalEventListener;
-import org.springframework.transaction.jta.JtaTransactionManager;
 import org.vibur.dbcp.ViburDBCPDataSource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -54,6 +58,7 @@ import com.zaxxer.hikari.HikariDataSource;
 //@EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
 @EnableTransactionManagement
 @PropertySource("classpath:jdbc.properties")
+@MapperScan(basePackages = "org.ruanwei.demo.springframework.dataAccess.orm.mybatis", sqlSessionFactoryRef = "sqlSessionFactory", factoryBean = MapperFactoryBean.class)
 @ComponentScan(basePackages = { "org.ruanwei.demo.springframework" })
 @Configuration
 public class AppConfig {// implements
@@ -163,12 +168,26 @@ public class AppConfig {// implements
 	}
 
 	// B.2.3.MyBatis
+	// 使用的DataSourceTransactionManager
+	@Bean("sqlSessionFactory")
+	public SqlSessionFactory sqlSessionFactory() throws Exception {
+		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+		factoryBean.setDataSource(springDataSource());
+		
+		org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+		configuration.setMapUnderscoreToCamelCase(true);
+		factoryBean.setConfiguration(configuration);
+		// factoryBean.setConfigLocation(configLocation);
+		// factoryBean.setMapperLocations(mapperLocations);//复杂SQL适合XML Mapper文件
+		return factoryBean.getObject();
+	}
 
 	// global transaction manager for JTA
+	// JtaTransactionManagerFactoryBean
 	// @Bean("jtaTransactionManager")
 	public PlatformTransactionManager jtaTransactionManager() {
-		JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
-		return jtaTransactionManager;
+		JtaTransactionManagerFactoryBean jtaTransactionManager = new JtaTransactionManagerFactoryBean();
+		return jtaTransactionManager.getObject();
 	}
 
 	// B.3.DataSource

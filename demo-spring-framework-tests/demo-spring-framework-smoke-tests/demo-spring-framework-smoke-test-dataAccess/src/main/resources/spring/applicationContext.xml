@@ -9,6 +9,7 @@
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
 	xmlns:jms="http://www.springframework.org/schema/jms"
 	xmlns:task="http://www.springframework.org/schema/task"
 	xmlns:oxm="http://www.springframework.org/schema/oxm"
@@ -18,7 +19,8 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd 
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd 
-        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd  
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd 
+        http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd  
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd 
         http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd 
         http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm.xsd 
@@ -61,8 +63,7 @@
 		<!-- <property name="entityManagerFactory"
 			ref="entityManagerFactory" /> -->
 		<!-- 注意：这里使用的是sessionFactory而不是entityManagerFactory -->
-		<property name="entityManagerFactory"
-			ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="sessionFactory" />
 		<property name="dataSource" ref="hikariDataSource" />
 		<property name="jpaDialect">
 			<!-- org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect -->
@@ -120,8 +121,8 @@
 
 	<!-- implements JPA EntityManagerFactory -->
 	<bean id="sessionFactory"
-	class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
-	primary="true">
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+		primary="true">
 		<qualifier value="sessionFactory" />
 		<property name="dataSource" ref="hikariDataSource" />
 		<property name="packagesToScan"
@@ -137,22 +138,32 @@
 	</bean>
 	
 	<!-- B.2.3.MyBatis -->
-	<!-- <bean id="userMybatisDao"
-		class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-		<property name="mapperInterface"
-			value="org.ruanwei.demo.springframework.dataAccess.orm.mybatis.UserMybatisDao" />
-	</bean>
+	<!-- see MapperScannerConfigurer -->
+	<mybatis:scan
+		base-package="org.ruanwei.demo.springframework.dataAccess.orm.mybatis"
+		factory-ref="sqlSessionFactory"
+		mapper-factory-bean-class="org.mybatis.spring.mapper.MapperFactoryBean" />
+	<!-- 使用的DataSourceTransactionManager -->
 	<bean id="sqlSessionFactory"
 		class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="configLocation"
+		<property name="dataSource" ref="springDataSource" />
+		<property name="configuration">
+			<bean class="org.apache.ibatis.session.Configuration">
+				<property name="mapUnderscoreToCamelCase" value="true" />
+			</bean>
+		</property>
+		<!-- <property name="configLocation"
 			value="classpath:mybatis/mybatis-config.xml" />
-		<property name="dataSource" ref="dataSource1" />
-	</bean> -->
+		<!-- 复杂SQL适合XML Mapper文件 -->
+		<!-- <property name="mapperLocations"
+			value="classpath*:config/mappers/**/*.xml" /> -->
+	</bean>
 	
 	<!-- global transaction manager for JTA -->
+	<!-- JtaTransactionManagerFactoryBean -->
 	<!-- <bean id="jtaTransactionManager"
-		class="org.springframework.transaction.jta.JtaTransactionManager"/> -->
+		class="org.springframework.transaction.config.JtaTransactionManagerFactoryBean"/> -->
+	<!-- <tx:jta-transaction-manager /> -->
 	
 	<!-- B.3.DataSource -->
 	<jdbc:initialize-database

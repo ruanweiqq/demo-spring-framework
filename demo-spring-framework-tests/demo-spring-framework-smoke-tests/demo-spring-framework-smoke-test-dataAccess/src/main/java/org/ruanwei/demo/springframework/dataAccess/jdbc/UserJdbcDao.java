@@ -516,7 +516,7 @@ public class UserJdbcDao extends DefaultCrudDao<User, Integer> {
 	// transactionalMethod1会回滚，transactionalMethod2不会回滚
 	// 不能在事务方法中进行try-catch
 	@Override
-	@Transactional(transactionManager = "transactionManager", rollbackFor = ArithmeticException.class)
+	@Transactional(rollbackFor = ArithmeticException.class)
 	public void transactionalMethod1(User user) {
 		log.info("transactionalMethod1(User user)" + user);
 

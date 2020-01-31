@@ -31,6 +31,7 @@ import org.ruanwei.demo.springframework.dataAccess.jdbc.User;
 import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibernateEntity;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
 import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.UserMyBatisMapper;
+import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.entity.UserMyBatisEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jpa.UserJpaRepository;
@@ -178,8 +179,8 @@ public class DataAccessTest {
 	@Autowired
 	private CrudDao<UserHibernateEntity, Integer> userHibernateDao;
 
-	// @Autowired
-	private UserMyBatisMapper userMyBatisMapper;
+	@Autowired
+	private CrudDao<UserMyBatisEntity, Integer> userMyBatisMapper;
 
 	// @Autowired
 	private UserJdbcRepository userJdbcRepository;
@@ -198,7 +199,7 @@ public class DataAccessTest {
 		assertNotNull(userJdbcDao, "userJdbcDao should not be null");
 		assertNotNull(userJpaDao, "userJpaDao should not be null");
 		assertNotNull(userHibernateDao, "userHibernateDao should not be null");
-		//assertNotNull(userMyBatisMapper, "userMyBatisMapper should not be null");
+		assertNotNull(userMyBatisMapper, "userMyBatisMapper should not be null");
 		// assertNotNull(userJdbcRepository, "userJdbcRepository should not be null");
 		// assertNotNull(userJpaRepository, "userJpaRepository should not be null");
 
@@ -448,11 +449,62 @@ public class DataAccessTest {
 		}
 	}
 
-	@Disabled
+	// @Disabled
 	@Order(8)
 	@Test
-	void testSpringDataJdbcCRUD() {
+	void testSpringMyBatisCRUD() {
 		log.info("8======================================================================================");
+
+		// 1.创建
+		/*userMyBatisMapper.save(jpaEntityForCreate);
+		
+		List<UserJpaEntity> allUsers = userJpaDao.findAll();
+		List<UserJpaEntity> users = userJpaDao.findAllById(gt1);
+		assertTrue(allUsers.size() > 1, "size of all users should be > 1");
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
+		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
+		users.forEach(u -> assertEquals(36, u.getAge(), "user age should be 36"));
+		
+		// 2.更新age
+		userMyBatisMapper.updateAge(jpaEntityForUpdateOrDelete);*/
+
+		UserMyBatisEntity user = userMyBatisMapper.findById(eq1);
+		assertNotNull(user, "user should not be null");
+		assertEquals(1, user.getId(), "user id should be 1983-07-06");
+		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
+		assertEquals(36, user.getAge(), "user age should be 36");
+
+		/*users = userMyBatisMapper.findAllById(gt1);
+		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
+		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
+		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));*/
+	}
+
+	// @Disabled
+	@Order(9)
+	@Test
+	void testSpringMyBatisWithTransaction() {
+		log.info("9======================================================================================");
+		try {
+			userJpaDao.transactionalMethod1(new UserJpaEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
+		} catch (ArithmeticException e) {
+			log.error("transaction rolled back for ArithmeticException", e);
+		} catch (Exception e) {
+			log.error("transaction rolled back for Exception", e);
+		} finally {
+			List<UserJpaEntity> users = userJpaDao.findAllById(gt0);
+			assertEquals(2, users.size(), "user size should be 2");
+
+			users = userJpaDao.findAllById(gt1);
+			users.forEach(u -> assertEquals(2, u.getAge(), "user age should be 2."));
+		}
+	}
+
+	@Disabled
+	@Order(10)
+	@Test
+	void testSpringDataJdbcCRUD() {
+		log.info("10======================================================================================");
 		// 1.创建
 		userJdbcRepository.save(jdbcEntityForUpdate);
 
@@ -478,10 +530,10 @@ public class DataAccessTest {
 	}
 
 	@Disabled
-	@Order(9)
+	@Order(11)
 	@Test
 	void testSpringDataJdbcWithTransaction() {
-		log.info("9======================================================================================");
+		log.info("11======================================================================================");
 
 		assertNotNull(userJdbcRepository, "userJdbcRepository should npt be null");
 		try {
