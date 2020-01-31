@@ -20,7 +20,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * <b>Hibernate Native API (implements JPA) :</b><br/>
+ * <b>Hibernate Native API (Hibernate also implements JPA) :</b><br/>
  * <li>org.hibernate.SessionFactory (javax.persistence.EntityManagerFactory).
  * <li>org.hibernate.Session (javax.persistence.EntityManager).
  * <li>org.hibernate.Transaction (javax.persistence.Transaction).<br/><br/>
