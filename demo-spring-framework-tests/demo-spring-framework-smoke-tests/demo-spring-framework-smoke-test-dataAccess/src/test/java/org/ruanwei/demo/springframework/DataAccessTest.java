@@ -30,6 +30,7 @@ import org.ruanwei.demo.springframework.dataAccess.CrudDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.User;
 import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibernateEntity;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
+import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.UserMyBatisMapper;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jpa.UserJpaRepository;
@@ -178,6 +179,9 @@ public class DataAccessTest {
 	private CrudDao<UserHibernateEntity, Integer> userHibernateDao;
 
 	// @Autowired
+	private UserMyBatisMapper userMyBatisMapper;
+
+	// @Autowired
 	private UserJdbcRepository userJdbcRepository;
 
 	// @Autowired
@@ -194,6 +198,7 @@ public class DataAccessTest {
 		assertNotNull(userJdbcDao, "userJdbcDao should not be null");
 		assertNotNull(userJpaDao, "userJpaDao should not be null");
 		assertNotNull(userHibernateDao, "userHibernateDao should not be null");
+		//assertNotNull(userMyBatisMapper, "userMyBatisMapper should not be null");
 		// assertNotNull(userJdbcRepository, "userJdbcRepository should not be null");
 		// assertNotNull(userJpaRepository, "userJpaRepository should not be null");
 
@@ -334,7 +339,7 @@ public class DataAccessTest {
 		} finally {
 			List<User> users = userJdbcDao.findAllById(gt0);
 			assertEquals(2, users.size(), "user size should be 2");
-			
+
 			users = userJdbcDao.findAllById(gt1);
 			users.forEach(u -> assertEquals(2, u.getAge(), "user age should be 2."));
 		}
@@ -437,7 +442,7 @@ public class DataAccessTest {
 		} finally {
 			List<UserHibernateEntity> users = userHibernateDao.findAllById(gt0);
 			assertEquals(2, users.size(), "user size should be 2");
-			
+
 			users = userHibernateDao.findAllById(gt1);
 			users.forEach(u -> assertEquals(2, u.getAge(), "user age should be 2."));
 		}
