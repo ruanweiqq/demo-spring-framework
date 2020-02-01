@@ -9,6 +9,7 @@
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
 	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
 	xmlns:repository="https://www.springframework.org/schema/data/repository"
 	xmlns:jms="http://www.springframework.org/schema/jms"
@@ -20,7 +21,8 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd 
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd 
-        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd 
+        http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd  
         http://www.springframework.org/schema/data/jpa https://www.springframework.org/schema/data/jpa/spring-jpa.xsd
         https://www.springframework.org/schema/data/repository https://www.springframework.org/schema/data/repository/spring-repository.xsd  
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd 
@@ -252,8 +254,8 @@
 		<property name="jdbcUrl" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
-		<property name="DataSourceClassName"
-			value="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" />
+		<!-- <property name="DataSourceClassName"
+			value="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" /> -->
 	</bean>
 
 	<!-- B.3.4.Vibur DataSource -->
