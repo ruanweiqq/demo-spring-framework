@@ -13,11 +13,10 @@ import org.hibernate.SessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.mapper.MapperFactoryBean;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.User;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.UserSaveEvent;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -306,7 +305,7 @@ public class AppConfig {// implements
 	@TransactionalEventListener
 	public void handleTransactionalEvent(UserSaveEvent event) {
 		log.info("handleTransactionalEvent" + event);
-		User user = (User) event.getSource();
+		UserJdbcEntity user = (UserJdbcEntity) event.getSource();
 		//User u = findById(user.getId());
 		//log.info("user has been saved=======================" + u);
 	}

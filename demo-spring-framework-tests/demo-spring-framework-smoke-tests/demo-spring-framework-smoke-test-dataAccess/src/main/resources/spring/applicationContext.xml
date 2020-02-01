@@ -107,7 +107,6 @@
 		</property>
 		
 		<!-- JPA providers of Hibernate does not require a JVM agent -->
-
 	</bean>
 	
 	<!-- B.2.2.Hibernate -->

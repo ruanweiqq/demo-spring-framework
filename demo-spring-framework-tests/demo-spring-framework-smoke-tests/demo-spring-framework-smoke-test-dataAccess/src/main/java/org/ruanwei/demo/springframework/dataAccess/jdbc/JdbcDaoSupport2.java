@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
@@ -38,9 +39,9 @@ public abstract class JdbcDaoSupport2 {
 	private SimpleJdbcCall simpleJdbcCall;// 执行存储过程或者函数
 
 	// 3.RdbmsOperation objects.
-	private SqlQuery<User> sqlQuery;
-	private MappingSqlQuery<User> mappingSqlQuery;
-	private UpdatableSqlQuery<User> updatableSqlQuery;
+	private SqlQuery<UserJdbcEntity> sqlQuery;
+	private MappingSqlQuery<UserJdbcEntity> mappingSqlQuery;
+	private UpdatableSqlQuery<UserJdbcEntity> updatableSqlQuery;
 	private SqlUpdate sqlUpdate;
 	private StoredProcedure storedProcedure;
 
@@ -148,7 +149,7 @@ public abstract class JdbcDaoSupport2 {
 	}
 
 	// ====================SimpleJdbc====================
-	private void insertUser6(User user) {
+	private void insertUser6(UserJdbcEntity user) {
 		log.info("insertUser6(User user)");
 		Map<String, Object> parameters = new HashMap<String, Object>(3);
 		parameters.put("name", user.getName());
@@ -168,7 +169,7 @@ public abstract class JdbcDaoSupport2 {
 						new SqlOutParameter("out_last_name", Types.VARCHAR),
 						new SqlOutParameter("out_birth_date", Types.DATE));
 		Map<String, Object> out = simpleJdbcCall.execute(in);
-		User user = new User();
+		UserJdbcEntity user = new UserJdbcEntity();
 		user.setName((String) out.get("out_first_name"));
 		user.setAge((int) out.get("age"));
 	}
