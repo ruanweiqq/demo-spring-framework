@@ -1,7 +1,5 @@
 package org.ruanwei.demo.springframework;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -10,14 +8,22 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.hibernate.SessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao2;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.UserSaveEvent;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.UserTransactionJdbcDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
 import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserHibernateDao;
+import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserTransactionHibernateDao;
+import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibernateEntity;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao;
-import org.ruanwei.demo.springframework.dataAccess.oxm.Settings;
+import org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserTransactionJpaDao;
+import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +36,8 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -39,12 +47,11 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.oxm.jibx.JibxMarshaller;
-import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.jta.JtaTransactionManager;
+import org.springframework.transaction.config.JtaTransactionManagerFactoryBean;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.vibur.dbcp.ViburDBCPDataSource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -103,19 +110,19 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 	// B.Data Access:DAO/Transaction/JDBC/ORM/OXM/Spring Data
 	// B.0.Transaction
 	// B.1.JDBC
-	@Bean
+	@Bean("userJdbcDao")
 	public UserJdbcDao userJdbcDao() {
 		UserJdbcDao userJdbcDao = new UserJdbcDao();
 		userJdbcDao.setDataSource(springDataSource());
-		userJdbcDao.setUserJdbcDao2(userJdbcDao2());
+		userJdbcDao.setUserTransactionnalJdbcDao(userTransactionnalJdbcDao());
 		return userJdbcDao;
 	}
 
-	@Bean
-	public UserJdbcDao2 userJdbcDao2() {
-		UserJdbcDao2 userJdbcDao = new UserJdbcDao2();
-		userJdbcDao.setDataSource(springDataSource());
-		return userJdbcDao;
+	@Bean("userTransactionnalJdbcDao")
+	public TransactionalDao<UserJdbcEntity> userTransactionnalJdbcDao() {
+		UserTransactionJdbcDao userTransactionJdbcDao = new UserTransactionJdbcDao();
+		userTransactionJdbcDao.setDataSource(springDataSource());
+		return userTransactionJdbcDao;
 	}
 
 	// local transaction manager for plain JDBC
@@ -129,30 +136,42 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 
 	// B.2.ORM
 	// B.2.1.JPA==========
-	// @Bean
+	@Bean("userJpaDao")
 	public UserJpaDao userJpaDao(EntityManagerFactory entityManagerFactory) {
 		UserJpaDao userJpaDao = new UserJpaDao();
 		userJpaDao.setEntityManagerFactory(entityManagerFactory);
+		userJpaDao.setUserTransactionnalJpaDao(userTransactionnalJpaDao());
 		return userJpaDao;
 	}
 
-	// local transaction manager for JPA
-	// @Bean("jpaTransactionManager")
-	public PlatformTransactionManager jpaTransactionManager() {
+	@Bean("userTransactionnalJpaDao")
+	public TransactionalDao<UserJpaEntity> userTransactionnalJpaDao() {
+		UserTransactionJpaDao userTransactionnalJpaDao = new UserTransactionJpaDao();
+		return userTransactionnalJpaDao;
+	}
+
+	// see HibernateTransactionManager
+	@Bean("jpaTransactionManager")
+	public PlatformTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
 		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
-		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-		// jpaTransactionManager.setJpaDialect(jpaDialect);
-		// jpaTransactionManager.setDataSource(dataSource1());
+		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory);
+		jpaTransactionManager.setDataSource(hikariDataSource());
+		jpaTransactionManager.setJpaDialect(new HibernateJpaDialect()); // EclipseLinkJpaDialect
 		return jpaTransactionManager;
 	}
 
-	// @Bean("entityManagerFactory")
+	// see LocalSessionFactoryBean
+	@Qualifier("entityManagerFactory")
+	@Bean("entityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+		// see also LocalEntityManagerFactoryBean
 		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-		entityManagerFactory.setDataSource(springDataSource());
+		entityManagerFactory.setDataSource(hikariDataSource());
 		entityManagerFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity");
 		entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter()); // EclipseLinkJpaVendorAdapter
-		// entityManagerFactory.setJpaDialect(jpaDialect);
+		entityManagerFactory.setJpaDialect(new HibernateJpaDialect()); // EclipseLinkJpaDialect
+		entityManagerFactory.setBootstrapExecutor(new SimpleAsyncTaskExecutor());
+		entityManagerFactory.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());// ReflectiveLoadTimeWeaver
 
 		Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
@@ -161,33 +180,45 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 		jpaProperties.put("hibernate.hbm2ddl.auto", "update");
 		entityManagerFactory.setJpaProperties(jpaProperties);
 
-		// entityManagerFactory.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
-
 		return entityManagerFactory;
 	}
 
 	// B.2.2.Hibernate==========
-	// @Bean
+	@Bean("userHibernateDao")
 	public UserHibernateDao userHibernateDao() {
 		UserHibernateDao userHibernateDao = new UserHibernateDao();
 		userHibernateDao.setSessionFactory(sessionFactory().getObject());
+		userHibernateDao.setUserTransactionnalHibernateDao(userTransactionnalHibernateDao());
 		return userHibernateDao;
 	}
 
+	@Bean("userTransactionnalHibernateDao")
+	public TransactionalDao<UserHibernateEntity> userTransactionnalHibernateDao() {
+		UserTransactionHibernateDao userTransactionnalHibernateDao = new UserTransactionHibernateDao();
+		return userTransactionnalHibernateDao;
+	}
+
+	// LocalSessionFactoryBean and HibernateTransactionManager are alternative to
+	// LocalContainerEntityManagerFactoryBean and JpaTransactionManager for common
+	// JPA purposes.
 	// local transaction manager for Hibernate
-	// @Bean("hibernateTransactionManager")
-	public PlatformTransactionManager hibernateTransactionManager() {
+	@Bean("hibernateTransactionManager")
+	public PlatformTransactionManager hibernateTransactionManager(SessionFactory sessionFactory) {
 		HibernateTransactionManager hibernateTransactionManager = new HibernateTransactionManager();
-		hibernateTransactionManager.setSessionFactory(sessionFactory().getObject());
-		hibernateTransactionManager.setDataSource(springDataSource());
+		hibernateTransactionManager.setSessionFactory(sessionFactory);
+		hibernateTransactionManager.setDataSource(hikariDataSource());
 		return hibernateTransactionManager;
 	}
 
-	// @Bean("sessionFactory")
+	// implements JPA EntityManagerFactory
+	@Primary
+	@Qualifier("sessionFactory")
+	@Bean("sessionFactory")
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setDataSource(springDataSource());
-		sessionFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity");
+		sessionFactory.setDataSource(hikariDataSource());
+		sessionFactory.setPackagesToScan("org.ruanwei.demo.springframework.dataAccess.orm.*.entity");
+		sessionFactory.setBootstrapExecutor(new SimpleAsyncTaskExecutor());
 
 		Properties hibernateProperties = new Properties();
 		hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
@@ -200,12 +231,28 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 	}
 
 	// B.2.3.MyBatis
+	// SqlSessionFactory和TransactionManager使用的DataSource要一致
+	@Bean("sqlSessionFactory")
+	public SqlSessionFactory sqlSessionFactory() throws Exception {
+		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+		factoryBean.setDataSource(springDataSource());
+
+		org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+		configuration.setMapUnderscoreToCamelCase(true);
+		factoryBean.setConfiguration(configuration);
+		// factoryBean.setConfigLocation(new
+		// ClassPathResource("mybatis/mybatis-config.xml"));
+		// 简单SQL使用注解，复杂SQL使用XML文件。这里不支持通配符，也不支持classpath:前缀。xml配置支持。
+		factoryBean.setMapperLocations(new ClassPathResource("mybatis/user-mapper.xml"));
+		return factoryBean.getObject();
+	}
 
 	// global transaction manager for JTA
+	// JtaTransactionManagerFactoryBean
 	// @Bean("jtaTransactionManager")
 	public PlatformTransactionManager jtaTransactionManager() {
-		JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
-		return jtaTransactionManager;
+		JtaTransactionManagerFactoryBean jtaTransactionManager = new JtaTransactionManagerFactoryBean();
+		return jtaTransactionManager.getObject();
 	}
 
 	// B.3.DataSource
@@ -241,7 +288,7 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 		dataSource.setJdbcUrl(url);
 		dataSource.setUsername(username);
 		dataSource.setPassword(password);
-		dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+		// dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
 		return dataSource;
 	}
 
@@ -315,11 +362,13 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 		return jndiObjectFactoryBean;
 	}
 
-	// The valid phases are BEFORE_COMMIT, AFTER_COMMIT (default), AFTER_ROLLBACK
-	// and AFTER_COMPLETION.
-	// @TransactionalEventListener
-	public void handleTransactionalEvent(ApplicationEvent event) {
-		log.info("handleTransactionalEvent======" + event);
+	// 应该移动到service层
+	@TransactionalEventListener
+	public void handleTransactionalEvent(UserSaveEvent event) {
+		log.info("handleTransactionalEvent" + event);
+		UserJdbcEntity user = (UserJdbcEntity) event.getSource();
+		// User u = findById(user.getId());
+		// log.info("user has been saved=======================" + u);
 	}
 
 	// B.4.OXM
@@ -333,28 +382,28 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 		return castorMarshaller;
 	}*/
 
-	@Lazy
+	/*@Lazy
 	@Qualifier("jaxb2Marshaller")
-	// @Bean
+	@Bean
 	public Jaxb2Marshaller jaxb2Marshaller() {
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 		marshaller.setContextPath("org.ruanwei.demo.springframework.dataAccess.oxm");
 		marshaller.setClassesToBeBound(Settings.class);
 		marshaller.setSchema(new ClassPathResource("schema.xsd"));
 		return marshaller;
-	}
+	}*/
 
 	// JiBX project is not active.
-	@Lazy
+	/*@Lazy
 	@Qualifier("jibxMarshaller")
 	@Bean
 	public JibxMarshaller jibxMarshaller() {
 		JibxMarshaller jibxMarshaller = new JibxMarshaller();
 		jibxMarshaller.setTargetClass(Settings.class);
 		return jibxMarshaller;
-	}
+	}*/
 
-	@Lazy
+	/*@Lazy
 	@Qualifier("xStreamMarshaller")
 	@Bean
 	public XStreamMarshaller xStreamMarshaller() {
@@ -364,7 +413,7 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 		aliases.put("Settings", Settings.class);
 		xStreamMarshaller.setAliases(aliases);
 		return xStreamMarshaller;
-	}
+	}*/
 
 	// B.Data Access:Spring Data
 

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
+import org.ruanwei.demo.springframework.dataAccess.springdata.User;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -28,7 +29,7 @@ import org.springframework.util.concurrent.ListenableFuture;
  * @author ruanwei
  *
  */
-public interface UserJdbcRepository extends PagingAndSortingRepository<UserJdbcEntity, Integer> {
+public interface UserJdbcRepository extends PagingAndSortingRepository<User, Integer> {
 	// ====================single row====================
 	@Query("select name from user where id = :id")
 	String findNameById(@Param("id") int id);
@@ -37,7 +38,7 @@ public interface UserJdbcRepository extends PagingAndSortingRepository<UserJdbcE
 	Map<String, Object> findNameAndAgeById(@Param("id") int id);
 
 	@Query("select * from user where id = :id")
-	UserJdbcEntity findUserById(@Param("id") int id);
+	User findUserById(@Param("id") int id);
 
 	// ====================multiple row====================
 	@Query("select name from user where id > :id")
@@ -47,7 +48,7 @@ public interface UserJdbcRepository extends PagingAndSortingRepository<UserJdbcE
 	List<Map<String, Object>> findNameAndAgeListById(@Param("id") int id);
 
 	@Query("select * from user where id > :id")
-	List<UserJdbcEntity> findUserListById(@Param("id") int id);
+	List<User> findUserListById(@Param("id") int id);
 
 	// ====================update====================
 	@Modifying
@@ -64,29 +65,29 @@ public interface UserJdbcRepository extends PagingAndSortingRepository<UserJdbcE
 
 	// ====================transaction====================
 	// 不能在事务方法中进行try-catch
-	default public void transactionalMethod1(UserJdbcEntity user) {
+	default public void transactionalMethod1(User user) {
 		createUser(user.getName(), user.getAge(), user.getBirthday());
 
-		transactionalMethod2(new UserJdbcEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+		transactionalMethod2(new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 
 		int i = 1 / 0;
 	}
 
 	// 不能在事务方法中进行try-catch
-	default public void transactionalMethod2(UserJdbcEntity user) {
+	default public void transactionalMethod2(User user) {
 		createUser(user.getName(), user.getAge(), user.getBirthday());
 	}
 
 	// ====================async query====================
 	@Async
 	@Query("select * from user")
-	Future<List<UserJdbcEntity>> findAllUser1();
+	Future<List<User>> findAllUser1();
 
 	@Async
 	@Query("select * from user")
-	CompletableFuture<List<UserJdbcEntity>> findAllUser2();
+	CompletableFuture<List<User>> findAllUser2();
 
 	@Async
 	@Query("select * from user")
-	ListenableFuture<List<UserJdbcEntity>> findAllUser3();
+	ListenableFuture<List<User>> findAllUser3();
 }

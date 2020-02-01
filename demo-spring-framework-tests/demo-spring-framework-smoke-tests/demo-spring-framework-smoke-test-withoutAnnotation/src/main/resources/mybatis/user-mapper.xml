@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="org.ruanwei.demo.springframework.dataAccess.orm.mybatis.UserMyBatisMapper">
+
+	<!-- @Alias注解未生效 -->
+	<insert id="saveAll"
+		parameterType="org.ruanwei.demo.springframework.dataAccess.orm.mybatis.entity.UserMyBatisEntity">
+		insert into user(name, age, birthday) values
+		<foreach item="u" collection="list" separator=",">
+			(#{u.name},
+			#{u.age}, #{u.birthday})
+		</foreach>
+	</insert>
+
+	<delete id="deleteAll"
+		parameterType="org.ruanwei.demo.springframework.dataAccess.orm.mybatis.entity.UserMyBatisEntity">
+		delete from user where
+		<foreach item="u" collection="list" separator=",">
+			name =
+			#{u.name}, age = #{u.age}, birthday = #{u.birthday})
+		</foreach>
+	</delete>
+</mapper>
