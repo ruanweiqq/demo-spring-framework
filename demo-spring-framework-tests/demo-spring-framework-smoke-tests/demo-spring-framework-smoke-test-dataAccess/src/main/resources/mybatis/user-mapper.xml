@@ -4,13 +4,10 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- <typeAlias
-	type="org.ruanwei.demo.springframework.dataAccess.orm.mybatis.entity.UserMyBatisEntity"
-	alias="UserMyBatisEntity" /> -->
-
 <mapper
 	namespace="org.ruanwei.demo.springframework.dataAccess.orm.mybatis.UserMyBatisMapper">
 
+	<!-- @Alias注解未生效 -->
 	<insert id="saveAll"
 		parameterType="org.ruanwei.demo.springframework.dataAccess.orm.mybatis.entity.UserMyBatisEntity">
 		insert into user(name, age, birthday) values

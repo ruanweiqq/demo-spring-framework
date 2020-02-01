@@ -2,9 +2,12 @@ package org.ruanwei.demo.springframework.dataAccess.orm.mybatis.entity;
 
 import java.sql.Date;
 
+import org.apache.ibatis.type.Alias;
+
 import lombok.Data;
 
 @Data
+@Alias("UserMyBatisEntity")
 public class UserMyBatisEntity {
 
 	private int id;
@@ -20,7 +23,7 @@ public class UserMyBatisEntity {
 		this.age = age;
 		this.birthday = birthday;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "UserMyBatisEntity [name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
