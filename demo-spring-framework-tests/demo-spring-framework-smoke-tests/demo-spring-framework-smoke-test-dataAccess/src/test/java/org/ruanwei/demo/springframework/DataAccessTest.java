@@ -492,22 +492,23 @@ public class DataAccessTest {
 		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}
 
-	// @Disabled
+	// 由于接口无法注入依赖，以及无法增加异常逻辑，所以这个用例跑不通
+	@Disabled
 	@Order(9)
 	@Test
 	void testSpringMyBatisWithTransaction() {
 		log.info("9======================================================================================");
 		try {
-			userJpaDao.transactionalMethod1(new UserJpaEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
+			userMyBatisMapper.transactionalMethod1(new UserMyBatisEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
 		} catch (ArithmeticException e) {
 			log.error("transaction rolled back for ArithmeticException", e);
 		} catch (Exception e) {
 			log.error("transaction rolled back for Exception", e);
 		} finally {
-			List<UserJpaEntity> users = userJpaDao.findAllById(gt0);
+			List<UserMyBatisEntity> users = userMyBatisMapper.findAllById(gt0);
 			assertEquals(2, users.size(), "user size should be 2");
 
-			users = userJpaDao.findAllById(gt1);
+			users = userMyBatisMapper.findAllById(gt1);
 			users.forEach(u -> assertEquals(2, u.getAge(), "user age should be 2."));
 		}
 	}
