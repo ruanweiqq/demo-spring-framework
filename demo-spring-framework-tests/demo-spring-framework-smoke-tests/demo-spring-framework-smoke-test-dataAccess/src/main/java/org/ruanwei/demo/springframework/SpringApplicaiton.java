@@ -1,11 +1,15 @@
 package org.ruanwei.demo.springframework;
 
+import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 @Deprecated
 public class SpringApplicaiton {
@@ -14,7 +18,7 @@ public class SpringApplicaiton {
 	private static AbstractApplicationContext context;
 	static {
 		log.info("0======================================================================================");
-		initApplicationContext(ApplicationContextType.CLASSPATH_XML);
+		initApplicationContext(ApplicationContextType.ANNOTATION_CONFIG);
 		log.info("0======================================================================================");
 	}
 

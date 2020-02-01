@@ -75,7 +75,6 @@ public class DataAccessTest {
 	private static final Collection<User> beanCollForBatchCreate;
 	private static final Map<String, Object>[] mapArrayForBatchCreate;
 	private static final List<Object[]> objArrayForBatchCreate;
-
 	// update or delete
 	private static final User beanForUpdateOrDelete;
 	private static final Map<String, Object> mapForUpdateOrDelete;
@@ -84,7 +83,6 @@ public class DataAccessTest {
 	private static final Collection<User> beanCollForBatchUpdateOrDelete;
 	private static final Map<String, Object>[] mapArrayForBatchUpdateOrDelete;
 	private static final List<Object[]> objArrayForBatchUpdateOrDelete;
-
 	// delete
 	private static final User beanForTransactionDelete1;
 	private static final User beanForTransactionDelete2;
@@ -100,6 +98,12 @@ public class DataAccessTest {
 	private static final UserHibernateEntity hibernateEntityForUpdateOrDelete;
 	private static final UserHibernateEntity hibernateEntityForTransactionDelete1;
 	private static final UserHibernateEntity hibernateEntityForTransactionDelete2;
+
+	// Spring Hibernate entity
+	private static final UserMyBatisEntity myBatisEntityForCreate;
+	private static final UserMyBatisEntity myBatisEntityForUpdateOrDelete;
+	private static final UserMyBatisEntity myBatisEntityForTransactionDelete1;
+	private static final UserMyBatisEntity myBatisEntityForTransactionDelete2;
 
 	// Spring Data JDBC entity
 	private static final UserJdbcEntity jdbcEntityForCreate = null;
@@ -168,6 +172,11 @@ public class DataAccessTest {
 		hibernateEntityForUpdateOrDelete = new UserHibernateEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
 		hibernateEntityForTransactionDelete1 = new UserHibernateEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06"));
 		hibernateEntityForTransactionDelete2 = new UserHibernateEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06"));
+
+		myBatisEntityForCreate = new UserMyBatisEntity("ruanwei_tmp", 36, Date.valueOf("1983-07-06"));
+		myBatisEntityForUpdateOrDelete = new UserMyBatisEntity("ruanwei_tmp", 18, Date.valueOf("1983-07-06"));
+		myBatisEntityForTransactionDelete1 = new UserMyBatisEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06"));
+		myBatisEntityForTransactionDelete2 = new UserMyBatisEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06"));
 	}
 
 	@Autowired
@@ -208,19 +217,22 @@ public class DataAccessTest {
 		userJdbcDao.delete(beanForUpdateOrDelete.getName(), beanForUpdateOrDelete.getAge(),
 				beanForUpdateOrDelete.getBirthday());
 
-		userJdbcDao.delete(beanForTransactionDelete1);
-		userJdbcDao.delete(beanForTransactionDelete2);
-
 		userJdbcDao.batchDelete(beanArrayForBatchUpdateOrDelete);
 		userJdbcDao.batchDelete(beanCollForBatchUpdateOrDelete);
 		userJdbcDao.batchDelete(mapArrayForBatchUpdateOrDelete);
 		userJdbcDao.batchDelete(objArrayForBatchUpdateOrDelete);
+
+		userJdbcDao.delete(beanForTransactionDelete1);
+		userJdbcDao.delete(beanForTransactionDelete2);
 
 		userJpaDao.delete(jpaEntityForTransactionDelete1);
 		userJpaDao.delete(jpaEntityForTransactionDelete2);
 
 		userHibernateDao.delete(hibernateEntityForTransactionDelete1);
 		userHibernateDao.delete(hibernateEntityForTransactionDelete2);
+
+		userMyBatisMapper.delete(myBatisEntityForTransactionDelete1);
+		userMyBatisMapper.delete(myBatisEntityForTransactionDelete2);
 
 		List<User> allUsers = userJdbcDao.findAll();
 		List<Map<String, Object>> allMapUsers = userJdbcDao.findAllMap();
@@ -456,17 +468,17 @@ public class DataAccessTest {
 		log.info("8======================================================================================");
 
 		// 1.创建
-		/*userMyBatisMapper.save(jpaEntityForCreate);
-		
-		List<UserJpaEntity> allUsers = userJpaDao.findAll();
-		List<UserJpaEntity> users = userJpaDao.findAllById(gt1);
+		userMyBatisMapper.save(myBatisEntityForCreate);
+
+		List<UserMyBatisEntity> allUsers = userMyBatisMapper.findAll();
+		List<UserMyBatisEntity> users = userMyBatisMapper.findAllById(gt1);
 		assertTrue(allUsers.size() > 1, "size of all users should be > 1");
 		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
 		users.forEach(u -> assertEquals(36, u.getAge(), "user age should be 36"));
-		
+
 		// 2.更新age
-		userMyBatisMapper.updateAge(jpaEntityForUpdateOrDelete);*/
+		userMyBatisMapper.updateAge(myBatisEntityForUpdateOrDelete);
 
 		UserMyBatisEntity user = userMyBatisMapper.findById(eq1);
 		assertNotNull(user, "user should not be null");
@@ -474,10 +486,10 @@ public class DataAccessTest {
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
 		assertEquals(36, user.getAge(), "user age should be 36");
 
-		/*users = userMyBatisMapper.findAllById(gt1);
+		users = userMyBatisMapper.findAllById(gt1);
 		users.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
 		users.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
-		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));*/
+		users.forEach(u -> assertEquals(18, u.getAge(), "user age should be 18"));
 	}
 
 	// @Disabled

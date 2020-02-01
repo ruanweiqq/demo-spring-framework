@@ -153,10 +153,10 @@
 			</bean>
 		</property>
 		<!-- <property name="configLocation"
-			value="classpath:mybatis/mybatis-config.xml" />
+			value="classpath:mybatis/mybatis-config.xml" /> -->
 		<!-- 复杂SQL适合XML Mapper文件 -->
-		<!-- <property name="mapperLocations"
-			value="classpath*:config/mappers/**/*.xml" /> -->
+		<property name="mapperLocations"
+			value="classpath*:mybatis/*-mapper.xml" />
 	</bean>
 	
 	<!-- global transaction manager for JTA -->

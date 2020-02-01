@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -168,17 +169,18 @@ public class AppConfig {// implements
 	}
 
 	// B.2.3.MyBatis
-	// 使用的DataSourceTransactionManager
+	// SqlSessionFactory和TransactionManager使用的DataSource要一致
 	@Bean("sqlSessionFactory")
 	public SqlSessionFactory sqlSessionFactory() throws Exception {
 		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
 		factoryBean.setDataSource(springDataSource());
-		
+
 		org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
 		configuration.setMapUnderscoreToCamelCase(true);
 		factoryBean.setConfiguration(configuration);
-		// factoryBean.setConfigLocation(configLocation);
-		// factoryBean.setMapperLocations(mapperLocations);//复杂SQL适合XML Mapper文件
+		// factoryBean.setConfigLocation(new ClassPathResource("mybatis/mybatis-config.xml"));
+		// 复杂SQL适合XML Mapper文件，这里不支持通配符，也不支持classpath前缀。xml配置支持。
+		factoryBean.setMapperLocations(new ClassPathResource("mybatis/user-mapper.xml"));
 		return factoryBean.getObject();
 	}
 
