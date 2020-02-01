@@ -143,7 +143,7 @@
 		base-package="org.ruanwei.demo.springframework.dataAccess.orm.mybatis"
 		factory-ref="sqlSessionFactory"
 		mapper-factory-bean-class="org.mybatis.spring.mapper.MapperFactoryBean" />
-	<!-- 使用的DataSourceTransactionManager -->
+	<!-- SqlSessionFactory和TransactionManager使用的DataSource要一致 -->
 	<bean id="sqlSessionFactory"
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="springDataSource" />
@@ -154,7 +154,7 @@
 		</property>
 		<!-- <property name="configLocation"
 			value="classpath:mybatis/mybatis-config.xml" /> -->
-		<!-- 复杂SQL适合XML Mapper文件 -->
+		<!-- 简单SQL使用注解，复杂SQL使用XML文件 -->
 		<property name="mapperLocations"
 			value="classpath*:mybatis/*-mapper.xml" />
 	</bean>

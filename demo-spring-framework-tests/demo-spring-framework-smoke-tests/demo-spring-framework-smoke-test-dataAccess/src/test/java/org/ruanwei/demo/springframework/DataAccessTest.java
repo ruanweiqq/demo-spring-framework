@@ -30,7 +30,6 @@ import org.ruanwei.demo.springframework.dataAccess.CrudDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.User;
 import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibernateEntity;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
-import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.UserMyBatisMapper;
 import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.entity.UserMyBatisEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;

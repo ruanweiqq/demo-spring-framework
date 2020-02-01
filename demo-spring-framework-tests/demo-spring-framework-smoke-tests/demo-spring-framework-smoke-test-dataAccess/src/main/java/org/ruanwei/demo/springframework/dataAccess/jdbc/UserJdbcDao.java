@@ -18,6 +18,7 @@ import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -73,6 +74,9 @@ public class UserJdbcDao extends DefaultCrudDao<User, Integer> {
 	@Autowired
 	private TransactionalDao<User> userTransactionnalJdbcDao;
 
+	@Autowired
+	private ApplicationEventPublisher applicationEventPublisher;
+
 	private static final String sql_select_by_id1 = "select * from user where id = ?";
 	private static final String sql_select_by_id_namedParam1 = "select * from user where id = :id";
 
@@ -123,6 +127,10 @@ public class UserJdbcDao extends DefaultCrudDao<User, Integer> {
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		int key = _update(sql_insert_namedParam, user, keyHolder);
+		
+		// see @TransactionalEventListener
+		user.setId(key);
+		applicationEventPublisher.publishEvent(new UserSaveEvent(user));
 
 		log.info("generatedKey=" + key);
 		return key;
@@ -527,7 +535,7 @@ public class UserJdbcDao extends DefaultCrudDao<User, Integer> {
 
 		int i = 1 / 0;
 	}
-	
+
 	@Override
 	public void transactionalMethod2(User user) {
 		log.info("transactionalMethod2(User user)" + user);

@@ -13,6 +13,8 @@ import org.hibernate.SessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.mapper.MapperFactoryBean;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.User;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.UserSaveEvent;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEvent;
@@ -178,8 +180,9 @@ public class AppConfig {// implements
 		org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
 		configuration.setMapUnderscoreToCamelCase(true);
 		factoryBean.setConfiguration(configuration);
-		// factoryBean.setConfigLocation(new ClassPathResource("mybatis/mybatis-config.xml"));
-		// 复杂SQL适合XML Mapper文件，这里不支持通配符，也不支持classpath前缀。xml配置支持。
+		// factoryBean.setConfigLocation(new
+		// ClassPathResource("mybatis/mybatis-config.xml"));
+		// 简单SQL使用注解，复杂SQL使用XML文件。这里不支持通配符，也不支持classpath:前缀。xml配置支持。
 		factoryBean.setMapperLocations(new ClassPathResource("mybatis/user-mapper.xml"));
 		return factoryBean.getObject();
 	}
@@ -299,11 +302,13 @@ public class AppConfig {// implements
 		return jndiObjectFactoryBean;
 	}
 
-	// The valid phases are BEFORE_COMMIT, AFTER_COMMIT (default), AFTER_ROLLBACK
-	// and AFTER_COMPLETION.
+	// 应该移动到service层
 	@TransactionalEventListener
-	public void handleTransactionalEvent(ApplicationEvent event) {
-		log.info("handleTransactionalEvent======" + event);
+	public void handleTransactionalEvent(UserSaveEvent event) {
+		log.info("handleTransactionalEvent" + event);
+		User user = (User) event.getSource();
+		//User u = findById(user.getId());
+		//log.info("user has been saved=======================" + u);
 	}
 
 	// B.4.OXM

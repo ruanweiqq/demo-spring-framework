@@ -180,7 +180,7 @@ public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 	public int[] batchDelete(List<Object[]> batchArgs) {
 		throw new UnsupportedOperationException();
 	};
-
+	
 	// ===================待删除===========================
 	public int update(T entity) {
 		throw new UnsupportedOperationException();

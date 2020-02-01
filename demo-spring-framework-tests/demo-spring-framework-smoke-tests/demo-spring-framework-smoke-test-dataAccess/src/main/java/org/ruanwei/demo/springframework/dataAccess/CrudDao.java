@@ -115,5 +115,4 @@ public interface CrudDao<T, ID> extends TransactionalDao<T> {
 
 	// JdbcTemplate
 	int[] batchDelete(List<Object[]> batchArgs);
-	
 }
