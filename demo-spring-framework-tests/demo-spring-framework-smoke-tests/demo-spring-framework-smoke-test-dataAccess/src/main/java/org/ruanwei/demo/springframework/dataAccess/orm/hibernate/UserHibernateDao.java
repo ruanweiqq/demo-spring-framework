@@ -204,6 +204,9 @@ public class UserHibernateDao extends DefaultCrudDao<UserHibernateEntity, Intege
 		return query.executeUpdate();
 	}
 
+	// 1.事务是默认在抛出运行时异常进行回滚的，因此不能在事务方法中进行try-catch捕获
+	// 2.事务是通过代理目标对象实现的，因此只有调用代理的事务方法才生效，调用目标对象(例如同一类中的其他方法)没有事务
+	// 3.由于事务传播类型不同，transactionalMethod1会回滚，transactionalMethod2不会回滚
 	@Transactional(rollbackFor = ArithmeticException.class)
 	@Override
 	public void transactionalMethod1(UserHibernateEntity user) {
@@ -211,8 +214,7 @@ public class UserHibernateDao extends DefaultCrudDao<UserHibernateEntity, Intege
 
 		save(user);
 
-		// 注意：由于默认使用代理的原因，调用同一类中事务方法时会忽略其的事务，因此需要把事务方法置于另一个类中
-		// 2:不能使用单线程的数据源，也不能与其他的DAO共享数据源，否则这里启动事务失败，参考JpaTransactionManager.doBegin方法第403行
+		// 注意:不能使用单线程的数据源，也不能与其他的DAO共享数据源，否则这里启动事务失败，参考JpaTransactionManager.doBegin方法第403行
 		userTransactionnalHibernateDao
 				.transactionalMethod2(new UserHibernateEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 

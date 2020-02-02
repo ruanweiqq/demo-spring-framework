@@ -524,8 +524,9 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 	}
 
 	// =====transaction=====
-	// transactionalMethod1会回滚，transactionalMethod2不会回滚
-	// 不能在事务方法中进行try-catch
+	// 1.事务是默认在抛出运行时异常进行回滚的，因此不能在事务方法中进行try-catch捕获
+	// 2.事务是通过代理目标对象实现的，因此只有调用代理的事务方法才生效，调用目标对象(例如同一类中的其他方法)没有事务
+	// 3.由于事务传播类型不同，transactionalMethod1会回滚，transactionalMethod2不会回滚
 	@Override
 	@Transactional(rollbackFor = ArithmeticException.class)
 	public void transactionalMethod1(UserJdbcEntity user) {
@@ -533,7 +534,6 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 
 		save(user);
 
-		// 注意：由于默认使用代理的原因，调用同一类中事务方法时会忽略其的事务，因此需要把事务方法置于另一个类中
 		userTransactionnalJdbcDao
 				.transactionalMethod2(new UserJdbcEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 

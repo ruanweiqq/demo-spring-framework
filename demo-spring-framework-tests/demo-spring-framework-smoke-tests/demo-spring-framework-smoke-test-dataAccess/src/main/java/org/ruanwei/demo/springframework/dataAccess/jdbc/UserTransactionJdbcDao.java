@@ -43,7 +43,6 @@ public class UserTransactionJdbcDao implements TransactionalDao<UserJdbcEntity> 
 		throw new UnsupportedOperationException();
 	}
 
-	// 不能在事务方法中进行try-catch
 	@Override
 	public void transactionalMethod2(UserJdbcEntity user) {
 		log.info("transactionalMethod2(UserJdbcEntity user)" + user);
