@@ -55,7 +55,29 @@
 	</bean>
 	
 	<!-- B.2.ORM -->
-	<!-- B.2.1.JPA -->
+	<!-- B.2.1.MyBatis -->
+	<!-- see MapperScannerConfigurer -->
+	<mybatis:scan
+		base-package="org.ruanwei.demo.springframework.dataAccess.orm.mybatis"
+		factory-ref="sqlSessionFactory"
+		mapper-factory-bean-class="org.mybatis.spring.mapper.MapperFactoryBean" />
+	<!-- SqlSessionFactory和TransactionManager使用的DataSource要一致 -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="springDataSource" />
+		<property name="configuration">
+			<bean class="org.apache.ibatis.session.Configuration">
+				<property name="mapUnderscoreToCamelCase" value="true" />
+			</bean>
+		</property>
+		<!-- <property name="configLocation"
+			value="classpath:mybatis/mybatis-config.xml" /> -->
+		<!-- 简单SQL使用注解，复杂SQL使用XML文件 -->
+		<property name="mapperLocations"
+			value="classpath*:mybatis/*-mapper.xml" />
+	</bean>
+	
+	<!-- B.2.2.JPA -->
 	<!-- PlatformTransactionManager:local transaction manager for JPA -->
 	<!-- see HibernateTransactionManager -->
 	<bean id="jpaTransactionManager"
@@ -109,7 +131,7 @@
 		<!-- JPA providers of Hibernate does not require a JVM agent -->
 	</bean>
 	
-	<!-- B.2.2.Hibernate -->
+	<!-- B.2.3.Hibernate -->
 	<!-- LocalSessionFactoryBean and HibernateTransactionManager are alternative to LocalContainerEntityManagerFactoryBean and JpaTransactionManager for common JPA purposes -->
 	<!-- PlatformTransactionManager:local transaction manager for Hibernate -->
 	<bean id="hibernateTransactionManager"
@@ -134,28 +156,6 @@
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
 		</property>
-	</bean>
-	
-	<!-- B.2.3.MyBatis -->
-	<!-- see MapperScannerConfigurer -->
-	<mybatis:scan
-		base-package="org.ruanwei.demo.springframework.dataAccess.orm.mybatis"
-		factory-ref="sqlSessionFactory"
-		mapper-factory-bean-class="org.mybatis.spring.mapper.MapperFactoryBean" />
-	<!-- SqlSessionFactory和TransactionManager使用的DataSource要一致 -->
-	<bean id="sqlSessionFactory"
-		class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="springDataSource" />
-		<property name="configuration">
-			<bean class="org.apache.ibatis.session.Configuration">
-				<property name="mapUnderscoreToCamelCase" value="true" />
-			</bean>
-		</property>
-		<!-- <property name="configLocation"
-			value="classpath:mybatis/mybatis-config.xml" /> -->
-		<!-- 简单SQL使用注解，复杂SQL使用XML文件 -->
-		<property name="mapperLocations"
-			value="classpath*:mybatis/*-mapper.xml" />
 	</bean>
 	
 	<!-- global transaction manager for JTA -->

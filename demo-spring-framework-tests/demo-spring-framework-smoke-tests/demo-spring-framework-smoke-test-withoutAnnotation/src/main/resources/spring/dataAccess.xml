@@ -123,7 +123,28 @@
 	</bean>
 	
 	<!-- B.2.ORM -->
-	<!-- B.2.1.JPA -->
+	<!-- B.2.1.MyBatis -->
+	<mybatis:scan
+		base-package="org.ruanwei.demo.springframework.dataAccess.orm.mybatis"
+		factory-ref="sqlSessionFactory"
+		mapper-factory-bean-class="org.mybatis.spring.mapper.MapperFactoryBean" />
+	<!-- SqlSessionFactory和TransactionManager使用的DataSource要一致 -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="springDataSource" />
+		<property name="configuration">
+			<bean class="org.apache.ibatis.session.Configuration">
+				<property name="mapUnderscoreToCamelCase" value="true" />
+			</bean>
+		</property>
+		<!-- <property name="configLocation"
+			value="classpath:mybatis/mybatis-config.xml" /> -->
+		<!-- 简单SQL使用注解，复杂SQL使用XML文件 -->
+		<property name="mapperLocations"
+			value="classpath*:mybatis/*-mapper.xml" />
+	</bean>
+	
+	<!-- B.2.2.JPA -->
 	<bean id="userJpaDao"
 		class="org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao">
 		<property name="entityManagerFactory"
@@ -189,7 +210,7 @@
 		<!-- JPA providers of Hibernate does not require a JVM agent -->
 	</bean>
 	
-	<!-- B.2.2.Hibernate -->
+	<!-- B.2.3.Hibernate -->
 	<bean id="userHibernateDao"
 		class="org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserHibernateDao">
 		<property name="sessionFactory" ref="sessionFactory" />
@@ -224,27 +245,6 @@
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
 		</property>
-	</bean>
-	
-	<!-- B.2.3.MyBatis -->
-	<mybatis:scan
-		base-package="org.ruanwei.demo.springframework.dataAccess.orm.mybatis"
-		factory-ref="sqlSessionFactory"
-		mapper-factory-bean-class="org.mybatis.spring.mapper.MapperFactoryBean" />
-	<!-- SqlSessionFactory和TransactionManager使用的DataSource要一致 -->
-	<bean id="sqlSessionFactory"
-		class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="springDataSource" />
-		<property name="configuration">
-			<bean class="org.apache.ibatis.session.Configuration">
-				<property name="mapUnderscoreToCamelCase" value="true" />
-			</bean>
-		</property>
-		<!-- <property name="configLocation"
-			value="classpath:mybatis/mybatis-config.xml" /> -->
-		<!-- 简单SQL使用注解，复杂SQL使用XML文件 -->
-		<property name="mapperLocations"
-			value="classpath*:mybatis/*-mapper.xml" />
 	</bean>
 	
 	<!-- global transaction manager for JTA -->

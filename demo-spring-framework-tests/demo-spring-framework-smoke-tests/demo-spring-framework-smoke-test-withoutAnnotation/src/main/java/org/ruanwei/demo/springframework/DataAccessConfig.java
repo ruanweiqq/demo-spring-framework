@@ -135,7 +135,24 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 	}
 
 	// B.2.ORM
-	// B.2.1.JPA==========
+	// B.2.1.MyBatis
+	// SqlSessionFactory和TransactionManager使用的DataSource要一致
+	@Bean("sqlSessionFactory")
+	public SqlSessionFactory sqlSessionFactory() throws Exception {
+		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+		factoryBean.setDataSource(springDataSource());
+
+		org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+		configuration.setMapUnderscoreToCamelCase(true);
+		factoryBean.setConfiguration(configuration);
+		// factoryBean.setConfigLocation(new
+		// ClassPathResource("mybatis/mybatis-config.xml"));
+		// 简单SQL使用注解，复杂SQL使用XML文件。这里不支持通配符，也不支持classpath:前缀。xml配置支持。
+		factoryBean.setMapperLocations(new ClassPathResource("mybatis/user-mapper.xml"));
+		return factoryBean.getObject();
+	}
+
+	// B.2.2.JPA==========
 	@Bean("userJpaDao")
 	public UserJpaDao userJpaDao(EntityManagerFactory entityManagerFactory) {
 		UserJpaDao userJpaDao = new UserJpaDao();
@@ -183,7 +200,7 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 		return entityManagerFactory;
 	}
 
-	// B.2.2.Hibernate==========
+	// B.2.3.Hibernate==========
 	@Bean("userHibernateDao")
 	public UserHibernateDao userHibernateDao() {
 		UserHibernateDao userHibernateDao = new UserHibernateDao();
@@ -228,23 +245,6 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 		sessionFactory.setHibernateProperties(hibernateProperties);
 
 		return sessionFactory;
-	}
-
-	// B.2.3.MyBatis
-	// SqlSessionFactory和TransactionManager使用的DataSource要一致
-	@Bean("sqlSessionFactory")
-	public SqlSessionFactory sqlSessionFactory() throws Exception {
-		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-		factoryBean.setDataSource(springDataSource());
-
-		org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
-		configuration.setMapUnderscoreToCamelCase(true);
-		factoryBean.setConfiguration(configuration);
-		// factoryBean.setConfigLocation(new
-		// ClassPathResource("mybatis/mybatis-config.xml"));
-		// 简单SQL使用注解，复杂SQL使用XML文件。这里不支持通配符，也不支持classpath:前缀。xml配置支持。
-		factoryBean.setMapperLocations(new ClassPathResource("mybatis/user-mapper.xml"));
-		return factoryBean.getObject();
 	}
 
 	// global transaction manager for JTA
