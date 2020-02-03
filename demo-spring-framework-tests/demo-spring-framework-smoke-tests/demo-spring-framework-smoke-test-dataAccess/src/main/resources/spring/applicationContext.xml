@@ -321,13 +321,6 @@
 	</jpa:repositories> -->
 	
 	<!-- B.3.Spring Data:Redis -->
-	<!-- <bean id="redisClient"
-		class="org.ruanwei.demo.springframework.dataAccess.springdata.redis.RedisClient">
-		<property name="redisTemplate" ref="redisTemplate" />
-		<property name="stringRedisTemplate"
-			ref="stringRedisTemplate" />
-	</bean>
-
 	<bean id="redisTemplate"
 		class="org.springframework.data.redis.core.RedisTemplate"
 		p:connection-factory-ref="jedisConnectionFactory"
@@ -342,8 +335,8 @@
 		p:connection-factory-ref="jedisConnectionFactory"
 		p:enable-transaction-support="true" />
 
-	Redis Messaging Receiver:RedisMessageListenerContainer
-	<redis:listener-container
+	<!-- Redis Messaging Receiver:RedisMessageListenerContainer -->
+	<!-- <redis:listener-container
 		connection-factory="jedisConnectionFactory"
 		topic-serializer="stringRedisSerializer">
 		the method attribute can be skipped as the default method name is 
@@ -373,15 +366,15 @@
 		</property>
 	</bean> -->
 
-	<!-- <bean id="stringRedisSerializer"
+	<bean id="stringRedisSerializer"
 		class="org.springframework.data.redis.serializer.StringRedisSerializer" />
 
 	<bean id="jedisConnectionFactory"
 		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
 		p:host-name="localhost" p:port="6379" p:use-pool="true"
 		p:pool-config-ref="jedisPoolConfig" />
-	<bean id="lettuceConnectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory" 
-		p:host-name="localhost" p:port="6379" />
+	<!-- <bean id="lettuceConnectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory" 
+		p:host-name="localhost" p:port="6379" /> -->
 
 	<bean id="jedisPoolConfig"
 		class="redis.clients.jedis.JedisPoolConfig">
@@ -390,7 +383,7 @@
 		<property name="testOnBorrow" value="true" />
 	</bean>
 
-	<bean id="sentinelConfiguration"
+	<!-- <bean id="sentinelConfiguration"
 		class="org.springframework.data.redis.connection.RedisSentinelConfiguration">
 		<property name="master" value="myMaster" />
 		<property name="sentinels">
@@ -403,9 +396,9 @@
 					p:host="localhost" p:port="26380" />
 			</set>
 		</property>
-	</bean>
+	</bean> -->
 
-	<bean id="clusterConfiguration"
+	<!-- <bean id="clusterConfiguration"
 		class="org.springframework.data.redis.connection.RedisClusterConfiguration">
 		<property name="maxRedirects" value="" />
 		<property name="clusterNodes">

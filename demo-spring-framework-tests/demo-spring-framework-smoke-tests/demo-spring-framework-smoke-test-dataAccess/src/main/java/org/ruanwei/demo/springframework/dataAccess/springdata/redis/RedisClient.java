@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.geo.Point;
@@ -51,12 +52,15 @@ import org.springframework.data.redis.support.collections.DefaultRedisMap;
 import org.springframework.data.redis.support.collections.DefaultRedisSet;
 import org.springframework.data.redis.support.collections.DefaultRedisZSet;
 import org.springframework.scripting.support.ResourceScriptSource;
+import org.springframework.stereotype.Service;
 
+@Service("redisClient")
 public class RedisClient {
 	private static Log log = LogFactory.getLog(RedisClient.class);
 
-	// is thread-safe
+	// thread-safe
 	private RedisTemplate<String, String> redisTemplate;
+	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
 
 	// Key Type Operations
@@ -84,6 +88,35 @@ public class RedisClient {
 	private Map<String, String> map;
 	private Set<String> set;
 	private Set<String> zset;
+
+	@Autowired
+	public void setRedisTemplate(RedisTemplate<String, String> redisTemplate) {
+		this.redisTemplate = redisTemplate;
+
+		this.list = new DefaultRedisList<String>("list", redisTemplate);
+		this.queue = new DefaultRedisList<String>("queue", redisTemplate);
+		this.deque = new DefaultRedisList<String>("deque", redisTemplate);
+		this.map = new DefaultRedisMap<String, String>("map", redisTemplate);
+		this.set = new DefaultRedisSet<String>("set", redisTemplate);
+		this.zset = new DefaultRedisZSet<String>("zset", redisTemplate);
+
+		this.valueOps = redisTemplate.opsForValue();
+		this.listOps = redisTemplate.opsForList();
+		this.setOps = redisTemplate.opsForSet();
+		this.zSetOps = redisTemplate.opsForZSet();
+		this.hashOps = redisTemplate.opsForHash();
+		this.geoOps = redisTemplate.opsForGeo();
+		this.hyperLogLogOps = redisTemplate.opsForHyperLogLog();
+
+		this.clusterOps = redisTemplate.opsForCluster();
+
+		this.boundValueOps = redisTemplate.boundValueOps("myKey");
+		this.boundListOps = redisTemplate.boundListOps("myList");
+		this.boundSetOps = redisTemplate.boundSetOps("mySet");
+		this.boundZSetOps = redisTemplate.boundZSetOps("myZSet");
+		this.boundHashOps = redisTemplate.boundHashOps("myHash");
+		this.boundGeoOps = redisTemplate.boundGeoOps("myGeo");
+	}
 
 	public void testRedis() {
 		log.info("testRedis()");
@@ -117,8 +150,7 @@ public class RedisClient {
 		boundHashOps.put("age", "33");
 
 		HashMapper<Object, byte[], byte[]> objectHashMapper = new ObjectHashMapper();
-		HashMapper<Object, String, String> mapper = new DecoratingStringHashMapper<Object>(
-				objectHashMapper);
+		HashMapper<Object, String, String> mapper = new DecoratingStringHashMapper<Object>(objectHashMapper);
 		Settings settings = new Settings("ruanwei", 33);
 		Map<String, String> mappedHash = mapper.toHash(settings);
 		hashOps.putAll("myHash", mappedHash);
@@ -126,8 +158,7 @@ public class RedisClient {
 		settings = (Settings) mapper.fromHash(loadedHash);
 		log.info("user=" + settings);
 
-		HashMapper<Settings, String, String> mapper2 = new BeanUtilsHashMapper<Settings>(
-				Settings.class);
+		HashMapper<Settings, String, String> mapper2 = new BeanUtilsHashMapper<Settings>(Settings.class);
 		Settings user2 = new Settings("ruanwei2", 33);
 		Map<String, String> mappedHash2 = mapper2.toHash(user2);
 		hashOps.putAll("myHash2", mappedHash2);
@@ -141,10 +172,8 @@ public class RedisClient {
 		// native connection
 		Long result = redisTemplate.execute(new RedisCallback<Long>() {
 			@Override
-			public Long doInRedis(RedisConnection connection)
-					throws DataAccessException {
-				connection.lPush("myList".getBytes(Charset.forName("UTF8")),
-						"c".getBytes(Charset.forName("UTF8")));
+			public Long doInRedis(RedisConnection connection) throws DataAccessException {
+				connection.lPush("myList".getBytes(Charset.forName("UTF8")), "c".getBytes(Charset.forName("UTF8")));
 				// if use stringRedisTemplate
 				// ((StringRedisConnection) connection).lPush("myList", "d");
 				return connection.dbSize();
@@ -155,8 +184,7 @@ public class RedisClient {
 		// transaction
 		Long txResults = redisTemplate.execute(new SessionCallback<Long>() {
 			@Override
-			public Long execute(RedisOperations operations)
-					throws DataAccessException {
+			public Long execute(RedisOperations operations) throws DataAccessException {
 				operations.multi();
 				operations.opsForList().leftPush("myList", "e");
 				operations.exec();
@@ -166,35 +194,30 @@ public class RedisClient {
 		log.info("size of myList is " + txResults);
 
 		// pipelining
-		List<Object> results = stringRedisTemplate
-				.executePipelined(new RedisCallback<Long>() {
-					@Override
-					public Long doInRedis(RedisConnection connection)
-							throws DataAccessException {
-						StringRedisConnection stringRedisConn = (StringRedisConnection) connection;
-						for (int i = 0; i < 3; i++) {
-							stringRedisConn.lPush("myList", "" + i);
-						}
-						return stringRedisConn.dbSize();
-					}
-				});
+		List<Object> results = stringRedisTemplate.executePipelined(new RedisCallback<Long>() {
+			@Override
+			public Long doInRedis(RedisConnection connection) throws DataAccessException {
+				StringRedisConnection stringRedisConn = (StringRedisConnection) connection;
+				for (int i = 0; i < 3; i++) {
+					stringRedisConn.lPush("myList", "" + i);
+				}
+				return stringRedisConn.dbSize();
+			}
+		});
 		log.info("size of resultList is " + results.size());
 
 		// scripting
 		DefaultRedisScript<Boolean> redisScript = new DefaultRedisScript<Boolean>();// 可以选择注入
-		redisScript.setScriptSource(new ResourceScriptSource(
-				new ClassPathResource("redis.lua")));
+		redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("redis.lua")));
 		redisScript.setResultType(Boolean.class);
-		Boolean scriptResult = redisTemplate.execute(redisScript,
-				Collections.singletonList("myList"), "a", "b");
+		Boolean scriptResult = redisTemplate.execute(redisScript, Collections.singletonList("myList"), "a", "b");
 		log.info("the result of the script is " + scriptResult);
 
 		// messaging/PubSub
 		String message = "message from publisher";
 		byte[] msgBytes = message.getBytes(Charset.forName("UTF8"));
 		byte[] chBytes = "myChannel".getBytes(Charset.forName("UTF8"));
-		RedisConnection redisConnection = redisTemplate.getConnectionFactory()
-				.getConnection();
+		RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
 		// blocking until canceled
 		redisConnection.subscribe(new MessageListener() {
 			@Override
@@ -203,8 +226,7 @@ public class RedisClient {
 					String body = new String(message.getBody(), "utf-8");
 					String channel = new String(message.getChannel(), "utf-8");
 					String p = new String(pattern, "utf-8");
-					log.info("channel=" + channel + " body=" + body
-							+ " pattern=" + p);
+					log.info("channel=" + channel + " body=" + body + " pattern=" + p);
 				} catch (UnsupportedEncodingException e) {
 					log.error(e);
 				}
@@ -229,45 +251,11 @@ public class RedisClient {
 	public void testRedisClusterAndSentinel() {
 		log.info("testRedisClusterAndSentinel()");
 
-		RedisSentinelConnection sentinelConnection = redisTemplate
-				.getConnectionFactory().getSentinelConnection();
+		RedisSentinelConnection sentinelConnection = redisTemplate.getConnectionFactory().getSentinelConnection();
 		sentinelConnection.failover(new RedisNode("master", 123456));
 
-		RedisClusterConnection clusterConnection = redisTemplate
-				.getConnectionFactory().getClusterConnection();
+		RedisClusterConnection clusterConnection = redisTemplate.getConnectionFactory().getClusterConnection();
 		clusterConnection.shutdown();
 		clusterOps.shutdown(new RedisClusterNode("host", 12345));
-	}
-
-	public void setRedisTemplate(RedisTemplate<String, String> redisTemplate) {
-		this.redisTemplate = redisTemplate;
-
-		this.list = new DefaultRedisList<String>("list", redisTemplate);
-		this.queue = new DefaultRedisList<String>("queue", redisTemplate);
-		this.deque = new DefaultRedisList<String>("deque", redisTemplate);
-		this.map = new DefaultRedisMap<String, String>("map", redisTemplate);
-		this.set = new DefaultRedisSet<String>("set", redisTemplate);
-		this.zset = new DefaultRedisZSet<String>("zset", redisTemplate);
-
-		this.valueOps = redisTemplate.opsForValue();
-		this.listOps = redisTemplate.opsForList();
-		this.setOps = redisTemplate.opsForSet();
-		this.zSetOps = redisTemplate.opsForZSet();
-		this.hashOps = redisTemplate.opsForHash();
-		this.geoOps = redisTemplate.opsForGeo();
-		this.hyperLogLogOps = redisTemplate.opsForHyperLogLog();
-
-		this.clusterOps = redisTemplate.opsForCluster();
-
-		this.boundValueOps = redisTemplate.boundValueOps("myKey");
-		this.boundListOps = redisTemplate.boundListOps("myList");
-		this.boundSetOps = redisTemplate.boundSetOps("mySet");
-		this.boundZSetOps = redisTemplate.boundZSetOps("myZSet");
-		this.boundHashOps = redisTemplate.boundHashOps("myHash");
-		this.boundGeoOps = redisTemplate.boundGeoOps("myGeo");
-	}
-
-	public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
-		this.stringRedisTemplate = stringRedisTemplate;
 	}
 }
