@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 一共有12个接口是必须实现的
+ * 一共有12个接口是必须实现的,除接口8外，剩下11个与org.springframework.data.repository.CrudRepository一致
+ * 另外，接口6的语义目前还不一样
  * 
  * @author ruanwei
  *
@@ -74,8 +75,8 @@ public interface CrudDao<T, ID> extends TransactionalDao<T> {
 
 	// ==========Delete==========
 	int deleteById(ID id); // 9
- 
-	int delete(T entity);  // 10
+
+	int delete(T entity); // 10
 
 	int delete(Map<String, ?> args);
 

@@ -28,6 +28,12 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -48,6 +54,8 @@ import org.vibur.dbcp.ViburDBCPDataSource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.zaxxer.hikari.HikariDataSource;
+
+import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * 
@@ -355,5 +363,49 @@ public class AppConfig {// implements
 	}*/
 
 	// B.Data Access:Spring Data
+	@Bean("redisTemplate")
+	public RedisTemplate<String, String> redisTemplate() {
+		RedisTemplate<String, String> redisTemplate = new RedisTemplate<String, String>();
+		redisTemplate.setConnectionFactory(jedisConnectionFactory());
+		redisTemplate.setEnableTransactionSupport(true);
+		redisTemplate.setKeySerializer(stringRedisSerializer());
+		redisTemplate.setValueSerializer(stringRedisSerializer());
+		redisTemplate.setHashKeySerializer(stringRedisSerializer());
+		redisTemplate.setHashValueSerializer(stringRedisSerializer());
+		return redisTemplate;
+	}
+
+	@Bean("stringRedisTemplate")
+	public StringRedisTemplate stringRedisTemplate() {
+		StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
+		stringRedisTemplate.setConnectionFactory(jedisConnectionFactory());
+		stringRedisTemplate.setEnableTransactionSupport(true);
+		return stringRedisTemplate;
+	}
+
+	@Bean("stringRedisSerializer")
+	public RedisSerializer stringRedisSerializer() {
+		StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+		return stringRedisSerializer;
+	}
+
+	@Bean("jedisConnectionFactory")
+	public RedisConnectionFactory jedisConnectionFactory() {
+		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
+		jedisConnectionFactory.setHostName("localhost");
+		jedisConnectionFactory.setPort(6379);
+		jedisConnectionFactory.setUsePool(true);
+		jedisConnectionFactory.setPoolConfig(jedisPoolConfig());
+		return jedisConnectionFactory;
+	}
+
+	@Bean("jedisPoolConfig")
+	public JedisPoolConfig jedisPoolConfig() {
+		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+		jedisPoolConfig.setMaxTotal(32);
+		jedisPoolConfig.setMaxIdle(6);
+		jedisPoolConfig.setTestOnBorrow(true);
+		return jedisPoolConfig;
+	}
 
 }
