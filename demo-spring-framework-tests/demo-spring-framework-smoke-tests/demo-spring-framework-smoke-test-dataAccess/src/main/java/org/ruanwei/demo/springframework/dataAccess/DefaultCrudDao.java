@@ -52,7 +52,7 @@ public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 
 	// ==========Read 2 with JdbcTemplate==========
 	@Override
-	public T findById2(ID id) {
+	public Optional<T> findById2(ID id) {
 		throw new UnsupportedOperationException();
 	};
 

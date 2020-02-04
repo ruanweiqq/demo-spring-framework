@@ -305,13 +305,13 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 	// RowMapperResultSetExtractor & BeanPropertyRowMapper
 	@Transactional(readOnly = true)
 	@Override
-	public UserJdbcEntity findById2(Integer id) {
+	public Optional<UserJdbcEntity> findById2(Integer id) {
 		log.info("findById2(Integer id)");
 
 		UserJdbcEntity user = jdbcTemplate.queryForObject(sql_select_by_id1, new Object[] { id }, UserJdbcEntity.class);
 
 		log.info("user=" + user);
-		return user;
+		return Optional.ofNullable(user);
 	}
 
 	// RowMapperResultSetExtractor & ColumnMapRowMapper
@@ -361,8 +361,8 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 	public List<UserJdbcEntity> findAllById2(Iterable<Integer> ids) {
 		log.info("findAllById2(Iterable<Integer> ids)");
 
-		List<UserJdbcEntity> userList = jdbcTemplate.queryForList(sql_select_by_ids1, new Object[] { StringUtils.toString(ids) },
-				UserJdbcEntity.class);
+		List<UserJdbcEntity> userList = jdbcTemplate.queryForList(sql_select_by_ids1,
+				new Object[] { StringUtils.toString(ids) }, UserJdbcEntity.class);
 
 		userList.forEach(user -> log.info("user=" + user));
 		return userList;

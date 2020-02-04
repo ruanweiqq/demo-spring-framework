@@ -52,7 +52,7 @@ public interface CrudDao<T, ID> extends TransactionalDao<T> {
 	long count(); // 7
 
 	// ==========Read 2 with JdbcTemplate==========
-	T findById2(ID id);
+	Optional<T> findById2(ID id);
 
 	Map<String, ?> findMapById2(ID id);
 
