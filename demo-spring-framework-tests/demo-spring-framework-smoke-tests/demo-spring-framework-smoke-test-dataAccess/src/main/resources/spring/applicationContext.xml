@@ -61,6 +61,13 @@
 		base-package="org.ruanwei.demo.springframework.dataAccess.orm.mybatis"
 		factory-ref="sqlSessionFactory"
 		mapper-factory-bean-class="org.mybatis.spring.mapper.MapperFactoryBean" />
+
+	<bean id="sqlSessionTemplate"
+		class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory"
+			ref="sqlSessionFactory"></constructor-arg>
+		<constructor-arg name="executorType" value="BATCH"></constructor-arg>
+	</bean>
 	<!-- SqlSessionFactory和TransactionManager使用的DataSource要一致 -->
 	<bean id="sqlSessionFactory"
 		class="org.mybatis.spring.SqlSessionFactoryBean">

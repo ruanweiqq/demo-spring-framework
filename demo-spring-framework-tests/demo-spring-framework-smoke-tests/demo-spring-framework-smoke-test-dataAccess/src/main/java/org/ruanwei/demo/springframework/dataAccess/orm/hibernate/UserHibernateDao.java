@@ -13,6 +13,7 @@ import org.hibernate.query.Query;
 import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibernateEntity;
+import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -107,7 +108,34 @@ public class UserHibernateDao extends DefaultCrudDao<UserHibernateEntity, Intege
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserHibernateEntity> findAllById(Integer id) {
+	public List<UserHibernateEntity> findAllById(Iterable<Integer> ids) {
+		log.info("findAllById(Iterable<Integer> ids)");
+
+		// String hql_1 = "select u from UserHibernateEntity u where u.id in (:ids)";
+		String hql_1 = "from UserHibernateEntity as u where u.id in (:ids)";
+		Query<UserHibernateEntity> query1 = currentSession().createQuery(hql_1, UserHibernateEntity.class);
+		query1.setParameter("ids", StringUtils.toString(ids));
+		List<UserHibernateEntity> list1 = query1.getResultList();
+
+		String hql_2 = "from UserHibernateEntity as u where u.id in (?1)";
+		Query<UserHibernateEntity> query2 = currentSession().createQuery(hql_2, UserHibernateEntity.class);
+		query2.setParameter(1, StringUtils.toString(ids));
+		List<UserHibernateEntity> list2 = query2.getResultList();
+
+		String sql = "select * from user where id in (:ids)";
+		NativeQuery<UserHibernateEntity> query = currentSession().createNativeQuery(sql, UserHibernateEntity.class);
+		query.setParameter("ids", StringUtils.toString(ids));
+		List<UserHibernateEntity> list = query.getResultList();
+
+		list1.forEach(e -> log.info("e========" + e));
+		list2.forEach(e -> log.info("e========" + e));
+		list.forEach(e -> log.info("e========" + e));
+		return list1;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<UserHibernateEntity> findAllByGtId(Integer id) {
 		log.info("findAllById(Integer id)");
 
 		// String hql_1 = "select u from UserHibernateEntity u where u.id > :id";

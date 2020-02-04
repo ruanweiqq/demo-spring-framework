@@ -41,9 +41,13 @@ public interface UserMyBatisMapper extends CrudDao<UserMyBatisEntity, Integer> {
 	@Override
 	List<UserMyBatisEntity> findAll();
 
+	// see user-mapper.xml
+	@Override
+	List<UserMyBatisEntity> findAllById(Iterable<Integer> ids);
+	
 	@Select("select * from user where id > #{id}")
 	@Override
-	List<UserMyBatisEntity> findAllById(@Param("id") Integer id);
+	List<UserMyBatisEntity> findAllByGtId(@Param("id") Integer id);
 
 	@Select("select count(*) from user")
 	@Override

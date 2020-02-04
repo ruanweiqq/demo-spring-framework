@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
+import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -83,6 +84,9 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 
 	private static final String sql_select_by_id2 = "select id, name, age, birthday from user where id = ?";
 	private static final String sql_select_by_id_namedParam2 = "select id, name, age, birthday from user where id = :id";
+
+	private static final String sql_select_by_ids1 = "select * from user where id in (?)";
+	private static final String sql_select_by_ids_namedParam1 = "select * from user where id in (:ids)";
 
 	private static final String sql_select_by_gt_id1 = "select id, name, age, birthday from user where id > ?";
 	private static final String sql_select_by_gt_id_namedParam1 = "select id, name, age, birthday from user where id > :id";
@@ -243,8 +247,22 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserJdbcEntity> findAllById(Integer id) {
-		log.info("findAllById(Integer id)");
+	public List<UserJdbcEntity> findAllById(Iterable<Integer> ids) {
+		log.info("findAllById(Iterable<Integer> ids)");
+
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("ids", StringUtils.toString(ids));
+		List<UserJdbcEntity> userList = namedParameterJdbcTemplate.query(sql_select_by_ids_namedParam1, paramMap,
+				new BeanPropertyRowMapper<UserJdbcEntity>(UserJdbcEntity.class));
+
+		userList.forEach(user -> log.info("user=" + user));
+		return userList;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<UserJdbcEntity> findAllByGtId(Integer id) {
+		log.info("findAllByGtId(Integer id)");
 
 		Map<String, Integer> paramMap = new HashMap<String, Integer>();
 		paramMap.put("id", id);
@@ -339,7 +357,19 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserJdbcEntity> findAllById2(Integer id) {
+	public List<UserJdbcEntity> findAllById2(Iterable<Integer> ids) {
+		log.info("findAllById2(Iterable<Integer> ids)");
+
+		List<UserJdbcEntity> userList = jdbcTemplate.queryForList(sql_select_by_ids1, new Object[] { StringUtils.toString(ids) },
+				UserJdbcEntity.class);
+
+		userList.forEach(user -> log.info("user=" + user));
+		return userList;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<UserJdbcEntity> findAllByGtId2(Integer id) {
 		log.info("findAllById2(Integer id)");
 
 		List<UserJdbcEntity> userList = jdbcTemplate.queryForList(sql_select_by_gt_id2, new Object[] { id },

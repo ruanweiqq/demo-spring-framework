@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
+import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -148,7 +149,34 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserJpaEntity> findAllById(Integer id) {
+	public List<UserJpaEntity> findAllById(Iterable<Integer> ids) {
+		log.info("findAllById(Iterable<Integer> ids)");
+
+		// String jpql_1 = "select u from UserJpaEntity u where u.id > :id";
+		String jpql_1 = "from UserJpaEntity as u where u.id in (:ids)";
+		TypedQuery<UserJpaEntity> query1 = entityManager.createQuery(jpql_1, UserJpaEntity.class);
+		query1.setParameter("ids", StringUtils.toString(ids));
+		List<UserJpaEntity> list1 = query1.getResultList();
+
+		String jpql_2 = "from UserJpaEntity as u where u.id in (?1)";
+		TypedQuery<UserJpaEntity> query2 = entityManager.createQuery(jpql_2, UserJpaEntity.class);
+		query2.setParameter(1, StringUtils.toString(ids));
+		List<UserJpaEntity> list2 = query2.getResultList();
+
+		String sql = "select * from user where id in (:ids)";
+		Query query = entityManager.createNativeQuery(sql, UserJpaEntity.class);
+		query.setParameter("ids", StringUtils.toString(ids));
+		List<UserJpaEntity> list = query.getResultList();
+
+		list1.forEach(e -> log.info("e========" + e));
+		list2.forEach(e -> log.info("e========" + e));
+		list.forEach(e -> log.info("e========" + e));
+		return list1;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<UserJpaEntity> findAllByGtId(Integer id) {
 		log.info("findAllById(Integer id)");
 
 		// String jpql_1 = "select u from UserJpaEntity u where u.id > :id";

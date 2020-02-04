@@ -8,9 +8,11 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.hibernate.SessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.UserSaveEvent;
@@ -111,6 +113,12 @@ public class AppConfig {// implements
 	// B.2.ORM
 	// B.2.1.MyBatis
 	// SqlSessionFactory和TransactionManager使用的DataSource要一致
+	@Bean("sqlSessionTemplate")
+	public SqlSessionTemplate sqlSessionTemplate() throws Exception {
+		SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(sqlSessionFactory(), ExecutorType.BATCH);
+		return sqlSessionTemplate;
+	}
+
 	@Bean("sqlSessionFactory")
 	public SqlSessionFactory sqlSessionFactory() throws Exception {
 		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();

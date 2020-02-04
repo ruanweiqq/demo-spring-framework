@@ -42,7 +42,9 @@ public interface CrudDao<T, ID> extends TransactionalDao<T> {
 
 	List<Map<String, Object>> findAllMap();
 
-	List<T> findAllById(ID id); // 6
+	List<T> findAllById(Iterable<ID> ids); // 6
+
+	List<T> findAllByGtId(ID id);
 
 	List<Map<String, Object>> findAllMapById(ID id);
 
@@ -59,7 +61,9 @@ public interface CrudDao<T, ID> extends TransactionalDao<T> {
 
 	List<Map<String, Object>> findAllMap2();
 
-	List<T> findAllById2(ID id);
+	List<T> findAllById2(Iterable<ID> ids);
+
+	List<T> findAllByGtId2(ID id);
 
 	List<Map<String, Object>> findAllMapById2(ID id);
 
