@@ -39,11 +39,11 @@ public interface CrudDao<T, ID> extends TransactionalDao<T> {
 
 	boolean existsById(ID id); // 4
 
-	List<T> findAll(); // 5
+	Iterable<T> findAll(); // 5
 
 	List<Map<String, Object>> findAllMap();
 
-	List<T> findAllById(Iterable<ID> ids); // 6
+	Iterable<T> findAllById(Iterable<ID> ids); // 6
 
 	List<T> findAllByGtId(ID id);
 
