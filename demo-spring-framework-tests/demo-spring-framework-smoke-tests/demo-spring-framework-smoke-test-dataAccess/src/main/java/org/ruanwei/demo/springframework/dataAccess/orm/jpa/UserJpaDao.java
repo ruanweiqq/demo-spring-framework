@@ -153,15 +153,17 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	public List<UserJpaEntity> findAllById(Iterable<Integer> ids) {
 		log.info("findAllById(Iterable<Integer> ids)");
 
-		// String jpql_1 = "select u from UserJpaEntity u where u.id > :id";
-		String jpql_1 = "from UserJpaEntity as u where u.id in (:ids)";
+		// 注意：Hibernate和JPA直接支持in语句，不用自己拼装
+		// String jpql_1 = "select u from UserJpaEntity u where u.id in :id";
+		String jpql_1 = "from UserJpaEntity as u where u.id in :ids";
 		TypedQuery<UserJpaEntity> query1 = entityManager.createQuery(jpql_1, UserJpaEntity.class);
-		query1.setParameter("ids", StringUtils.toString(ids));
+		query1.setParameter("ids", ids);
 		List<UserJpaEntity> list1 = query1.getResultList();
 
-		String jpql_2 = "from UserJpaEntity as u where u.id in (?1)";
+		//String jpql_2 = "from UserJpaEntity as u where u.id in (?1)";
+		String jpql_2 = "from UserJpaEntity as u where u.id in ?1";
 		TypedQuery<UserJpaEntity> query2 = entityManager.createQuery(jpql_2, UserJpaEntity.class);
-		query2.setParameter(1, StringUtils.toString(ids));
+		query2.setParameter(1, ids);
 		List<UserJpaEntity> list2 = query2.getResultList();
 
 		String sql = "select * from user where id in (:ids)";

@@ -13,8 +13,10 @@ import org.hibernate.query.Query;
 import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibernateEntity;
+import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <b>Hibernate Native API (Hibernate also implements JPA) :</b><br/>
@@ -74,13 +76,12 @@ public class UserHibernateDao extends DefaultCrudDao<UserHibernateEntity, Intege
 
 	// =====Read 1=====
 	@Override
-	public UserHibernateEntity findById(Integer id) {
+	public Optional<UserHibernateEntity> findById(Integer id) {
 		log.info("findById(Integer id)");
 
 		// session.load(UserEntity.class, id)返回的是代理
 		UserHibernateEntity userEntity = currentSession().get(UserHibernateEntity.class, id);
-		// return Optional.of(userEntity);
-		return userEntity;
+		return Optional.ofNullable(userEntity);
 	}
 
 	@Override
@@ -101,8 +102,35 @@ public class UserHibernateDao extends DefaultCrudDao<UserHibernateEntity, Intege
 	}
 
 	@Override
-	public List<UserHibernateEntity> findAllById(Integer id) {
-		log.info("findAllById(Integer id)");
+	public List<UserHibernateEntity> findAllById(Iterable<Integer> ids) {
+		log.info("findAllById(Iterable<Integer> ids)");
+
+		// 注意：Hibernate和JPA直接支持in语句，不用自己拼装
+		// String hql_1 = "select u from UserHibernateEntity u where u.id in :ids";
+		String hql_1 = "from UserHibernateEntity as u where u.id in :ids";
+		Query<UserHibernateEntity> query1 = currentSession().createQuery(hql_1, UserHibernateEntity.class);
+		query1.setParameter("ids", ids);
+		List<UserHibernateEntity> list1 = query1.getResultList();
+
+		String hql_2 = "from UserHibernateEntity as u where u.id in ?1";
+		Query<UserHibernateEntity> query2 = currentSession().createQuery(hql_2, UserHibernateEntity.class);
+		query2.setParameter(1, ids);
+		List<UserHibernateEntity> list2 = query2.getResultList();
+
+		String sql = "select * from user where id in (:ids)";
+		NativeQuery<UserHibernateEntity> query = currentSession().createNativeQuery(sql, UserHibernateEntity.class);
+		query.setParameter("ids", StringUtils.toString(ids));
+		List<UserHibernateEntity> list = query.getResultList();
+
+		list1.forEach(e -> log.info("e========" + e));
+		list2.forEach(e -> log.info("e========" + e));
+		list.forEach(e -> log.info("e========" + e));
+		return list1;
+	}
+
+	@Override
+	public List<UserHibernateEntity> findAllByGtId(Integer id) {
+		log.info("findAllByGtId(Integer id)");
 
 		// String hql_1 = "select u from UserHibernateEntity u where u.id > :id";
 		String hql_1 = "from UserHibernateEntity as u where u.id > :id";

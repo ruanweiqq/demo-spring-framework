@@ -111,15 +111,16 @@ public class UserHibernateDao extends DefaultCrudDao<UserHibernateEntity, Intege
 	public List<UserHibernateEntity> findAllById(Iterable<Integer> ids) {
 		log.info("findAllById(Iterable<Integer> ids)");
 
-		// String hql_1 = "select u from UserHibernateEntity u where u.id in (:ids)";
-		String hql_1 = "from UserHibernateEntity as u where u.id in (:ids)";
+		// 注意：Hibernate和JPA直接支持in语句，不用自己拼装
+		// String hql_1 = "select u from UserHibernateEntity u where u.id in :ids";
+		String hql_1 = "from UserHibernateEntity as u where u.id in :ids";
 		Query<UserHibernateEntity> query1 = currentSession().createQuery(hql_1, UserHibernateEntity.class);
-		query1.setParameter("ids", StringUtils.toString(ids));
+		query1.setParameter("ids", ids);
 		List<UserHibernateEntity> list1 = query1.getResultList();
 
-		String hql_2 = "from UserHibernateEntity as u where u.id in (?1)";
+		String hql_2 = "from UserHibernateEntity as u where u.id in ?1";
 		Query<UserHibernateEntity> query2 = currentSession().createQuery(hql_2, UserHibernateEntity.class);
-		query2.setParameter(1, StringUtils.toString(ids));
+		query2.setParameter(1, ids);
 		List<UserHibernateEntity> list2 = query2.getResultList();
 
 		String sql = "select * from user where id in (:ids)";
@@ -136,7 +137,7 @@ public class UserHibernateDao extends DefaultCrudDao<UserHibernateEntity, Intege
 	@Transactional(readOnly = true)
 	@Override
 	public List<UserHibernateEntity> findAllByGtId(Integer id) {
-		log.info("findAllById(Integer id)");
+		log.info("findAllByGtId(Integer id)");
 
 		// String hql_1 = "select u from UserHibernateEntity u where u.id > :id";
 		String hql_1 = "from UserHibernateEntity as u where u.id > :id";

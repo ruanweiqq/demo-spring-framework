@@ -67,7 +67,7 @@ public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 	};
 
 	@Override
-	public List<T> findAll2() {
+	public Iterable<T> findAll2() {
 		throw new UnsupportedOperationException();
 	};
 
@@ -76,7 +76,7 @@ public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 		throw new UnsupportedOperationException();
 	};
 
-	public List<T> findAllById2(Iterable<ID> ids) {
+	public Iterable<T> findAllById2(Iterable<ID> ids) {
 		throw new UnsupportedOperationException();
 	};
 

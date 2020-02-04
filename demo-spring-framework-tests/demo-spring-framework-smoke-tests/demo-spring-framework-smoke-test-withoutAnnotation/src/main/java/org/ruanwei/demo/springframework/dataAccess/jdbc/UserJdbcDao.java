@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -17,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
+import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -42,6 +44,7 @@ import org.springframework.jdbc.object.StoredProcedure;
 import org.springframework.jdbc.object.UpdatableSqlQuery;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * JdbcDaoSupport提供了setDataSource支持 NamedParameterJdbcTemplate支持IN表达式
@@ -78,6 +81,9 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 
 	private static final String sql_select_by_id2 = "select id, name, age, birthday from user where id = ?";
 	private static final String sql_select_by_id_namedParam2 = "select id, name, age, birthday from user where id = :id";
+	
+	private static final String sql_select_by_ids1 = "select * from user where id in (?)";
+	private static final String sql_select_by_ids_namedParam1 = "select * from user where id in (:ids)";
 
 	private static final String sql_select_by_gt_id1 = "select id, name, age, birthday from user where id > ?";
 	private static final String sql_select_by_gt_id_namedParam1 = "select id, name, age, birthday from user where id > :id";
@@ -181,7 +187,7 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 
 	// =====Read 1=====
 	@Override
-	public UserJdbcEntity findById(Integer id) {
+	public Optional<UserJdbcEntity> findById(Integer id) {
 		log.info("findById(Integer id)");
 
 		Map<String, Integer> paramMap = new HashMap<String, Integer>();
@@ -191,7 +197,7 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 				new BeanPropertyRowMapper<UserJdbcEntity>(UserJdbcEntity.class));
 
 		log.info("user=" + user);
-		return user;
+		return Optional.ofNullable(user);
 	}
 
 	@Override
@@ -233,10 +239,24 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 		columnMapList.forEach(columbMap -> columbMap.forEach((k, v) -> log.info(k + "=" + v)));
 		return columnMapList;
 	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public List<UserJdbcEntity> findAllById(Iterable<Integer> ids) {
+		log.info("findAllById(Iterable<Integer> ids)");
+
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("ids", StringUtils.toString(ids));
+		List<UserJdbcEntity> userList = namedParameterJdbcTemplate.query(sql_select_by_ids_namedParam1, paramMap,
+				new BeanPropertyRowMapper<UserJdbcEntity>(UserJdbcEntity.class));
+
+		userList.forEach(user -> log.info("user=" + user));
+		return userList;
+	}
 
 	@Override
-	public List<UserJdbcEntity> findAllById(Integer id) {
-		log.info("findAllById(Integer id)");
+	public List<UserJdbcEntity> findAllByGtId(Integer id) {
+		log.info("findAllByGtId(Integer id)");
 
 		Map<String, Integer> paramMap = new HashMap<String, Integer>();
 		paramMap.put("id", id);
@@ -275,13 +295,13 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 	// =====Read 2=====
 	// RowMapperResultSetExtractor & BeanPropertyRowMapper
 	@Override
-	public UserJdbcEntity findById2(Integer id) {
+	public Optional<UserJdbcEntity> findById2(Integer id) {
 		log.info("findById2(Integer id)");
 
 		UserJdbcEntity user = jdbcTemplate.queryForObject(sql_select_by_id1, new Object[] { id }, UserJdbcEntity.class);
 
 		log.info("user=" + user);
-		return user;
+		return Optional.ofNullable(user);
 	}
 
 	// RowMapperResultSetExtractor & ColumnMapRowMapper
@@ -323,7 +343,7 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 	}
 
 	@Override
-	public List<UserJdbcEntity> findAllById2(Integer id) {
+	public List<UserJdbcEntity> findAllByGtId2(Integer id) {
 		log.info("findAllById2(Integer id)");
 
 		List<UserJdbcEntity> userList = jdbcTemplate.queryForList(sql_select_by_gt_id2, new Object[] { id },

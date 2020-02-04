@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 一共有12个接口是必须实现的
@@ -31,34 +32,38 @@ public interface CrudDao<T, ID> extends TransactionalDao<T> {
 	int saveAll(Iterable<T> entities); // 2
 
 	// ==========Read 1==========
-	T findById(ID id); // 3
+	Optional<T> findById(ID id); // 3
 
 	Map<String, ?> findMapById(ID id);
 
 	boolean existsById(ID id); // 4
 
-	List<T> findAll(); // 5
+	Iterable<T> findAll(); // 5
 
 	List<Map<String, Object>> findAllMap();
 
-	List<T> findAllById(ID id); // 6
+	Iterable<T> findAllById(Iterable<ID> ids); // 6
+
+	List<T> findAllByGtId(ID id);
 
 	List<Map<String, Object>> findAllMapById(ID id);
 
 	long count(); // 7
 
 	// ==========Read 2 with JdbcTemplate==========
-	T findById2(ID id);
+	Optional<T> findById2(ID id);
 
 	Map<String, ?> findMapById2(ID id);
 
 	boolean existsById2(ID id);
 
-	List<T> findAll2();
+	Iterable<T> findAll2();
 
 	List<Map<String, Object>> findAllMap2();
 
-	List<T> findAllById2(ID id);
+	Iterable<T> findAllById2(Iterable<ID> id);
+
+	List<T> findAllByGtId2(ID id);
 
 	List<Map<String, Object>> findAllMapById2(ID id);
 
@@ -74,8 +79,8 @@ public interface CrudDao<T, ID> extends TransactionalDao<T> {
 
 	// ==========Delete==========
 	int deleteById(ID id); // 9
- 
-	int delete(T entity);  // 10
+
+	int delete(T entity); // 10
 
 	int delete(Map<String, ?> args);
 

@@ -52,7 +52,7 @@ public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 
 	// ==========Read 2 with JdbcTemplate==========
 	@Override
-	public T findById2(ID id) {
+	public Optional<T> findById2(ID id) {
 		throw new UnsupportedOperationException();
 	};
 
@@ -67,7 +67,7 @@ public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 	};
 
 	@Override
-	public List<T> findAll2() {
+	public Iterable<T> findAll2() {
 		throw new UnsupportedOperationException();
 	};
 
@@ -75,9 +75,13 @@ public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 	public List<Map<String, Object>> findAllMap2() {
 		throw new UnsupportedOperationException();
 	};
+	
+	public Iterable<T> findAllById2(Iterable<ID> ids) {
+		throw new UnsupportedOperationException();
+	};
 
 	@Override
-	public List<T> findAllById2(ID id) {
+	public List<T> findAllByGtId2(ID id) {
 		throw new UnsupportedOperationException();
 	};
 

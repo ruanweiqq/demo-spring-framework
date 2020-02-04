@@ -234,9 +234,9 @@ public class DataAccessTest {
 		userMyBatisMapper.delete(myBatisEntityForTransactionDelete1);
 		userMyBatisMapper.delete(myBatisEntityForTransactionDelete2);
 
-		Iterable<UserJdbcEntity> allUsers = userJdbcDao.findAll();
+		List<UserJdbcEntity> allUsers = (List<UserJdbcEntity>)userJdbcDao.findAll();
 		List<Map<String, Object>> allMapUsers = userJdbcDao.findAllMap();
-		//assertEquals(1, allUsers.size(), "size of all users should be 1");
+		assertEquals(1, allUsers.size(), "size of all users should be 1");
 		assertEquals(1, allMapUsers.size(), "size of all users should be 1");
 
 		long count = userJdbcDao.count();
@@ -387,7 +387,7 @@ public class DataAccessTest {
 		List<UserJpaEntity> users1 = (List<UserJpaEntity>)userJpaDao.findAllById(ids);
 		List<UserJpaEntity> users2 = userJpaDao.findAllByGtId(gt1);
 		assertEquals(2, allUsers.size(), "size of all users should be 2");
-		assertEquals(1, users1.size(), "size of users which id in 1,2,3 should be 1");
+		assertEquals(2, users1.size(), "size of users which id in 1,2,3 should be 1");
 		assertEquals(1, users2.size(), "size of users which id > 1 should be 1");
 		users2.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
 		users2.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));
@@ -443,7 +443,7 @@ public class DataAccessTest {
 		List<UserHibernateEntity> users1 = (List<UserHibernateEntity>)userHibernateDao.findAllById(ids);
 		List<UserHibernateEntity> users2 = userHibernateDao.findAllByGtId(gt1);
 		assertEquals(2, allUsers.size(), "size of all users should be 2");
-		assertEquals(1, users1.size(), "size of users which id in 1,2,3 should be 1");
+		assertEquals(2, users1.size(), "size of users which id in 1,2,3 should be 1");
 		assertEquals(1, users2.size(), "size of users which id > 1 should be 1");
 		users2.forEach(u -> assertTrue(u.getId() > 1, "user id should be > 1"));
 		users2.forEach(u -> assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp"));

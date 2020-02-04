@@ -2,6 +2,7 @@ package org.ruanwei.demo.springframework.dataAccess.orm.jpa;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -15,7 +16,9 @@ import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.DefaultCrudDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
+import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <b>Java Persistence API (Hibernate provide a implementation):</b><br/>
@@ -115,13 +118,13 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 
 	// =====Read 1=====
 	@Override
-	public UserJpaEntity findById(Integer id) {
+	public Optional<UserJpaEntity> findById(Integer id) {
 		log.info("findById(Integer id)");
 
 		// entityManager.getReference(UserEntity.class, id)返回的是代理
 		UserJpaEntity userEntity = entityManager.find(UserJpaEntity.class, id);
 		// return Optional.of(userEntity);
-		return userEntity;
+		return Optional.ofNullable(userEntity);
 	}
 
 	@Override
@@ -140,10 +143,38 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 		list.forEach(e -> log.info("e========" + e));
 		return list;
 	}
+	
+	@Override
+	public List<UserJpaEntity> findAllById(Iterable<Integer> ids) {
+		log.info("findAllById(Iterable<Integer> ids)");
+
+		// 注意：Hibernate和JPA直接支持in语句，不用自己拼装
+		// String jpql_1 = "select u from UserJpaEntity u where u.id in :id";
+		String jpql_1 = "from UserJpaEntity as u where u.id in :ids";
+		TypedQuery<UserJpaEntity> query1 = entityManager.createQuery(jpql_1, UserJpaEntity.class);
+		query1.setParameter("ids", ids);
+		List<UserJpaEntity> list1 = query1.getResultList();
+
+		//String jpql_2 = "from UserJpaEntity as u where u.id in (?1)";
+		String jpql_2 = "from UserJpaEntity as u where u.id in ?1";
+		TypedQuery<UserJpaEntity> query2 = entityManager.createQuery(jpql_2, UserJpaEntity.class);
+		query2.setParameter(1, ids);
+		List<UserJpaEntity> list2 = query2.getResultList();
+
+		String sql = "select * from user where id in (:ids)";
+		Query query = entityManager.createNativeQuery(sql, UserJpaEntity.class);
+		query.setParameter("ids", StringUtils.toString(ids));
+		List<UserJpaEntity> list = query.getResultList();
+
+		list1.forEach(e -> log.info("e========" + e));
+		list2.forEach(e -> log.info("e========" + e));
+		list.forEach(e -> log.info("e========" + e));
+		return list1;
+	}
 
 	@Override
-	public List<UserJpaEntity> findAllById(Integer id) {
-		log.info("findAllById(Integer id)");
+	public List<UserJpaEntity> findAllByGtId(Integer id) {
+		log.info("findAllByGtId(Integer id)");
 
 		// String jpql_1 = "select u from UserJpaEntity u where u.id > :id";
 		String jpql_1 = "from UserJpaEntity as u where u.id > :id";
