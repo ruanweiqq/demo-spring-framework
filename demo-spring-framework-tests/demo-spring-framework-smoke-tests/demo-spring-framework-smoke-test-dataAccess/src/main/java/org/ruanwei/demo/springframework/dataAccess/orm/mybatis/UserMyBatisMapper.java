@@ -1,6 +1,7 @@
 package org.ruanwei.demo.springframework.dataAccess.orm.mybatis;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -30,7 +31,7 @@ public interface UserMyBatisMapper extends CrudDao<UserMyBatisEntity, Integer> {
 	// ==========Read 1==========
 	@Select("select * from user where id = #{id}")
 	@Override
-	UserMyBatisEntity findById(@Param("id") Integer id);
+	Optional<UserMyBatisEntity> findById(@Param("id") Integer id);
 
 	@Override
 	default boolean existsById(@Param("id") Integer id) {

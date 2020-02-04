@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 一共有12个接口是必须实现的,除接口8外，剩下11个与org.springframework.data.repository.CrudRepository一致
@@ -32,7 +33,7 @@ public interface CrudDao<T, ID> extends TransactionalDao<T> {
 	int saveAll(Iterable<T> entities); // 2
 
 	// ==========Read 1==========
-	T findById(ID id); // 3
+	Optional<T> findById(ID id); // 3
 
 	Map<String, ?> findMapById(ID id);
 

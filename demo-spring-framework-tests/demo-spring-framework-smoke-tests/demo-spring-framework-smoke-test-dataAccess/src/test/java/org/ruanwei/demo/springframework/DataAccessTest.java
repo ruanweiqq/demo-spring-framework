@@ -61,8 +61,8 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 @ActiveProfiles("development")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
-//@SpringJUnitConfig(AppConfig.class)
+//@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
+@SpringJUnitConfig(AppConfig.class)
 public class DataAccessTest {
 	private static Log log = LogFactory.getLog(DataAccessTest.class);
 
@@ -253,7 +253,9 @@ public class DataAccessTest {
 		boolean exist = userJdbcDao.existsById(eq1);
 		assertTrue(exist, "user which id = 1 should exist");
 
-		UserJdbcEntity user = userJdbcDao.findById(eq1);
+		Optional<UserJdbcEntity> userOpt = userJdbcDao.findById(eq1);
+		assertTrue(userOpt.isPresent(), "user should be present");
+		UserJdbcEntity user = userOpt.orElse(null);
 		assertNotNull(user, "user which id = 1 should not be null");
 		assertEquals(1, user.getId(), "user id should be 1");
 		assertEquals(36, user.getAge(), "user age should be 36");
@@ -295,7 +297,9 @@ public class DataAccessTest {
 		userJdbcDao.updateAge(beanForUpdateOrDelete);
 		userJdbcDao.updateAge(mapForUpdateOrDelete);
 
-		UserJdbcEntity user = userJdbcDao.findById(eq1);
+		Optional<UserJdbcEntity> userOpt = userJdbcDao.findById(eq1);
+		assertTrue(userOpt.isPresent(), "user should be present");
+		UserJdbcEntity user = userOpt.orElse(null);
 		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
@@ -336,7 +340,9 @@ public class DataAccessTest {
 		// TODO:这个方法调用的SQL有问题
 		// userJdbcDao.batchUpdateAge(objArrayForBatchUpdateAndDelete);
 
-		UserJdbcEntity user = userJdbcDao.findById(eq1);
+		Optional<UserJdbcEntity> userOpt = userJdbcDao.findById(eq1);
+		assertTrue(userOpt.isPresent(), "user should be present");
+		UserJdbcEntity user = userOpt.orElse(null);
 		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
@@ -390,7 +396,9 @@ public class DataAccessTest {
 		// 2.更新age
 		userJpaDao.updateAge(jpaEntityForUpdateOrDelete);
 
-		UserJpaEntity user = userJpaDao.findById(eq1);
+		Optional<UserJpaEntity> userOpt = userJpaDao.findById(eq1);
+		assertTrue(userOpt.isPresent(), "user should be present");
+		UserJpaEntity user = userOpt.orElse(null);
 		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
@@ -444,7 +452,9 @@ public class DataAccessTest {
 		// 2.更新age
 		userHibernateDao.updateAge(hibernateEntityForUpdateOrDelete);
 
-		UserHibernateEntity user = userHibernateDao.findById(eq1);
+		Optional<UserHibernateEntity> userOpt = userHibernateDao.findById(eq1);
+		assertTrue(userOpt.isPresent(), "user should be present");
+		UserHibernateEntity user = userOpt.orElse(null);
 		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
@@ -499,7 +509,9 @@ public class DataAccessTest {
 		// 2.更新age
 		userMyBatisMapper.updateAge(myBatisEntityForUpdateOrDelete);
 
-		UserMyBatisEntity user = userMyBatisMapper.findById(eq1);
+		Optional<UserMyBatisEntity> userOpt = userMyBatisMapper.findById(eq1);
+		assertTrue(userOpt.isPresent(), "user should be present");
+		UserMyBatisEntity user = userOpt.orElse(null);
 		assertNotNull(user, "user should not be null");
 		assertEquals(1, user.getId(), "user id should be 1983-07-06");
 		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");

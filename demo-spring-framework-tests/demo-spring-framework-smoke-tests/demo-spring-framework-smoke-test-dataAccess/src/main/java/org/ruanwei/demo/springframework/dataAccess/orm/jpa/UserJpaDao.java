@@ -2,6 +2,7 @@ package org.ruanwei.demo.springframework.dataAccess.orm.jpa;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -119,13 +120,13 @@ public class UserJpaDao extends DefaultCrudDao<UserJpaEntity, Integer> {
 	// =====Read 1=====
 	@Transactional(readOnly = true)
 	@Override
-	public UserJpaEntity findById(Integer id) {
+	public Optional<UserJpaEntity> findById(Integer id) {
 		log.info("findById(Integer id)");
 
 		// entityManager.getReference(UserEntity.class, id)返回的是代理
 		UserJpaEntity userEntity = entityManager.find(UserJpaEntity.class, id);
 		// return Optional.of(userEntity);
-		return userEntity;
+		return Optional.ofNullable(userEntity);
 	}
 
 	@Transactional(readOnly = true)

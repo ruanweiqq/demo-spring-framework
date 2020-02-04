@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -188,7 +189,7 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 	// =====Read 1=====
 	@Transactional(readOnly = true)
 	@Override
-	public UserJdbcEntity findById(Integer id) {
+	public Optional<UserJdbcEntity> findById(Integer id) {
 		log.info("findById(Integer id)");
 
 		Map<String, Integer> paramMap = new HashMap<String, Integer>();
@@ -198,7 +199,7 @@ public class UserJdbcDao extends DefaultCrudDao<UserJdbcEntity, Integer> {
 				new BeanPropertyRowMapper<UserJdbcEntity>(UserJdbcEntity.class));
 
 		log.info("user=" + user);
-		return user;
+		return Optional.ofNullable(user);
 	}
 
 	@Transactional(readOnly = true)

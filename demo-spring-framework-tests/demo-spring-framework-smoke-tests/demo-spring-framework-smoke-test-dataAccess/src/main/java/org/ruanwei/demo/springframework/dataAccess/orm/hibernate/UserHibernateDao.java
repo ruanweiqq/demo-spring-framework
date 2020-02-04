@@ -78,13 +78,13 @@ public class UserHibernateDao extends DefaultCrudDao<UserHibernateEntity, Intege
 	// =====Read 1=====
 	@Transactional(readOnly = true)
 	@Override
-	public UserHibernateEntity findById(Integer id) {
+	public Optional<UserHibernateEntity> findById(Integer id) {
 		log.info("findById(Integer id)");
 
 		// session.load(UserEntity.class, id)返回的是代理
 		UserHibernateEntity userEntity = currentSession().get(UserHibernateEntity.class, id);
 		// return Optional.of(userEntity);
-		return userEntity;
+		return Optional.ofNullable(userEntity);
 	}
 
 	@Transactional(readOnly = true)
