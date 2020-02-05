@@ -17,12 +17,6 @@ public interface CrudDao<T, ID> {
 	// ==========Create==========
 	int save(T entity); // 1
 
-	int saveWithKey(T entity);
-
-	int save(String name, int age, Date birthday);
-
-	int saveWithKey(String name, int age, Date birthday);
-
 	int saveAll(Iterable<T> entities); // 2
 
 	// ==========Read==========
@@ -41,16 +35,10 @@ public interface CrudDao<T, ID> {
 	// ==========Update==========
 	int updateAge(T entity);
 
-	// JdbcTemplate
-	int updateAge(String name, int age, Date birthday);
-
 	// ==========Delete==========
 	int deleteById(ID id); // 8
 
 	int delete(T entity); // 9
-
-	// JdbcTemplate
-	int delete(String name, int age, Date birthday);
 
 	int deleteAll(Iterable<T> entities); // 10
 

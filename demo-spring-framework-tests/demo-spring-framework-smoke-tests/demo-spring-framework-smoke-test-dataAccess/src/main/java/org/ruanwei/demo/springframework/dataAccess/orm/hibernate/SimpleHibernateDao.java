@@ -62,11 +62,6 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 	}
 
 	@Override
-	public int save(String name, int age, Date birthday) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public int saveAll(Iterable<T> users) {
 		log.info("saveAll(Iterable<T> users)");
 
@@ -76,16 +71,6 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 			rows += row;
 		}
 		return rows;
-	}
-
-	@Override
-	public int saveWithKey(T entity) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int saveWithKey(String name, int age, Date birthday) {
-		throw new UnsupportedOperationException();
 	}
 
 	// =====Read 1=====
@@ -200,11 +185,6 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 		return query.executeUpdate();
 	}
 
-	@Override
-	public int updateAge(String name, int age, Date birthday) {
-		throw new UnsupportedOperationException();
-	};
-
 	// =====Delete=====
 	@Override
 	public int deleteById(ID id) {
@@ -249,11 +229,6 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 		Query<?> query = currentSession().createQuery("delete UserHibernateEntity u");
 		return query.executeUpdate();
 	}
-
-	@Override
-	public int delete(String name, int age, Date birthday) {
-		throw new UnsupportedOperationException();
-	};
 
 	// 1.事务是默认在抛出运行时异常进行回滚的，因此不能在事务方法中进行try-catch捕获
 	// 2.事务是通过代理目标对象实现的，因此只有调用代理的事务方法才生效，调用目标对象(例如同一类中的其他方法)没有事务
