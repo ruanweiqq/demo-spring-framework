@@ -65,7 +65,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Transactional("jpaTransactionManager")
-public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
+public class SimpleJpaDao<T, ID> implements JpaDao<T, ID> {
 	private static Log log = LogFactory.getLog(SimpleJpaDao.class);
 
 	// @PersistenceContext inject a shared and thread-safe EntityManager proxy.
@@ -95,25 +95,25 @@ public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
 
 	// ==========Create==========
 	@Override
-	public int save(UserJpaEntity user) {
-		log.info("save(UserJpaEntity user)");
+	public int save(T user) {
+		log.info("save(T user)");
 
 		entityManager.persist(user);
 		return 0;
 	}
 
 	@Override
-	public int saveAll(Iterable<UserJpaEntity> users) {
-		log.info("saveAll(Iterable<UserJpaEntity> users)");
+	public int saveAll(Iterable<T> users) {
+		log.info("saveAll(Iterable<T> users)");
 
 		int rows = 0;
-		for (UserJpaEntity user : users) {
+		for (T user : users) {
 			int row = save(user);
 			rows += row;
 		}
 		return rows;
 	}
-	
+
 	@Override
 	public int save(String name, int age, Date birthday) {
 		throw new UnsupportedOperationException();
@@ -123,38 +123,38 @@ public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
 	public int saveWithKey(String name, int age, Date birthday) {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	@Override
-	public int saveWithKey(UserJpaEntity entity) {
+	public int saveWithKey(T entity) {
 		throw new UnsupportedOperationException();
 	}
 
 	// =====Read 1=====
 	@Transactional(readOnly = true)
 	@Override
-	public Optional<UserJpaEntity> findById(Integer id) {
-		log.info("findById(Integer id)");
+	public Optional<T> findById(ID id) {
+		log.info("findById(ID id)");
 
 		// entityManager.getReference(UserEntity.class, id)返回的是代理
-		UserJpaEntity userEntity = entityManager.find(UserJpaEntity.class, id);
+		T userEntity = entityManager.find(getTClass(), id);
 		// return Optional.of(userEntity);
 		return Optional.ofNullable(userEntity);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public boolean existsById(Integer id) {
-		log.info("existsById(Integer id)");
+	public boolean existsById(ID id) {
+		log.info("existsById(ID id)");
 		return findById(id) != null;
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserJpaEntity> findAll() {
+	public List<T> findAll() {
 		log.info("findAll()");
 
-		TypedQuery<UserJpaEntity> query = entityManager.createNamedQuery("findAll", UserJpaEntity.class);
-		List<UserJpaEntity> list = query.getResultList();
+		TypedQuery<T> query = entityManager.createNamedQuery("findAll", getTClass());
+		List<T> list = query.getResultList();
 
 		list.forEach(e -> log.info("e========" + e));
 		return list;
@@ -162,26 +162,26 @@ public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserJpaEntity> findAllById(Iterable<Integer> ids) {
-		log.info("findAllById(Iterable<Integer> ids)");
+	public List<T> findAllById(Iterable<ID> ids) {
+		log.info("findAllById(Iterable<ID> ids)");
 
 		// 注意：Hibernate和JPA直接支持in语句，不用自己拼装
 		// String jpql_1 = "select u from UserJpaEntity u where u.id in :id";
 		String jpql_1 = "from UserJpaEntity as u where u.id in :ids";
-		TypedQuery<UserJpaEntity> query1 = entityManager.createQuery(jpql_1, UserJpaEntity.class);
+		TypedQuery<T> query1 = entityManager.createQuery(jpql_1, getTClass());
 		query1.setParameter("ids", ids);
-		List<UserJpaEntity> list1 = query1.getResultList();
+		List<T> list1 = query1.getResultList();
 
-		//String jpql_2 = "from UserJpaEntity as u where u.id in (?1)";
+		// String jpql_2 = "from UserJpaEntity as u where u.id in (?1)";
 		String jpql_2 = "from UserJpaEntity as u where u.id in ?1";
-		TypedQuery<UserJpaEntity> query2 = entityManager.createQuery(jpql_2, UserJpaEntity.class);
+		TypedQuery<T> query2 = entityManager.createQuery(jpql_2, getTClass());
 		query2.setParameter(1, ids);
-		List<UserJpaEntity> list2 = query2.getResultList();
+		List<T> list2 = query2.getResultList();
 
 		String sql = "select * from user where id in (:ids)";
 		Query query = entityManager.createNativeQuery(sql, UserJpaEntity.class);
 		query.setParameter("ids", StringUtils.toString(ids));
-		List<UserJpaEntity> list = query.getResultList();
+		List<T> list = query.getResultList();
 
 		list1.forEach(e -> log.info("e========" + e));
 		list2.forEach(e -> log.info("e========" + e));
@@ -191,24 +191,24 @@ public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserJpaEntity> findAllByGtId(Integer id) {
-		log.info("findAllById(Integer id)");
+	public List<T> findAllByGtId(ID id) {
+		log.info("findAllById(ID id)");
 
 		// String jpql_1 = "select u from UserJpaEntity u where u.id > :id";
 		String jpql_1 = "from UserJpaEntity as u where u.id > :id";
-		TypedQuery<UserJpaEntity> query1 = entityManager.createQuery(jpql_1, UserJpaEntity.class);
+		TypedQuery<T> query1 = entityManager.createQuery(jpql_1, getTClass());
 		query1.setParameter("id", id);
-		List<UserJpaEntity> list1 = query1.getResultList();
+		List<T> list1 = query1.getResultList();
 
 		String jpql_2 = "from UserJpaEntity as u where u.id > ?1";
-		TypedQuery<UserJpaEntity> query2 = entityManager.createQuery(jpql_2, UserJpaEntity.class);
+		TypedQuery<T> query2 = entityManager.createQuery(jpql_2, getTClass());
 		query2.setParameter(1, id);
-		List<UserJpaEntity> list2 = query2.getResultList();
+		List<T> list2 = query2.getResultList();
 
 		String sql = "select * from user where id > :id";
 		Query query = entityManager.createNativeQuery(sql, UserJpaEntity.class);
 		query.setParameter("id", id);
-		List<UserJpaEntity> list = query.getResultList();
+		List<T> list = query.getResultList();
 
 		list1.forEach(e -> log.info("e========" + e));
 		list2.forEach(e -> log.info("e========" + e));
@@ -227,21 +227,22 @@ public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
 
 	// =====Update=====
 	@Override
-	public int updateAge(UserJpaEntity user) {
-		log.info("updateAge(UserJpaEntity user)");
+	public int updateAge(T entity) {
+		log.info("updateAge(T entity)");
 
 		// String sql = "update user u set u.age = :age where u.name = :name and
 		// u.birthday = :birthday";
 		// Query query = entityManager.createNativeQuery(sql, UserJpaEntity.class);
 		String jpql = "update UserJpaEntity u set u.age = :age where u.name = :name and u.birthday = :birthday";
 		Query query = entityManager.createQuery(jpql);
+		UserJpaEntity user = (UserJpaEntity) entity;
 		query.setParameter("age", user.getAge());
 		query.setParameter("name", user.getName());
 		query.setParameter("birthday", user.getBirthday());
 
 		return query.executeUpdate();
 	}
-	
+
 	@Override
 	public int updateAge(String name, int age, Date birthday) {
 		throw new UnsupportedOperationException();
@@ -249,8 +250,8 @@ public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
 
 	// =====Delete=====
 	@Override
-	public int deleteById(Integer id) {
-		log.info("deleteById(Integer id)");
+	public int deleteById(ID id) {
+		log.info("deleteById(ID id)");
 
 		// String sql = "delete from user u where u.id = :id";
 		// Query query = entityManager.createNativeQuery(sql, UserJpaEntity.class);
@@ -262,18 +263,18 @@ public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
 	}
 
 	@Override
-	public int delete(UserJpaEntity entity) {
-		log.info("delete(UserJpaEntity user)");
+	public int delete(T entity) {
+		log.info("delete(T user)");
 		entityManager.remove(entity);
 		return 0;
 	}
 
 	@Override
-	public int deleteAll(Iterable<UserJpaEntity> users) {
-		log.info("deleteAll(Iterable<UserJpaEntity> users");
+	public int deleteAll(Iterable<T> users) {
+		log.info("deleteAll(Iterable<T> users");
 
 		int rows = 0;
-		for (UserJpaEntity user : users) {
+		for (T user : users) {
 			int row = delete(user);
 			rows += row;
 		}
@@ -289,7 +290,7 @@ public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
 		Query query = entityManager.createQuery("delete UserJpaEntity u");
 		return query.executeUpdate();
 	}
-	
+
 	@Override
 	public int delete(String name, int age, Date birthday) {
 		throw new UnsupportedOperationException();
@@ -301,8 +302,8 @@ public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
 	// 4.事务应该应用在业务逻辑层而不是数据访问层，因此准备重构
 	@Transactional(rollbackFor = ArithmeticException.class)
 	@Override
-	public void transactionalMethod1(UserJpaEntity user) {
-		log.info("transactionalMethod1(UserJpaEntity user)" + user);
+	public void transactionalMethod1(T user) {
+		log.info("transactionalMethod1(T user)" + user);
 
 		save(user);
 
@@ -313,14 +314,14 @@ public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
 	}
 
 	@Override
-	public void transactionalMethod2(UserJpaEntity user) {
-		log.info("transactionalMethod2(UserJpaEntity user)" + user);
+	public void transactionalMethod2(T user) {
+		log.info("transactionalMethod2(T user)" + user);
 		throw new UnsupportedOperationException();
 	}
 
 	// ======================================================
 	@Transactional(readOnly = true)
-	//@Override
+	// @Override
 	public boolean exists(UserJpaEntity entity) {
 		return entityManager.contains(entity);
 	}
