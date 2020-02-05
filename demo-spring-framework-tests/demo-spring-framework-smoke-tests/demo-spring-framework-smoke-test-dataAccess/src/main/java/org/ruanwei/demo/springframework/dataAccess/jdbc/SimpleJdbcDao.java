@@ -77,19 +77,14 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
 
-	private static final String sql_select_by_id1 = "select * from user where id = ?";
 	private static final String sql_select_by_id_namedParam1 = "select * from user where id = :id";
 
-	private static final String sql_select_by_id2 = "select id, name, age, birthday from user where id = ?";
 	private static final String sql_select_by_id_namedParam2 = "select id, name, age, birthday from user where id = :id";
 
-	private static final String sql_select_by_ids1 = "select * from user where id in (?)";
 	private static final String sql_select_by_ids_namedParam1 = "select * from user where id in (:ids)";
 
-	private static final String sql_select_by_gt_id1 = "select id, name, age, birthday from user where id > ?";
 	private static final String sql_select_by_gt_id_namedParam1 = "select id, name, age, birthday from user where id > :id";
 
-	private static final String sql_select_by_gt_id2 = "select * from user where id > ?";
 	private static final String sql_select_by_gt_id_namedParam2 = "select * from user where id > :id";
 
 	private static final String sql_select_all1 = "select * from user";

@@ -1,7 +1,6 @@
 package org.ruanwei.demo.springframework.dataAccess;
 
 import java.sql.Date;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -34,7 +33,7 @@ public interface CrudDao<T, ID> {
 
 	Iterable<T> findAllById(Iterable<ID> ids); // 6
 
-	List<T> findAllByGtId(ID id);
+	Iterable<T> findAllByGtId(ID id);
 
 	long count(); // 7
 

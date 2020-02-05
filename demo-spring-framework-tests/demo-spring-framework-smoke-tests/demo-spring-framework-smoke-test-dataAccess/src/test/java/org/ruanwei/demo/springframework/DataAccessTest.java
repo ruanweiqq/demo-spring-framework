@@ -286,8 +286,8 @@ public class DataAccessTest {
 		userJdbcDao.save(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
 		userJdbcDao.saveWithKey(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
 
-		List<UserJdbcEntity> allUsers = (List<UserJdbcEntity>)userJdbcDao.findAll();
-		List<UserJdbcEntity> users1 = (List<UserJdbcEntity>)userJdbcDao.findAllById(ids);
+		List<UserJdbcEntity> allUsers = userJdbcDao.findAll();
+		List<UserJdbcEntity> users1 = userJdbcDao.findAllById(ids);
 		List<UserJdbcEntity> users2 = userJdbcDao.findAllByGtId(gt1);
 		assertTrue(allUsers.size() > 2, "size of all users should be > 2");
 		assertEquals(1, users1.size(), "size of users which id in 1,2,3 should be 1");
@@ -326,8 +326,8 @@ public class DataAccessTest {
 		userJdbcDao.batchSave(mapArrayForBatchCreate);
 		userJdbcDao.batchSave(objArrayForBatchCreate);
 
-		List<UserJdbcEntity> allUsers = (List<UserJdbcEntity>)userJdbcDao.findAll();
-		List<UserJdbcEntity> users1 = (List<UserJdbcEntity>)userJdbcDao.findAllById(ids);
+		List<UserJdbcEntity> allUsers = userJdbcDao.findAll();
+		List<UserJdbcEntity> users1 = userJdbcDao.findAllById(ids);
 		List<UserJdbcEntity> users2 = userJdbcDao.findAllByGtId(gt1);
 		assertTrue(allUsers.size() > 1, "size of all users should be > 1");
 		assertEquals(1, users1.size(), "size of users which id in 1,2,3 should be 1");
@@ -386,8 +386,8 @@ public class DataAccessTest {
 		// 1.创建
 		userJpaDao.save(jpaEntityForCreate);
 
-		List<UserJpaEntity> allUsers = (List<UserJpaEntity>)userJpaDao.findAll();
-		List<UserJpaEntity> users1 = (List<UserJpaEntity>)userJpaDao.findAllById(ids);
+		List<UserJpaEntity> allUsers = userJpaDao.findAll();
+		List<UserJpaEntity> users1 = userJpaDao.findAllById(ids);
 		List<UserJpaEntity> users2 = userJpaDao.findAllByGtId(gt1);
 		assertEquals(2, allUsers.size(), "size of all users should be 2");
 		assertEquals(2, users1.size(), "size of users which id in 1,2,3 should be 1");
@@ -442,8 +442,8 @@ public class DataAccessTest {
 		// 1.创建
 		userHibernateDao.save(hibernateEntityForCreate);
 
-		List<UserHibernateEntity> allUsers = (List<UserHibernateEntity>)userHibernateDao.findAll();
-		List<UserHibernateEntity> users1 = (List<UserHibernateEntity>)userHibernateDao.findAllById(ids);
+		List<UserHibernateEntity> allUsers = userHibernateDao.findAll();
+		List<UserHibernateEntity> users1 = userHibernateDao.findAllById(ids);
 		List<UserHibernateEntity> users2 = userHibernateDao.findAllByGtId(gt1);
 		assertEquals(2, allUsers.size(), "size of all users should be 2");
 		assertEquals(2, users1.size(), "size of users which id in 1,2,3 should be 1");
@@ -499,8 +499,8 @@ public class DataAccessTest {
 		// 1.创建
 		userMyBatisMapper.save(myBatisEntityForCreate);
 
-		List<UserMyBatisEntity> allUsers = (List<UserMyBatisEntity>)userMyBatisMapper.findAll();
-		List<UserMyBatisEntity> users1 = (List<UserMyBatisEntity>)userMyBatisMapper.findAllById(ids);
+		List<UserMyBatisEntity> allUsers = userMyBatisMapper.findAll();
+		List<UserMyBatisEntity> users1 = userMyBatisMapper.findAllById(ids);
 		List<UserMyBatisEntity> users2 = userMyBatisMapper.findAllByGtId(gt1);
 		assertEquals(2, allUsers.size(), "size of all users should be 2");
 		assertEquals(1, users1.size(), "size of users which id in 1,2,3 should be 1");
