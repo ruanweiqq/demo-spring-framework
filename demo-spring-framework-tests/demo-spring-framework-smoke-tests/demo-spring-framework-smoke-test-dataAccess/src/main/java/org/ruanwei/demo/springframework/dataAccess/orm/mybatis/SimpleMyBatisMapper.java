@@ -84,6 +84,10 @@ public interface SimpleMyBatisMapper<T, ID> extends MyBatisMapper<T, ID> {
 	@Transactional(rollbackFor = ArithmeticException.class)
 	default void transactionalMethod1(T entity1, T entity2) {
 		save(entity1);
+	}
+
+	default void transactionalMethod1(T user) {
+		save(user);
 
 		// transactionalMethod2()
 
