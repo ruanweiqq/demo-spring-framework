@@ -1,5 +1,6 @@
 package org.ruanwei.demo.springframework.dataAccess.orm.hibernate;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Transactional("hibernateTransactionManager")
-public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Integer> {
+public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 	private static Log log = LogFactory.getLog(SimpleHibernateDao.class);
 
 	private SessionFactory sessionFactory; // thread-safe, expensive to create
@@ -55,8 +56,8 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 
 	// ==========Create==========
 	@Override
-	public int save(UserHibernateEntity entity) {
-		log.info("save(UserHibernateEntity user)");
+	public int save(T entity) {
+		log.info("save(T user)");
 		return (int) currentSession().save(entity);
 	}
 
@@ -66,11 +67,11 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 	}
 
 	@Override
-	public int saveAll(Iterable<UserHibernateEntity> users) {
-		log.info("saveAll(Iterable<UserHibernateEntity> users)");
+	public int saveAll(Iterable<T> users) {
+		log.info("saveAll(Iterable<T> users)");
 
 		int rows = 0;
-		for (UserHibernateEntity user : users) {
+		for (T user : users) {
 			int row = save(user);
 			rows += row;
 		}
@@ -78,7 +79,7 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 	}
 
 	@Override
-	public int saveWithKey(UserHibernateEntity entity) {
+	public int saveWithKey(T entity) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -90,55 +91,53 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 	// =====Read 1=====
 	@Transactional(readOnly = true)
 	@Override
-	public Optional<UserHibernateEntity> findById(Integer id) {
-		log.info("findById(Integer id)");
+	public Optional<T> findById(ID id) {
+		log.info("findById(ID id)");
 
 		// session.load(UserEntity.class, id)返回的是代理
-		UserHibernateEntity userEntity = currentSession().get(UserHibernateEntity.class, id);
-		// return Optional.of(userEntity);
+		T userEntity = currentSession().get(getTClass(), (Serializable)id);
 		return Optional.ofNullable(userEntity);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public boolean existsById(Integer id) {
-		log.info("existsById(Integer id)");
+	public boolean existsById(ID id) {
+		log.info("existsById(ID id)");
 		return findById(id) != null;
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserHibernateEntity> findAll() {
+	public List<T> findAll() {
 		log.info("findAll()");
 
-		Query<UserHibernateEntity> query = currentSession().createNamedQuery("hibernate.findAll",
-				UserHibernateEntity.class);
-		List<UserHibernateEntity> result = query.list();
+		Query<T> query = currentSession().createNamedQuery("hibernate.findAll", getTClass());
+		List<T> result = query.list();
 		result.forEach(e -> log.info("e========" + e));
 		return result;
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserHibernateEntity> findAllById(Iterable<Integer> ids) {
-		log.info("findAllById(Iterable<Integer> ids)");
+	public List<T> findAllById(Iterable<ID> ids) {
+		log.info("findAllById(Iterable<ID> ids)");
 
 		// 注意：Hibernate和JPA直接支持in语句，不用自己拼装
 		// String hql_1 = "select u from UserHibernateEntity u where u.id in :ids";
 		String hql_1 = "from UserHibernateEntity as u where u.id in :ids";
-		Query<UserHibernateEntity> query1 = currentSession().createQuery(hql_1, UserHibernateEntity.class);
+		Query<T> query1 = currentSession().createQuery(hql_1, getTClass());
 		query1.setParameter("ids", ids);
-		List<UserHibernateEntity> list1 = query1.getResultList();
+		List<T> list1 = query1.getResultList();
 
 		String hql_2 = "from UserHibernateEntity as u where u.id in ?1";
-		Query<UserHibernateEntity> query2 = currentSession().createQuery(hql_2, UserHibernateEntity.class);
+		Query<T> query2 = currentSession().createQuery(hql_2, getTClass());
 		query2.setParameter(1, ids);
-		List<UserHibernateEntity> list2 = query2.getResultList();
+		List<T> list2 = query2.getResultList();
 
 		String sql = "select * from user where id in (:ids)";
-		NativeQuery<UserHibernateEntity> query = currentSession().createNativeQuery(sql, UserHibernateEntity.class);
+		NativeQuery<T> query = currentSession().createNativeQuery(sql, getTClass());
 		query.setParameter("ids", StringUtils.toString(ids));
-		List<UserHibernateEntity> list = query.getResultList();
+		List<T> list = query.getResultList();
 
 		list1.forEach(e -> log.info("e========" + e));
 		list2.forEach(e -> log.info("e========" + e));
@@ -148,24 +147,24 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserHibernateEntity> findAllByGtId(Integer id) {
-		log.info("findAllByGtId(Integer id)");
+	public List<T> findAllByGtId(ID id) {
+		log.info("findAllByGtId(ID id)");
 
 		// String hql_1 = "select u from UserHibernateEntity u where u.id > :id";
 		String hql_1 = "from UserHibernateEntity as u where u.id > :id";
-		Query<UserHibernateEntity> query1 = currentSession().createQuery(hql_1, UserHibernateEntity.class);
+		Query<T> query1 = currentSession().createQuery(hql_1, getTClass());
 		query1.setParameter("id", id);
-		List<UserHibernateEntity> list1 = query1.getResultList();
+		List<T> list1 = query1.getResultList();
 
 		String hql_2 = "from UserHibernateEntity as u where u.id > ?1";
-		Query<UserHibernateEntity> query2 = currentSession().createQuery(hql_2, UserHibernateEntity.class);
+		Query<T> query2 = currentSession().createQuery(hql_2, getTClass());
 		query2.setParameter(1, id);
-		List<UserHibernateEntity> list2 = query2.getResultList();
+		List<T> list2 = query2.getResultList();
 
 		String sql = "select * from user where id > :id";
-		NativeQuery<UserHibernateEntity> query = currentSession().createNativeQuery(sql, UserHibernateEntity.class);
+		NativeQuery<T> query = currentSession().createNativeQuery(sql, getTClass());
 		query.setParameter("id", id);
-		List<UserHibernateEntity> list = query.getResultList();
+		List<T> list = query.getResultList();
 
 		list1.forEach(e -> log.info("e========" + e));
 		list2.forEach(e -> log.info("e========" + e));
@@ -184,8 +183,8 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 
 	// =====Update=====
 	@Override
-	public int updateAge(UserHibernateEntity user) {
-		log.info("updateAge(UserHibernateEntity user)");
+	public int updateAge(T entity) {
+		log.info("updateAge(T entity)");
 
 		// String sql = "update user u set u.age = :age where u.name = :name and
 		// u.birthday = :birthday";
@@ -193,6 +192,7 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 		// UserHibernateEntity.class);
 		String hql = "update UserHibernateEntity u set u.age = :age where u.name = :name and u.birthday = :birthday";
 		Query<?> query = currentSession().createQuery(hql);
+		UserHibernateEntity user = (UserHibernateEntity)entity;
 		query.setParameter("age", user.getAge());
 		query.setParameter("name", user.getName());
 		query.setParameter("birthday", user.getBirthday());
@@ -207,8 +207,8 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 
 	// =====Delete=====
 	@Override
-	public int deleteById(Integer id) {
-		log.info("deleteById(Integer id)");
+	public int deleteById(ID id) {
+		log.info("deleteById(ID id)");
 
 		// String sql = "delete from user u where u.id = :id";
 		// NativeQuery query = currentSession().createNativeQuery(sql,
@@ -221,18 +221,18 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 	}
 
 	@Override
-	public int delete(UserHibernateEntity user) {
-		log.info("delete(UserHibernateEntity user)");
+	public int delete(T user) {
+		log.info("delete(T user)");
 		currentSession().delete(user);
 		return 0;
 	}
 
 	@Override
-	public int deleteAll(Iterable<UserHibernateEntity> users) {
-		log.info("deleteAll(Iterable<UserHibernateEntity> users)");
+	public int deleteAll(Iterable<T> users) {
+		log.info("deleteAll(Iterable<T> users)");
 
 		int rows = 0;
-		for (UserHibernateEntity user : users) {
+		for (T user : users) {
 			int row = delete(user);
 			rows += row;
 		}
@@ -261,8 +261,8 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 	// 4.事务应该应用在业务逻辑层而不是数据访问层，因此准备重构
 	@Transactional(rollbackFor = ArithmeticException.class)
 	@Override
-	public void transactionalMethod1(UserHibernateEntity user) {
-		log.info("transactionalMethod1(UserHibernateEntity user)" + user);
+	public void transactionalMethod1(T user) {
+		log.info("transactionalMethod1(T user)" + user);
 
 		save(user);
 
@@ -274,41 +274,32 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 	}
 
 	@Override
-	public void transactionalMethod2(UserHibernateEntity user) {
-		log.info("transactionalMethod2(UserHibernateEntity user)" + user);
+	public void transactionalMethod2(T user) {
+		log.info("transactionalMethod2(T user)" + user);
 		throw new UnsupportedOperationException();
 	}
 
 	// ======================================================
 
 	@Transactional(readOnly = true)
-	public Optional<UserHibernateEntity> findById3(Integer id) {
-		return currentSession().byId(UserHibernateEntity.class).loadOptional(id);
+	public Optional<T> findById3(Integer id) {
+		return currentSession().byId(getTClass()).loadOptional(id);
 	}
 
 	@Transactional(readOnly = true)
 	// @Override
-	public boolean exists(UserHibernateEntity entity) {
+	public boolean exists(T entity) {
 		return currentSession().contains(entity);
 	}
 
-	@Transactional(readOnly = true)
 	// @Override
-	public List<UserHibernateEntity> findAllByIds(List<Integer> ids) {
-		Query<UserHibernateEntity> query = currentSession()
-				.createQuery("select u from UserHibernateEntity u where u.id in :ids", UserHibernateEntity.class);
-		query.setParameter("ids", ids);
-		return query.getResultList();
-	}
-
-	// @Override
-	public int update(UserHibernateEntity entity) {
+	public int update(T entity) {
 		currentSession().update(entity);
 		return 0;
 	}
 
 	// @Override
-	public int saveOrUpdate(UserHibernateEntity entity) {
+	public int saveOrUpdate(T entity) {
 		currentSession().saveOrUpdate(entity);
 		return 0;
 	}
