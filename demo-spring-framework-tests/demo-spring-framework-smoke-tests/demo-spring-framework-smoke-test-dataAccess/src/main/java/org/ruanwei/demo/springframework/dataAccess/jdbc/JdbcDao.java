@@ -6,6 +6,7 @@ import java.util.Map;
 import org.ruanwei.demo.springframework.dataAccess.BatchDao;
 import org.ruanwei.demo.springframework.dataAccess.CrudDao;
 import org.ruanwei.demo.springframework.dataAccess.MapDao;
+import org.ruanwei.demo.springframework.dataAccess.ExampleDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 
 /**
@@ -15,10 +16,8 @@ import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
  * @param <T>
  * @param <ID>
  */
-public interface JdbcDao<T, ID> extends CrudDao<T, ID>, BatchDao<T, ID>, MapDao<ID>, TransactionalDao<T> {
+public interface JdbcDao<T, ID> extends CrudDao<T, ID>, BatchDao<T, ID>, MapDao<ID>, ExampleDao, TransactionalDao<T> {
 
-	int saveWithKey(T entity);
-	    
 	// ============将CrudDao中的Iterable具体化为List=============
 	@Override
 	List<T> findAll();
@@ -33,7 +32,9 @@ public interface JdbcDao<T, ID> extends CrudDao<T, ID>, BatchDao<T, ID>, MapDao<
 	@Override
 	List<Map<String, Object>> findAllMap();
 
-	@Override
-	List<Map<String, Object>> findAllMapById(ID id);
+	// @Override
+	// List<Map<String, Object>> findAllMapById(Iterable<ID> ids);
 
+	@Override
+	List<Map<String, Object>> findAllMapByGtId(ID id);
 }

@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Transactional(transactionManager = "transactionManager", propagation = Propagation.REQUIRES_NEW)
-@Repository
+@Repository("userTransactionnalJdbcDao")
 public class UserTransactionJdbcDao implements TransactionalDao<UserJdbcEntity> {
 	private static Log log = LogFactory.getLog(UserTransactionJdbcDao.class);
 
@@ -38,8 +38,8 @@ public class UserTransactionJdbcDao implements TransactionalDao<UserJdbcEntity> 
 
 	// ====================transaction====================
 	@Override
-	public void transactionalMethod1(UserJdbcEntity user) {
-		log.info("transactionalMethod1(UserJdbcEntity user)" + user);
+	public void transactionalMethod1(UserJdbcEntity user1,UserJdbcEntity user2) {
+		log.info("transactionalMethod1(UserJdbcEntity user1,UserJdbcEntity user2)" + user1);
 		throw new UnsupportedOperationException();
 	}
 

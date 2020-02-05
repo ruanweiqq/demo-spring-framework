@@ -17,9 +17,9 @@ public interface BatchDao<T, ID> {
 	// ==========Batch Create==========
 	public int[] batchSave(T[] entities);
 
-	public int[] batchSave(Map<String, Object>[] batchArgs);
-
 	public int[] batchSave(Collection<T> entities);
+	
+	public int[] batchSave(Map<String, Object>[] batchArgs);
 
 	// JdbcTemplate
 	public int[] batchSave(List<Object[]> batchArgs);

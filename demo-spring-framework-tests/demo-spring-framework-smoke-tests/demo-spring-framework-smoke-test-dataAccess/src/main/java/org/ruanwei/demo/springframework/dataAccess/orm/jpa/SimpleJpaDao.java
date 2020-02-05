@@ -79,7 +79,7 @@ public class SimpleJpaDao<T, ID> implements JpaDao<T, ID> {
 	// private PersistenceUnitUtil persistenceUnitUtil;
 
 	@Autowired
-	private TransactionalDao<UserJpaEntity> userTransactionnalJpaDao;
+	private TransactionalDao<T> userTransactionnalJpaDao;
 
 	// TODO:这里@Qualifier和@Autowired都不生效，因此使用了@Primary，使其注入SessionFactory
 	@PersistenceUnit
@@ -100,6 +100,11 @@ public class SimpleJpaDao<T, ID> implements JpaDao<T, ID> {
 
 		entityManager.persist(user);
 		return 0;
+	}
+
+	@Override
+	public int saveWithKey(T entity) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -277,13 +282,13 @@ public class SimpleJpaDao<T, ID> implements JpaDao<T, ID> {
 	// 4.事务应该应用在业务逻辑层而不是数据访问层，因此准备重构
 	@Transactional(rollbackFor = ArithmeticException.class)
 	@Override
-	public void transactionalMethod1(T user) {
-		log.info("transactionalMethod1(T user)" + user);
+	public void transactionalMethod1(T entity1, T entity2) {
+		log.info("transactionalMethod1(T entity1, T entity2)" + entity1);
 
-		save(user);
+		save(entity1);
 
 		// 注意:不能使用单线程的数据源，也不能与其他的DAO共享数据源，否则这里启动事务失败，参考JpaTransactionManager.doBegin方法第403行
-		userTransactionnalJpaDao.transactionalMethod2(new UserJpaEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+		userTransactionnalJpaDao.transactionalMethod2(entity2);
 
 		int i = 1 / 0;
 	}

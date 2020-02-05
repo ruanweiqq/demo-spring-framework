@@ -41,7 +41,7 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 	private HibernateTemplate hibernateTemplate; // from Spring ORM
 
 	@Autowired
-	private TransactionalDao<UserHibernateEntity> userTransactionnalHibernateDao;
+	private TransactionalDao<T> userTransactionnalHibernateDao;
 
 	@Autowired
 	public void setSessionFactory(@Qualifier("sessionFactory") SessionFactory sessionFactory) {
@@ -59,6 +59,11 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 	public int save(T entity) {
 		log.info("save(T user)");
 		return (int) currentSession().save(entity);
+	}
+
+	@Override
+	public int saveWithKey(T entity) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -80,7 +85,7 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 		log.info("findById(ID id)");
 
 		// session.load(UserEntity.class, id)返回的是代理
-		T userEntity = currentSession().get(getTClass(), (Serializable)id);
+		T userEntity = currentSession().get(getTClass(), (Serializable) id);
 		return Optional.ofNullable(userEntity);
 	}
 
@@ -177,7 +182,7 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 		// UserHibernateEntity.class);
 		String hql = "update UserHibernateEntity u set u.age = :age where u.name = :name and u.birthday = :birthday";
 		Query<?> query = currentSession().createQuery(hql);
-		UserHibernateEntity user = (UserHibernateEntity)entity;
+		UserHibernateEntity user = (UserHibernateEntity) entity;
 		query.setParameter("age", user.getAge());
 		query.setParameter("name", user.getName());
 		query.setParameter("birthday", user.getBirthday());
@@ -236,14 +241,14 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 	// 4.事务应该应用在业务逻辑层而不是数据访问层，因此准备重构
 	@Transactional(rollbackFor = ArithmeticException.class)
 	@Override
-	public void transactionalMethod1(T user) {
-		log.info("transactionalMethod1(T user)" + user);
+	public void transactionalMethod1(T entity1, T entity2) {
+		log.info("transactionalMethod1(T entity1, T entity2)" + entity1);
 
-		save(user);
+		save(entity1);
 
 		// 注意:不能使用单线程的数据源，也不能与其他的DAO共享数据源，否则这里启动事务失败，参考JpaTransactionManager.doBegin方法第403行
 		userTransactionnalHibernateDao
-				.transactionalMethod2(new UserHibernateEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+				.transactionalMethod2(entity2);
 
 		int i = 1 / 0;
 	}

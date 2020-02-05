@@ -25,8 +25,8 @@ public class UserTransactionJpaDao implements TransactionalDao<UserJpaEntity> {
 	private EntityManager entityManager;
 
 	@Override
-	public void transactionalMethod1(UserJpaEntity user) {
-		log.info("transactionalMethod1(UserJpaEntity user)" + user);
+	public void transactionalMethod1(UserJpaEntity user1, UserJpaEntity user2) {
+		log.info("transactionalMethod1(UserJpaEntity user1, UserJpaEntity user2)" + user1);
 		throw new UnsupportedOperationException();
 	}
 

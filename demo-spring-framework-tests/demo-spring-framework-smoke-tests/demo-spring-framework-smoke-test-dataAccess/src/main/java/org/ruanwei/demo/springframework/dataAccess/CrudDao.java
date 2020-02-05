@@ -1,7 +1,6 @@
 package org.ruanwei.demo.springframework.dataAccess;
 
 import java.lang.reflect.ParameterizedType;
-import java.sql.Date;
 import java.util.Optional;
 
 /**
@@ -16,6 +15,8 @@ public interface CrudDao<T, ID> {
 
 	// ==========Create==========
 	int save(T entity); // 1
+	
+	int saveWithKey(T entity);
 
 	int saveAll(Iterable<T> entities); // 2
 

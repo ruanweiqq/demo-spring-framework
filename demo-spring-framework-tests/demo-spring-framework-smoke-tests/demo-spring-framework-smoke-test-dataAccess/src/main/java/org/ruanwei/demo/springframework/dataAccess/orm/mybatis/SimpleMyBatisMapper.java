@@ -41,7 +41,7 @@ public interface SimpleMyBatisMapper<T, ID> extends MyBatisMapper<T, ID> {
 	// see user-mapper.xml
 	@Override
 	List<T> findAllById(Iterable<ID> ids);
-	
+
 	@Select("select * from user where id > #{id}")
 	@Override
 	List<T> findAllByGtId(@Param("id") ID id);
@@ -82,8 +82,8 @@ public interface SimpleMyBatisMapper<T, ID> extends MyBatisMapper<T, ID> {
 	// 4.事务应该应用在业务逻辑层而不是数据访问层，因此准备重构
 	@Override
 	@Transactional(rollbackFor = ArithmeticException.class)
-	default void transactionalMethod1(T user) {
-		save(user);
+	default void transactionalMethod1(T entity1, T entity2) {
+		save(entity1);
 
 		// transactionalMethod2()
 
@@ -91,7 +91,7 @@ public interface SimpleMyBatisMapper<T, ID> extends MyBatisMapper<T, ID> {
 	};
 
 	@Override
-	default void transactionalMethod2(T user) {
+	default void transactionalMethod2(T entity) {
 		throw new UnsupportedOperationException();
 	};
 }

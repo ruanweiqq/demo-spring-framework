@@ -39,8 +39,8 @@ public class UserTransactionHibernateDao implements TransactionalDao<UserHiberna
 	}
 
 	@Override
-	public void transactionalMethod1(UserHibernateEntity user) {
-		log.info("transactionalMethod1(UserHibernateEntity user)" + user);
+	public void transactionalMethod1(UserHibernateEntity user1, UserHibernateEntity user2) {
+		log.info("transactionalMethod1(UserHibernateEntity user1, UserHibernateEntity user2)" + user1);
 		throw new UnsupportedOperationException();
 	}
 

@@ -38,6 +38,7 @@ import org.ruanwei.demo.springframework.dataAccess.springdata.User;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jpa.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -182,8 +183,13 @@ public class DataAccessTest {
 		myBatisEntityForTransactionDelete2 = new UserMyBatisEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06"));
 	}
 
+	@Qualifier("userJdbcDao")
 	@Autowired
 	private JdbcDao<UserJdbcEntity, Integer> userJdbcDao;
+
+	@Qualifier("userJdbcDao2")
+	@Autowired
+	private JdbcDao<UserJdbcEntity, Integer> userJdbcDao2;
 
 	@Autowired
 	private JpaDao<UserJpaEntity, Integer> userJpaDao;
@@ -209,6 +215,7 @@ public class DataAccessTest {
 	void beforeEach() {
 		log.info("beforeEach()==============================");
 		assertNotNull(userJdbcDao, "userJdbcDao should not be null");
+		assertNotNull(userJdbcDao2, "userJdbcDao2 should not be null");
 		assertNotNull(userJpaDao, "userJpaDao should not be null");
 		assertNotNull(userHibernateDao, "userHibernateDao should not be null");
 		assertNotNull(userMyBatisMapper, "userMyBatisMapper should not be null");
@@ -217,13 +224,13 @@ public class DataAccessTest {
 
 		userJdbcDao.delete(beanForUpdateOrDelete);
 		userJdbcDao.delete(mapForUpdateOrDelete);
-		userJdbcDao.delete(beanForUpdateOrDelete.getName(), beanForUpdateOrDelete.getAge(),
+		userJdbcDao2.delete(beanForUpdateOrDelete.getName(), beanForUpdateOrDelete.getAge(),
 				beanForUpdateOrDelete.getBirthday());
 
 		userJdbcDao.batchDelete(beanArrayForBatchUpdateOrDelete);
 		userJdbcDao.batchDelete(beanCollForBatchUpdateOrDelete);
 		userJdbcDao.batchDelete(mapArrayForBatchUpdateOrDelete);
-		userJdbcDao.batchDelete(objArrayForBatchUpdateOrDelete);
+		//userJdbcDao.batchDelete(objArrayForBatchUpdateOrDelete);
 
 		userJdbcDao.delete(beanForTransactionDelete1);
 		userJdbcDao.delete(beanForTransactionDelete2);
@@ -237,7 +244,7 @@ public class DataAccessTest {
 		userMyBatisMapper.delete(myBatisEntityForTransactionDelete1);
 		userMyBatisMapper.delete(myBatisEntityForTransactionDelete2);
 
-		List<UserJdbcEntity> allUsers = (List<UserJdbcEntity>)userJdbcDao.findAll();
+		List<UserJdbcEntity> allUsers = (List<UserJdbcEntity>) userJdbcDao.findAll();
 		List<Map<String, Object>> allMapUsers = userJdbcDao.findAllMap();
 		assertEquals(1, allUsers.size(), "size of all users should be 1");
 		assertEquals(1, allMapUsers.size(), "size of all users should be 1");
@@ -245,11 +252,11 @@ public class DataAccessTest {
 		long count = userJdbcDao.count();
 		assertEquals(1, count, "size of all users should be 1");
 
-		List<UserJdbcEntity> users = (List<UserJdbcEntity>)userJdbcDao.findAllById(ids);
+		List<UserJdbcEntity> users = (List<UserJdbcEntity>) userJdbcDao.findAllById(ids);
 		assertEquals(1, users.size(), "size of users which id in 1,2,3 should be 1");
 
 		users = userJdbcDao.findAllByGtId(gt1);
-		List<Map<String, Object>> mapUsers = userJdbcDao.findAllMapById(gt1);
+		List<Map<String, Object>> mapUsers = userJdbcDao.findAllMapByGtId(gt1);
 		assertEquals(0, users.size(), "size of users which id > 1 should be 0");
 		assertEquals(0, mapUsers.size(), "size of users which id > 1 should be 0");
 
@@ -283,8 +290,8 @@ public class DataAccessTest {
 		userJdbcDao.save(mapForCreate);
 		userJdbcDao.saveWithKey(mapForCreate);
 
-		userJdbcDao.save(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
-		userJdbcDao.saveWithKey(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
+		userJdbcDao2.save(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
+		userJdbcDao2.saveWithKey(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
 
 		List<UserJdbcEntity> allUsers = userJdbcDao.findAll();
 		List<UserJdbcEntity> users1 = userJdbcDao.findAllById(ids);
@@ -324,7 +331,7 @@ public class DataAccessTest {
 		userJdbcDao.batchSave(beanArrayForBatchCreate);
 		userJdbcDao.batchSave(beanCollForBatchCreate);
 		userJdbcDao.batchSave(mapArrayForBatchCreate);
-		userJdbcDao.batchSave(objArrayForBatchCreate);
+		// userJdbcDao.batchSave(objArrayForBatchCreate);
 
 		List<UserJdbcEntity> allUsers = userJdbcDao.findAll();
 		List<UserJdbcEntity> users1 = userJdbcDao.findAllById(ids);
@@ -363,7 +370,8 @@ public class DataAccessTest {
 	void testSpringJdbcWithTransaction() {
 		log.info("3======================================================================================");
 		try {
-			userJdbcDao.transactionalMethod1(new UserJdbcEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
+			userJdbcDao.transactionalMethod1(new UserJdbcEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
+					new UserJdbcEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 		} catch (ArithmeticException e) {
 			log.error("transaction rolled back for ArithmeticException", e);
 		} catch (Exception e) {
@@ -377,7 +385,7 @@ public class DataAccessTest {
 		}
 	}
 
-	//@Disabled
+	// @Disabled
 	@Order(4)
 	@Test
 	void testSpringJpaCRUD() {
@@ -419,7 +427,8 @@ public class DataAccessTest {
 	void testSpringJpaWithTransaction() {
 		log.info("5======================================================================================");
 		try {
-			userJpaDao.transactionalMethod1(new UserJpaEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
+			userJpaDao.transactionalMethod1(new UserJpaEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
+					new UserJpaEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 		} catch (ArithmeticException e) {
 			log.error("transaction rolled back for ArithmeticException", e);
 		} catch (Exception e) {
@@ -475,8 +484,8 @@ public class DataAccessTest {
 	void testSpringHibernateWithTransaction() {
 		log.info("7======================================================================================");
 		try {
-			userHibernateDao
-					.transactionalMethod1(new UserHibernateEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
+			userHibernateDao.transactionalMethod1(new UserHibernateEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
+					new UserHibernateEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 		} catch (ArithmeticException e) {
 			log.error("transaction rolled back for ArithmeticException", e);
 		} catch (Exception e) {
@@ -533,7 +542,8 @@ public class DataAccessTest {
 	void testSpringMyBatisWithTransaction() {
 		log.info("9======================================================================================");
 		try {
-			userMyBatisMapper.transactionalMethod1(new UserMyBatisEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")));
+			userMyBatisMapper.transactionalMethod1(new UserMyBatisEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
+					new UserMyBatisEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 		} catch (ArithmeticException e) {
 			log.error("transaction rolled back for ArithmeticException", e);
 		} catch (Exception e) {

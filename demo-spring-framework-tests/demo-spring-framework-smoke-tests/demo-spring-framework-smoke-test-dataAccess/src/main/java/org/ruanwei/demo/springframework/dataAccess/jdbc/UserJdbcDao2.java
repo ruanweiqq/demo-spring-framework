@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Transactional("transactionManager")
-@Repository("userJdbcDao")
-public class UserJdbcDao extends SimpleJdbcDao<UserJdbcEntity,Integer> {
-	private static Log log = LogFactory.getLog(UserJdbcDao.class);
+@Repository("userJdbcDao2")
+public class UserJdbcDao2 extends SimpleJdbcDao2<UserJdbcEntity, Integer> {
+	private static Log log = LogFactory.getLog(UserJdbcDao2.class);
+
 }

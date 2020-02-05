@@ -20,7 +20,7 @@ public interface UserMyBatisTransactionMapper extends TransactionalDao<UserMyBat
 	void transactionalMethod2(UserMyBatisEntity user);
 
 	@Override
-	default void transactionalMethod1(UserMyBatisEntity user) {
+	default void transactionalMethod1(UserMyBatisEntity user1, UserMyBatisEntity user2) {
 		throw new UnsupportedOperationException();
 	};
 }
