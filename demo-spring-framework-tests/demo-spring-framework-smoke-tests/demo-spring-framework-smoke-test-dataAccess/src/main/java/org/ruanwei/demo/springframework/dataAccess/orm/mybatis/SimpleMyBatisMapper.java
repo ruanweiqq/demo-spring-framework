@@ -9,43 +9,42 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.entity.UserMyBatisEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional("transactionManager")
-public interface SimpleMyBatisMapper extends MyBatisMapper<UserMyBatisEntity, Integer> {
+public interface SimpleMyBatisMapper<T, ID> extends MyBatisMapper<T, ID> {
 
 	// ==========Create==========
 	@Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
 	@Insert("insert into user(name,age,birthday) values(#{name}, #{age}, #{birthday})")
 	@Override
-	int save(UserMyBatisEntity entity);
+	int save(T entity);
 
 	// see user-mapper.xml
 	@Override
-	int saveAll(Iterable<UserMyBatisEntity> users);
+	int saveAll(Iterable<T> users);
 
 	// ==========Read 1==========
 	@Select("select * from user where id = #{id}")
 	@Override
-	Optional<UserMyBatisEntity> findById(@Param("id") Integer id);
+	Optional<T> findById(@Param("id") ID id);
 
 	@Override
-	default boolean existsById(@Param("id") Integer id) {
+	default boolean existsById(@Param("id") ID id) {
 		return findById(id) != null;
 	}
 
 	@Select("select * from user")
 	@Override
-	List<UserMyBatisEntity> findAll();
+	List<T> findAll();
 
 	// see user-mapper.xml
 	@Override
-	List<UserMyBatisEntity> findAllById(Iterable<Integer> ids);
+	List<T> findAllById(Iterable<ID> ids);
 	
 	@Select("select * from user where id > #{id}")
 	@Override
-	List<UserMyBatisEntity> findAllByGtId(@Param("id") Integer id);
+	List<T> findAllByGtId(@Param("id") ID id);
 
 	@Select("select count(*) from user")
 	@Override
@@ -54,20 +53,20 @@ public interface SimpleMyBatisMapper extends MyBatisMapper<UserMyBatisEntity, In
 	// ==========Update==========
 	@Update("update user set age = #{age} where name = #{name} and birthday = #{birthday}")
 	@Override
-	int updateAge(UserMyBatisEntity user);
+	int updateAge(T user);
 
 	// ==========Delete==========
 	@Delete("delete from user where id = #{id}")
 	@Override
-	int deleteById(@Param("id") Integer id);
+	int deleteById(@Param("id") ID id);
 
 	@Delete("delete from user where name = #{name} and age = #{age} and birthday = #{birthday}")
 	@Override
-	int delete(UserMyBatisEntity user);
+	int delete(T user);
 
 	// see user-mapper.xml
 	@Override
-	int deleteAll(Iterable<UserMyBatisEntity> users);
+	int deleteAll(Iterable<T> users);
 
 	// 由于不支持方法重载，去掉注解，将其改造成默认实现
 	// @Delete("delete from user")
@@ -83,7 +82,7 @@ public interface SimpleMyBatisMapper extends MyBatisMapper<UserMyBatisEntity, In
 	// 4.事务应该应用在业务逻辑层而不是数据访问层，因此准备重构
 	@Override
 	@Transactional(rollbackFor = ArithmeticException.class)
-	default void transactionalMethod1(UserMyBatisEntity user) {
+	default void transactionalMethod1(T user) {
 		save(user);
 
 		// transactionalMethod2()
@@ -92,7 +91,7 @@ public interface SimpleMyBatisMapper extends MyBatisMapper<UserMyBatisEntity, In
 	};
 
 	@Override
-	default void transactionalMethod2(UserMyBatisEntity user) {
+	default void transactionalMethod2(T user) {
 		throw new UnsupportedOperationException();
 	};
 }
