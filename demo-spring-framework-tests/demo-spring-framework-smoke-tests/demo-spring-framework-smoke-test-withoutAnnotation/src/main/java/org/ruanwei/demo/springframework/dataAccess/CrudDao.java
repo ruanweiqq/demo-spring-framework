@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * 一共有12个接口是必须实现的
+ * 一共有11个接口是必须实现的,与org.springframework.data.repository.CrudRepository一致
  * 
  * @author ruanwei
  *
@@ -70,7 +70,7 @@ public interface CrudDao<T, ID> extends TransactionalDao<T> {
 	long count2();
 
 	// ==========Update==========
-	int updateAge(T entity); // 8
+	int updateAge(T entity);
 
 	int updateAge(Map<String, ?> args);
 
@@ -78,18 +78,18 @@ public interface CrudDao<T, ID> extends TransactionalDao<T> {
 	int updateAge(String name, int age, Date birthday);
 
 	// ==========Delete==========
-	int deleteById(ID id); // 9
+	int deleteById(ID id); // 8
 
-	int delete(T entity); // 10
+	int delete(T entity); // 9
 
 	int delete(Map<String, ?> args);
 
 	// JdbcTemplate
 	int delete(String name, int age, Date birthday);
 
-	int deleteAll(Iterable<T> entities); // 11
+	int deleteAll(Iterable<T> entities); // 10
 
-	int deleteAll(); // 12
+	int deleteAll(); // 11
 
 	// ==========Batch Create==========
 	public int[] batchSave(T[] entities);
