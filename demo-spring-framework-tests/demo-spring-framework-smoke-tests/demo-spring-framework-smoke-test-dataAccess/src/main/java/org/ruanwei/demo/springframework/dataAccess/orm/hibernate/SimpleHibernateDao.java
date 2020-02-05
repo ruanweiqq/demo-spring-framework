@@ -78,12 +78,12 @@ public class SimpleHibernateDao implements HibernateDao<UserHibernateEntity, Int
 	}
 
 	@Override
-	public Integer saveWithKey(UserHibernateEntity entity) {
+	public int saveWithKey(UserHibernateEntity entity) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Integer saveWithKey(String name, int age, Date birthday) {
+	public int saveWithKey(String name, int age, Date birthday) {
 		throw new UnsupportedOperationException();
 	}
 

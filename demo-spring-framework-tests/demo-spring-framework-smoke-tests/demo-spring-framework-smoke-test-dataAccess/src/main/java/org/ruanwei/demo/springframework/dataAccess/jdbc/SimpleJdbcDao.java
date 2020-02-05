@@ -1,5 +1,6 @@
 package org.ruanwei.demo.springframework.dataAccess.jdbc;
 
+import java.lang.reflect.ParameterizedType;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -52,7 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Transactional("transactionManager")
-public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
+public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	private static Log log = LogFactory.getLog(SimpleJdbcDao.class);
 
 	// 1.core JdbcTemplate & NamedParameterJdbcTemplate thread-safe
@@ -70,6 +71,12 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 	private UpdatableSqlQuery<UserJdbcEntity> updatableSqlQuery;
 	private SqlUpdate sqlUpdate;
 	private StoredProcedure storedProcedure;
+
+	private Entity<T> entity;
+
+	class Entity<T> {
+
+	}
 
 	@Autowired
 	private TransactionalDao<UserJdbcEntity> userTransactionnalJdbcDao;
@@ -114,21 +121,20 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 
 	// =====Create=====
 	@Override
-	public int save(UserJdbcEntity user) {
-		log.info("save(UserJdbcEntity user)");
+	public int save(T user) {
+		log.info("save(T user)");
 		return _update(sql_insert_namedParam, user, null);
 	}
 
 	@Override
-	public Integer saveWithKey(UserJdbcEntity user) {
-		log.info("saveWithKey(UserJdbcEntity user)");
+	public int saveWithKey(T user) {
+		log.info("saveWithKey(T user)");
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		int key = _update(sql_insert_namedParam, user, keyHolder);
 
 		// see @TransactionalEventListener
-		user.setId(key);
-		applicationEventPublisher.publishEvent(new UserSaveEvent(user));
+		applicationEventPublisher.publishEvent(new SaveEvent<T, Integer>(user, key));
 
 		log.info("generatedKey=" + key);
 		return key;
@@ -141,7 +147,7 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 	}
 
 	@Override
-	public Integer saveWithKey(Map<String, ?> userMap) {
+	public int saveWithKey(Map<String, ?> userMap) {
 		log.info("saveWithKey(Map<String, ?> userMap)");
 
 		int key = _update(sql_insert_namedParam, userMap, new GeneratedKeyHolder());
@@ -158,7 +164,7 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 	}
 
 	@Override
-	public Integer saveWithKey(String name, int age, Date birthday) {
+	public int saveWithKey(String name, int age, Date birthday) {
 		log.info("saveWithKey(String name, int age, Date birthday)");
 
 		int key = _update(sql_insert, name, age, birthday, new GeneratedKeyHolder());
@@ -167,11 +173,11 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 	}
 
 	@Override
-	public int saveAll(Iterable<UserJdbcEntity> users) {
-		log.info("saveAll(Iterable<UserJdbcEntity> users)");
+	public int saveAll(Iterable<T> users) {
+		log.info("saveAll(Iterable<ID> users)");
 
 		int rows = 0;
-		for (UserJdbcEntity user : users) {
+		for (T user : users) {
 			int row = save(user);
 			rows += row;
 		}
@@ -181,14 +187,14 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 	// =====Read=====
 	@Transactional(readOnly = true)
 	@Override
-	public Optional<UserJdbcEntity> findById(Integer id) {
-		log.info("findById(Integer id)");
+	public Optional<T> findById(ID id) {
+		log.info("findById(ID id)");
 
-		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		Map<String, ID> paramMap = new HashMap<String, ID>();
 		paramMap.put("id", id);
 
-		UserJdbcEntity user = namedParameterJdbcTemplate.queryForObject(sql_select_by_id_namedParam1, paramMap,
-				new BeanPropertyRowMapper<UserJdbcEntity>(UserJdbcEntity.class));
+		T user = namedParameterJdbcTemplate.queryForObject(sql_select_by_id_namedParam1, paramMap,
+				new BeanPropertyRowMapper<T>(getTClass()));
 
 		log.info("user=" + user);
 		return Optional.ofNullable(user);
@@ -196,10 +202,10 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public Map<String, ?> findMapById(Integer id) {
-		log.info("findMapById(Integer id)");
+	public Map<String, ?> findMapById(ID id) {
+		log.info("findMapById(ID id)");
 
-		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		Map<String, ID> paramMap = new HashMap<String, ID>();
 		paramMap.put("id", id);
 		Map<String, ?> columnMap = namedParameterJdbcTemplate.queryForMap(sql_select_by_id_namedParam2, paramMap);
 
@@ -209,18 +215,18 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public boolean existsById(Integer id) {
-		log.info("existsById(Integer id)");
+	public boolean existsById(ID id) {
+		log.info("existsById(ID id)");
 		return findById(id) != null;
 	}
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserJdbcEntity> findAll() {
+	public List<T> findAll() {
 		log.info("findAll()");
 
-		List<UserJdbcEntity> userList = namedParameterJdbcTemplate.query(sql_select_all1,
-				EmptySqlParameterSource.INSTANCE, new BeanPropertyRowMapper<UserJdbcEntity>(UserJdbcEntity.class));
+		List<T> userList = namedParameterJdbcTemplate.query(sql_select_all1, EmptySqlParameterSource.INSTANCE,
+				new BeanPropertyRowMapper<T>(getTClass()));
 
 		userList.forEach(user -> log.info("user=" + user));
 		return userList;
@@ -240,13 +246,13 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserJdbcEntity> findAllById(Iterable<Integer> ids) {
+	public List<T> findAllById(Iterable<ID> ids) {
 		log.info("findAllById(Iterable<Integer> ids)");
 
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("ids", StringUtils.toString(ids));
-		List<UserJdbcEntity> userList = namedParameterJdbcTemplate.query(sql_select_by_ids_namedParam1, paramMap,
-				new BeanPropertyRowMapper<UserJdbcEntity>(UserJdbcEntity.class));
+		List<T> userList = namedParameterJdbcTemplate.query(sql_select_by_ids_namedParam1, paramMap,
+				new BeanPropertyRowMapper<T>(getTClass()));
 
 		userList.forEach(user -> log.info("user=" + user));
 		return userList;
@@ -254,13 +260,13 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<UserJdbcEntity> findAllByGtId(Integer id) {
-		log.info("findAllByGtId(Integer id)");
+	public List<T> findAllByGtId(ID id) {
+		log.info("findAllByGtId(ID id)");
 
-		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		Map<String, ID> paramMap = new HashMap<String, ID>();
 		paramMap.put("id", id);
-		List<UserJdbcEntity> userList = namedParameterJdbcTemplate.query(sql_select_by_gt_id_namedParam2, paramMap,
-				new BeanPropertyRowMapper<UserJdbcEntity>(UserJdbcEntity.class));
+		List<T> userList = namedParameterJdbcTemplate.query(sql_select_by_gt_id_namedParam2, paramMap,
+				new BeanPropertyRowMapper<T>(getTClass()));
 
 		userList.forEach(user -> log.info("user=" + user));
 		return userList;
@@ -268,10 +274,10 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<Map<String, Object>> findAllMapById(Integer id) {
+	public List<Map<String, Object>> findAllMapById(ID id) {
 		log.info("findAllMapById(Integer id)");
 
-		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		Map<String, ID> paramMap = new HashMap<String, ID>();
 		paramMap.put("id", id);
 		List<Map<String, Object>> columnMapList = namedParameterJdbcTemplate
 				.queryForList(sql_select_by_gt_id_namedParam1, paramMap);
@@ -295,7 +301,7 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 
 	// =====Update=====
 	@Override
-	public int updateAge(UserJdbcEntity user) {
+	public int updateAge(T user) {
 		log.info("updateAge(UserJdbcEntity user)");
 		return _update(sql_update_age_namedParam, user, null);
 	}
@@ -314,18 +320,18 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 
 	// =====Delete=====
 	@Override
-	public int deleteById(Integer id) {
+	public int deleteById(ID id) {
 		log.info("deleteById(Integer id)");
 
 		String sql = "delete from user where id = :id";
-		Map<String, Integer> paramMap = new HashMap<String, Integer>();
+		Map<String, ID> paramMap = new HashMap<String, ID>();
 		paramMap.put("id", id);
 
 		return _update(sql, paramMap, null);
 	}
 
 	@Override
-	public int delete(UserJdbcEntity user) {
+	public int delete(T user) {
 		log.info("delete(UserJdbcEntity user)");
 		return _update(sql_delete_namedParam, user, null);
 	}
@@ -343,11 +349,11 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 	}
 
 	@Override
-	public int deleteAll(Iterable<UserJdbcEntity> users) {
+	public int deleteAll(Iterable<T> users) {
 		log.info("deleteAll(Iterable<UserJdbcEntity> users");
 
 		int rows = 0;
-		for (UserJdbcEntity user : users) {
+		for (T user : users) {
 			int row = delete(user);
 			rows += row;
 		}
@@ -362,7 +368,7 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 
 	// =====Batch Create=====
 	@Override
-	public int[] batchSave(UserJdbcEntity[] users) {
+	public int[] batchSave(T[] users) {
 		log.info("batchSave(UserJdbcEntity[] users)");
 		return _batchUpdate(sql_insert_namedParam, users);
 	}
@@ -374,7 +380,7 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 	}
 
 	@Override
-	public int[] batchSave(Collection<UserJdbcEntity> users) {
+	public int[] batchSave(Collection<T> users) {
 		log.info("batchSave(Collection<UserJdbcEntity> users)");
 		return _batchUpdate(sql_insert_namedParam, users);
 	}
@@ -387,14 +393,14 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 
 	// B=====atch Update=====
 	@Override
-	public int[] batchUpdateAge(UserJdbcEntity[] users) {
-		log.info("batchUpdateAge(UserJdbcEntity[] users)");
+	public int[] batchUpdateAge(T[] users) {
+		log.info("batchUpdateAge(T[] users)");
 		return _batchUpdate(sql_update_age_namedParam, users);
 	}
 
 	@Override
-	public int[] batchUpdateAge(Collection<UserJdbcEntity> users) {
-		log.info("batchUpdateAge(Collection<UserJdbcEntity> users)");
+	public int[] batchUpdateAge(Collection<T> users) {
+		log.info("batchUpdateAge(Collection<T> users)");
 		return _batchUpdate(sql_update_age_namedParam, users);
 	}
 
@@ -412,14 +418,14 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 
 	// ======Batch Delete=====
 	@Override
-	public int[] batchDelete(UserJdbcEntity[] users) {
-		log.info("batchDelete(UserJdbcEntity[] users)");
+	public int[] batchDelete(T[] users) {
+		log.info("batchDelete(T[] users)");
 		return _batchUpdate(sql_delete_namedParam, users);
 	}
 
 	@Override
-	public int[] batchDelete(Collection<UserJdbcEntity> users) {
-		log.info("batchDelete(Collection<UserJdbcEntity> users)");
+	public int[] batchDelete(Collection<T> users) {
+		log.info("batchDelete(Collection<T> users)");
 		return _batchUpdate(sql_delete_namedParam, users);
 	}
 
@@ -442,8 +448,8 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 	// 4.事务应该应用在业务逻辑层而不是数据访问层，因此准备重构
 	@Override
 	@Transactional(rollbackFor = ArithmeticException.class)
-	public void transactionalMethod1(UserJdbcEntity user) {
-		log.info("transactionalMethod1(UserJdbcEntity user)" + user);
+	public void transactionalMethod1(T user) {
+		log.info("transactionalMethod1(T user)" + user);
 
 		save(user);
 
@@ -454,8 +460,8 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 	}
 
 	@Override
-	public void transactionalMethod2(UserJdbcEntity user) {
-		log.info("transactionalMethod2(UserJdbcEntity user)" + user);
+	public void transactionalMethod2(T user) {
+		log.info("transactionalMethod2(T user)" + user);
 		throw new UnsupportedOperationException();
 	}
 
@@ -576,12 +582,12 @@ public class SimpleJdbcDao implements JdbcDao<UserJdbcEntity, Integer> {
 	}
 
 	// ====================SimpleJdbc====================
-	public void insertUserJdbcEntity6(UserJdbcEntity user) {
-		log.info("insertUserJdbcEntity6(UserJdbcEntity user)");
+	public void insertUserJdbcEntity6(String name, int age, Date birthday) {
+		log.info("insertUserJdbcEntity6(String name, int age, Date birthday)");
 		Map<String, Object> parameters = new HashMap<String, Object>(3);
-		parameters.put("name", user.getName());
-		parameters.put("age", user.getAge());
-		parameters.put("birthday", user.getBirthday());
+		parameters.put("name", name);
+		parameters.put("age", age);
+		parameters.put("birthday", birthday);
 
 		simpleJdbcInsert.execute(parameters);
 		Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);

@@ -14,13 +14,13 @@ public class StringUtils {
 		return false;
 	}
 
-	public static String toString(Iterable<Integer> ids) {
+	public static <T> String toString(Iterable<T> ids) {
 		if (ids == null)
 			return "null";
 
 		StringBuilder b = new StringBuilder();
 
-		Iterator<Integer> iterator = ids.iterator();
+		Iterator<T> iterator = ids.iterator();
 		if (!iterator.hasNext()) {
 			return "";
 		}

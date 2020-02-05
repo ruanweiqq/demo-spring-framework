@@ -1,6 +1,5 @@
 package org.ruanwei.demo.springframework.dataAccess;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,7 +15,7 @@ public interface MapDao<ID> {
 	// ==========Create==========
 	int save(Map<String, ?> args);
 
-	ID saveWithKey(Map<String, ?> args);
+	int saveWithKey(Map<String, ?> args);
 
 	// ==========Read 1==========
 	Map<String, ?> findMapById(ID id);
@@ -24,7 +23,7 @@ public interface MapDao<ID> {
 	Iterable<Map<String, Object>> findAllMap();
 
 	Iterable<Map<String, Object>> findAllMapById(ID id);
-
+	
 	// ==========Update==========
 	int updateAge(Map<String, ?> args);
 

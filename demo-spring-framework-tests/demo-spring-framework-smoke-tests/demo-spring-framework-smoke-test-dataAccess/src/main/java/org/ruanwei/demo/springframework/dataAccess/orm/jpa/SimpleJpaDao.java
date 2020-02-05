@@ -120,12 +120,12 @@ public class SimpleJpaDao implements JpaDao<UserJpaEntity, Integer> {
 	}
 
 	@Override
-	public Integer saveWithKey(String name, int age, Date birthday) {
+	public int saveWithKey(String name, int age, Date birthday) {
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
-	public Integer saveWithKey(UserJpaEntity entity) {
+	public int saveWithKey(UserJpaEntity entity) {
 		throw new UnsupportedOperationException();
 	}
 

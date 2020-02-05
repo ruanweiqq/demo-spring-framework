@@ -15,7 +15,7 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.mapper.MapperFactoryBean;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.UserSaveEvent;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.SaveEvent;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -319,7 +319,7 @@ public class AppConfig {// implements
 
 	// 应该移动到service层
 	@TransactionalEventListener
-	public void handleTransactionalEvent(UserSaveEvent event) {
+	public void handleTransactionalEvent(SaveEvent<UserJdbcEntity, Integer> event) {
 		log.info("handleTransactionalEvent" + event);
 		UserJdbcEntity user = (UserJdbcEntity) event.getSource();
 		// User u = findById(user.getId());

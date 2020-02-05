@@ -1,5 +1,6 @@
 package org.ruanwei.demo.springframework.dataAccess;
 
+import java.lang.reflect.ParameterizedType;
 import java.sql.Date;
 import java.util.Optional;
 
@@ -16,11 +17,11 @@ public interface CrudDao<T, ID> {
 	// ==========Create==========
 	int save(T entity); // 1
 
-	ID saveWithKey(T entity);
+	int saveWithKey(T entity);
 
 	int save(String name, int age, Date birthday);
 
-	ID saveWithKey(String name, int age, Date birthday);
+	int saveWithKey(String name, int age, Date birthday);
 
 	int saveAll(Iterable<T> entities); // 2
 
@@ -54,4 +55,10 @@ public interface CrudDao<T, ID> {
 	int deleteAll(Iterable<T> entities); // 10
 
 	int deleteAll(); // 11
+
+	default Class<T> getTClass() {
+		Class<T> tClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass())
+				.getActualTypeArguments()[0];
+		return tClass;
+	}
 }
