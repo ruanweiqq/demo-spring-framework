@@ -18,7 +18,7 @@ import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 public interface JdbcDao<T, ID> extends CrudDao<T, ID>, BatchDao<T, ID>, MapDao<ID>, TransactionalDao<T> {
 
 	int saveWithKey(T entity);
-	
+	    
 	// ============将CrudDao中的Iterable具体化为List=============
 	@Override
 	List<T> findAll();
