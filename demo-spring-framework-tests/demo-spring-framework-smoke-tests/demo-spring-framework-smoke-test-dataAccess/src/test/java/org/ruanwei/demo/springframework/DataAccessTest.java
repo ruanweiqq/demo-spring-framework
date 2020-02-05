@@ -26,10 +26,13 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.ruanwei.demo.springframework.dataAccess.CrudDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.JdbcDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
+import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.HibernateDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibernateEntity;
+import org.ruanwei.demo.springframework.dataAccess.orm.jpa.JpaDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
+import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.MyBatisMapper;
 import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.entity.UserMyBatisEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.User;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
@@ -61,8 +64,8 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 @ActiveProfiles("development")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-//@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
-@SpringJUnitConfig(AppConfig.class)
+@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
+//@SpringJUnitConfig(AppConfig.class)
 public class DataAccessTest {
 	private static Log log = LogFactory.getLog(DataAccessTest.class);
 
@@ -180,16 +183,16 @@ public class DataAccessTest {
 	}
 
 	@Autowired
-	private CrudDao<UserJdbcEntity, Integer> userJdbcDao;
+	private JdbcDao<UserJdbcEntity, Integer> userJdbcDao;
 
 	@Autowired
-	private CrudDao<UserJpaEntity, Integer> userJpaDao;
+	private JpaDao<UserJpaEntity, Integer> userJpaDao;
 
 	@Autowired
-	private CrudDao<UserHibernateEntity, Integer> userHibernateDao;
+	private HibernateDao<UserHibernateEntity, Integer> userHibernateDao;
 
 	@Autowired
-	private CrudDao<UserMyBatisEntity, Integer> userMyBatisMapper;
+	private MyBatisMapper<UserMyBatisEntity, Integer> userMyBatisMapper;
 
 	// @Autowired
 	private UserJdbcRepository userJdbcRepository;

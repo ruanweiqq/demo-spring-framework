@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
+import org.ruanwei.demo.springframework.dataAccess.jdbc.JdbcDao;
+
+public abstract class DefaultCrudDao<T, ID> implements JdbcDao<T, ID> {
 
 	// ==========Create==========
 	@Override
@@ -50,50 +52,6 @@ public abstract class DefaultCrudDao<T, ID> implements CrudDao<T, ID> {
 		throw new UnsupportedOperationException();
 	};
 
-	// ==========Read 2 with JdbcTemplate==========
-	@Override
-	public Optional<T> findById2(ID id) {
-		throw new UnsupportedOperationException();
-	};
-
-	@Override
-	public Map<String, ?> findMapById2(ID id) {
-		throw new UnsupportedOperationException();
-	};
-
-	@Override
-	public boolean existsById2(ID id) {
-		throw new UnsupportedOperationException();
-	};
-
-	@Override
-	public Iterable<T> findAll2() {
-		throw new UnsupportedOperationException();
-	};
-
-	@Override
-	public List<Map<String, Object>> findAllMap2() {
-		throw new UnsupportedOperationException();
-	};
-
-	public Iterable<T> findAllById2(Iterable<ID> ids) {
-		throw new UnsupportedOperationException();
-	};
-
-	@Override
-	public List<T> findAllByGtId2(ID id) {
-		throw new UnsupportedOperationException();
-	};
-
-	@Override
-	public List<Map<String, Object>> findAllMapById2(ID id) {
-		throw new UnsupportedOperationException();
-	};
-
-	@Override
-	public long count2() {
-		throw new UnsupportedOperationException();
-	};
 
 	// ==========Update==========
 	@Override
