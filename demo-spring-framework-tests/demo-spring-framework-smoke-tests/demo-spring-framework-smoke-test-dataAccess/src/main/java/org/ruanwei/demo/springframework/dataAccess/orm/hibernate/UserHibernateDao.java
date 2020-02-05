@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author ruanwei
  *
  */
-@Transactional("hibernateTransactionManager")
 @Repository
 public class UserHibernateDao extends SimpleHibernateDao<UserHibernateEntity,Integer> {
 	private static Log log = LogFactory.getLog(UserHibernateDao.class);

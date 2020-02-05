@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * JdbcDaoSupport提供了setDataSource支持 NamedParameterJdbcTemplate支持IN表达式
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author ruanwei
  *
  */
-@Transactional("transactionManager")
 @Repository("userJdbcDao")
 public class UserJdbcDao extends SimpleJdbcDao<UserJdbcEntity,Integer> {
 	private static Log log = LogFactory.getLog(UserJdbcDao.class);

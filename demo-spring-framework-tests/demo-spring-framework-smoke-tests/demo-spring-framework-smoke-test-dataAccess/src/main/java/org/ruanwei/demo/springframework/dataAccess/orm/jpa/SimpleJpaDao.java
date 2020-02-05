@@ -1,6 +1,5 @@
 package org.ruanwei.demo.springframework.dataAccess.orm.jpa;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
