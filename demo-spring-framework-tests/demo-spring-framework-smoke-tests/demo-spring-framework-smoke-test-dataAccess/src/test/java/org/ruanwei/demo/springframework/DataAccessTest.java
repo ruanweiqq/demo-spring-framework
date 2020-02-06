@@ -253,9 +253,6 @@ public class DataAccessTest {
 		userJdbcDao.save(mapForCreate);
 		userJdbcDao.saveWithKey(mapForCreate);
 
-		userJdbcExampleDao.save(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
-		userJdbcExampleDao.saveWithKey(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
-
 		List<UserJdbcEntity> allUsers = userJdbcDao.findAll();
 		List<UserJdbcEntity> users = userJdbcDao.findAllByGtId(gt1);
 		List<UserJdbcEntity> users2 = userJdbcDao.findAllById(ids);
@@ -285,9 +282,6 @@ public class DataAccessTest {
 		// 2.更新age
 		userJdbcDao.updateAge(beanForUpdateOrDelete);
 		userJdbcDao.updateAge(mapForUpdateOrDelete);
-		// TODO:这里的参数由于SQL参数顺序的原因报错，待重构
-//		userJdbcExampleDao.updateAge(beanForUpdateOrDelete.getName(), beanForUpdateOrDelete.getAge(),
-//				beanForUpdateOrDelete.getBirthday());
 
 		users = userJdbcDao.findAllByGtId(gt1);
 		users.forEach(u -> {
@@ -301,13 +295,6 @@ public class DataAccessTest {
 		userJdbcDao.delete(mapForUpdateOrDelete);
 		userJdbcDao.delete(beanForTransactionDelete1);
 		userJdbcDao.delete(beanForTransactionDelete2);
-
-		userJdbcExampleDao.delete(beanForUpdateOrDelete.getName(), beanForUpdateOrDelete.getAge(),
-				beanForUpdateOrDelete.getBirthday());
-		userJdbcExampleDao.delete(beanForTransactionDelete1.getName(), beanForTransactionDelete1.getAge(),
-				beanForTransactionDelete1.getBirthday());
-		userJdbcExampleDao.delete(beanForTransactionDelete2.getName(), beanForTransactionDelete2.getAge(),
-				beanForTransactionDelete2.getBirthday());
 
 		boolean exist = userJdbcDao.existsById(eq1);
 		assertTrue(exist, "user which id = 1 should exist");
@@ -324,8 +311,77 @@ public class DataAccessTest {
 	// @Disabled
 	@Order(2)
 	@Test
-	void testSpringJdbcBatchCRUD() {
+	void testSpringJdbcExampleCRUD() {
 		log.info("2======================================================================================");
+
+		// 1.创建
+		userJdbcExampleDao.save(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
+		userJdbcExampleDao.saveWithKey(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
+
+		List<UserJdbcEntity> allUsers = userJdbcExampleDao.findAll();
+		List<UserJdbcEntity> users = userJdbcExampleDao.findAllByGtId(gt1);
+		List<UserJdbcEntity> users2 = userJdbcExampleDao.findAllById(ids);
+
+		assertTrue(allUsers.size() > 2, "size of all users should be > 2");
+		assertTrue(users.size() > 1, "size of users which id >1 should be > 1");
+		assertEquals(1, users2.size(), "size of users which id in 0,1 should be 1");
+		users.forEach(u -> {
+			assertTrue(u.getId() > 1, "user id should be > 1");
+			assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp");
+			assertEquals(36, u.getAge(), "user age should be 36");
+		});
+
+		List<Map<String, Object>> allMapUsers = userJdbcExampleDao.findAllMap();
+		List<Map<String, Object>> mapUsers = userJdbcExampleDao.findAllMapByGtId(gt1);
+		List<Map<String, Object>> mapUsers2 = userJdbcExampleDao.findAllMapById(ids);
+
+		assertTrue(allMapUsers.size() > 2, "size of all users should be > 2");
+		assertTrue(mapUsers.size() > 1, "size of users which id >1 should be > 1");
+		assertEquals(1, mapUsers2.size(), "size of users which id in 0,1 should be 1");
+		mapUsers.forEach(u -> {
+			assertTrue((Integer) u.get("id") > 1, "user id should be > 1");
+			assertEquals("ruanwei_tmp", (String) u.get("name"), "user name should be ruanwei_tmp");
+			assertEquals(36, (Integer) u.get("age"), "user age should be 36");
+		});
+
+		// 2.更新age
+		userJdbcDao.updateAge(beanForUpdateOrDelete);//待下面bugfix后删除
+		// TODO:这里的参数由于SQL参数顺序的原因报错，待重构
+//			userJdbcExampleDao.updateAge(beanForUpdateOrDelete.getName(), beanForUpdateOrDelete.getAge(),
+//					beanForUpdateOrDelete.getBirthday());
+
+		users = userJdbcExampleDao.findAllByGtId(gt1);
+		users.forEach(u -> {
+			assertTrue(u.getId() > 1, "user id should be > 1");
+			assertEquals("ruanwei_tmp", u.getName(), "user name should be ruanwei_tmp");
+			assertEquals(18, u.getAge(), "user age should be 36");
+		});
+
+		// 3.删除
+		userJdbcExampleDao.delete(beanForUpdateOrDelete.getName(), beanForUpdateOrDelete.getAge(),
+				beanForUpdateOrDelete.getBirthday());
+		userJdbcExampleDao.delete(beanForTransactionDelete1.getName(), beanForTransactionDelete1.getAge(),
+				beanForTransactionDelete1.getBirthday());
+		userJdbcExampleDao.delete(beanForTransactionDelete2.getName(), beanForTransactionDelete2.getAge(),
+				beanForTransactionDelete2.getBirthday());
+
+		boolean exist = userJdbcExampleDao.existsById(eq1);
+		assertTrue(exist, "user which id = 1 should exist");
+
+		Optional<UserJdbcEntity> userOpt = userJdbcExampleDao.findById(eq1);
+		assertTrue(userOpt.isPresent(), "user should be present");
+		UserJdbcEntity user = userOpt.orElse(null);
+		assertNotNull(user, "user should not be null");
+		assertEquals(1, user.getId(), "user id should be 1983-07-06");
+		assertEquals("ruanwei", user.getName(), "user name should be ruanwei");
+		assertEquals(36, user.getAge(), "user age should be 36");
+	}
+
+	// @Disabled
+	@Order(3)
+	@Test
+	void testSpringJdbcBatchCRUD() {
+		log.info("3======================================================================================");
 
 		// 1.批量创建
 		userJdbcDao.batchSave(beanArrayForBatchCreate);
@@ -390,10 +446,10 @@ public class DataAccessTest {
 	}
 
 	// @Disabled
-	@Order(3)
+	@Order(4)
 	@Test
 	void testSpringJdbcWithTransaction() {
-		log.info("3======================================================================================");
+		log.info("4======================================================================================");
 		try {
 			userJdbcDao.transactionalMethod1(new UserJdbcEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
 					new UserJdbcEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
@@ -414,10 +470,10 @@ public class DataAccessTest {
 	}
 
 	// @Disabled
-	@Order(4)
+	@Order(5)
 	@Test
 	void testSpringJpaCRUD() {
-		log.info("4======================================================================================");
+		log.info("5======================================================================================");
 
 		// 1.创建
 		userJpaDao.save(jpaEntityForCreate);
@@ -460,10 +516,10 @@ public class DataAccessTest {
 	}
 
 	// @Disabled
-	@Order(5)
+	@Order(6)
 	@Test
 	void testSpringJpaWithTransaction() {
-		log.info("5======================================================================================");
+		log.info("6======================================================================================");
 		try {
 			userJpaDao.transactionalMethod1(new UserJpaEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
 					new UserJpaEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
@@ -484,10 +540,10 @@ public class DataAccessTest {
 	}
 
 	// @Disabled
-	@Order(6)
+	@Order(7)
 	@Test
 	void testSpringHibernateCRUD() {
-		log.info("6======================================================================================");
+		log.info("7======================================================================================");
 
 		// 1.创建
 		userHibernateDao.save(hibernateEntityForCreate);
@@ -530,10 +586,10 @@ public class DataAccessTest {
 	}
 
 	// @Disabled
-	@Order(7)
+	@Order(8)
 	@Test
 	void testSpringHibernateWithTransaction() {
-		log.info("7======================================================================================");
+		log.info("8======================================================================================");
 		try {
 			userHibernateDao.transactionalMethod1(new UserHibernateEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
 					new UserHibernateEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
@@ -554,10 +610,10 @@ public class DataAccessTest {
 	}
 
 	// @Disabled
-	@Order(8)
+	@Order(9)
 	@Test
 	void testSpringMyBatisCRUD() {
-		log.info("8======================================================================================");
+		log.info("9======================================================================================");
 
 		// 1.创建
 		userMyBatisMapper.save(myBatisEntityForCreate);
@@ -596,10 +652,10 @@ public class DataAccessTest {
 
 	// 由于接口无法注入依赖，以及无法增加异常逻辑，所以这个用例跑不通
 	@Disabled
-	@Order(9)
+	@Order(10)
 	@Test
 	void testSpringMyBatisWithTransaction() {
-		log.info("9======================================================================================");
+		log.info("10======================================================================================");
 		try {
 			userMyBatisMapper.transactionalMethod1(new UserMyBatisEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
 					new UserMyBatisEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
@@ -620,10 +676,10 @@ public class DataAccessTest {
 	}
 
 	@Disabled
-	@Order(10)
+	@Order(11)
 	@Test
 	void testSpringDataJdbcCRUD() {
-		log.info("10======================================================================================");
+		log.info("11======================================================================================");
 		// 1.创建
 		userJdbcRepository.save(jdbcEntityForUpdate);
 
@@ -649,10 +705,10 @@ public class DataAccessTest {
 	}
 
 	@Disabled
-	@Order(11)
+	@Order(12)
 	@Test
 	void testSpringDataJdbcWithTransaction() {
-		log.info("11======================================================================================");
+		log.info("12======================================================================================");
 
 		assertNotNull(userJdbcRepository, "userJdbcRepository should npt be null");
 		try {

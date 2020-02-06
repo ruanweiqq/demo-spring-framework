@@ -42,8 +42,8 @@ public interface JdbcDao<T, ID>
 	List<Map<String, Object>> findAllMap();
 
 	@Override
-	List<Map<String, Object>> findAllMapById(Iterable<ID> ids);
+	List<Map<String, Object>> findAllMapByGtId(ID id);
 
 	@Override
-	List<Map<String, Object>> findAllMapByGtId(ID id);
+	List<Map<String, Object>> findAllMapById(Iterable<ID> ids);
 }

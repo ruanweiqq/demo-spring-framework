@@ -107,7 +107,8 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 		log.info("findById(ID id)");
 
 		// RowMapperResultSetExtractor & BeanPropertyRowMapper
-		T entity = jdbcTemplate.queryForObject(sql_select_by_id, new Object[] { id }, getTClass());
+		T entity = jdbcTemplate.queryForObject(sql_select_by_id, new Object[] { id },
+				new BeanPropertyRowMapper<T>(getTClass()));
 
 		log.info("entity=" + entity);
 		return Optional.ofNullable(entity);
@@ -125,7 +126,7 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 	public List<T> findAll() {
 		log.info("findAll()");
 
-		List<T> entities = jdbcTemplate.queryForList(sql_select_all, getTClass());
+		List<T> entities = jdbcTemplate.query(sql_select_all, new BeanPropertyRowMapper<T>(getTClass()));
 
 		entities.forEach(entity -> log.info("entity=" + entity));
 		return entities;
@@ -136,8 +137,8 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 	public List<T> findAllById(Iterable<ID> ids) {
 		log.info("findAllById(Iterable<ID> ids)");
 
-		List<T> entities = jdbcTemplate.queryForList(sql_select_by_ids, new Object[] { StringUtils.toString(ids) },
-				getTClass());
+		List<T> entities = jdbcTemplate.query(sql_select_by_ids, new Object[] { StringUtils.toString(ids) },
+				new BeanPropertyRowMapper<T>(getTClass()));
 
 		entities.forEach(entity -> log.info("entity=" + entity));
 		return entities;
@@ -148,7 +149,8 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 	public List<T> findAllByGtId(ID id) {
 		log.info("findAllByGtId(ID id)");
 
-		List<T> entities = jdbcTemplate.queryForList(sql_select_by_gt_id, new Object[] { id }, getTClass());
+		List<T> entities = jdbcTemplate.query(sql_select_by_gt_id, new Object[] { id },
+				new BeanPropertyRowMapper<T>(getTClass()));
 		entities.forEach(entity -> log.info("entity=" + entity));
 
 		PreparedStatementSetter pss0 = ps -> ps.setInt(1, (Integer) id);
@@ -237,10 +239,24 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 	public List<Map<String, Object>> findAllMap() {
 		log.info("findAllMap()");
 
-		List<Map<String, Object>> mapEntities = jdbcTemplate.queryForList(sql_select_map_all,
-				EmptySqlParameterSource.INSTANCE);
+		List<Map<String, Object>> mapEntities = jdbcTemplate.queryForList(sql_select_map_all, new Object[] {});
 
 		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
+		return mapEntities;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<Map<String, Object>> findAllMapByGtId(ID id) {
+		log.info("findAllMapById(ID id)");
+
+		List<Map<String, Object>> mapEntities = jdbcTemplate.queryForList(sql_select_map_by_gt_id, new Object[] { id });
+		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
+
+		/*PreparedStatementSetter pss = ps -> ps.setInt(1, (Integer) id);
+		mapEntities = jdbcTemplate.queryForList(sql_select_map_by_gt_id, pss);
+		mapEntities.forEach(mapEntity -> log.info("mapEntity" + mapEntity));*/
+
 		return mapEntities;
 	}
 
@@ -253,24 +269,9 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 				new Object[] { StringUtils.toString(ids) });
 		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
 
-		PreparedStatementSetter pss = ps -> ps.setString(1, StringUtils.toString(ids));
+		/*PreparedStatementSetter pss = ps -> ps.setString(1, StringUtils.toString(ids));
 		mapEntities = jdbcTemplate.queryForList(sql_select_map_by_ids, pss);
-		mapEntities.forEach(mapEntity -> log.info("mapEntity" + mapEntity));
-
-		return mapEntities;
-	}
-
-	@Transactional(readOnly = true)
-	@Override
-	public List<Map<String, Object>> findAllMapByGtId(ID id) {
-		log.info("findAllMapById(ID id)");
-
-		List<Map<String, Object>> mapEntities = jdbcTemplate.queryForList(sql_select_map_by_gt_id, new Object[] { id });
-		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
-
-		PreparedStatementSetter pss = ps -> ps.setInt(1, (Integer) id);
-		mapEntities = jdbcTemplate.queryForList(sql_select_map_by_gt_id, pss);
-		mapEntities.forEach(mapEntity -> log.info("mapEntity" + mapEntity));
+		mapEntities.forEach(mapEntity -> log.info("mapEntity" + mapEntity));*/
 
 		return mapEntities;
 	}

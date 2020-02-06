@@ -95,11 +95,11 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("user").usingGeneratedKeyColumns("id");
 		this.simpleJdbcCall = new SimpleJdbcCall(dataSource);
 	}
-	
+
 	@Override
 	public int deleteAllByGtId(ID id) {
 		log.info("deleteAllByGtId(ID id)");
-		
+
 		Map<String, ID> paramMap = new HashMap<String, ID>();
 		paramMap.put("id", id);
 
@@ -334,20 +334,6 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<Map<String, Object>> findAllMapById(Iterable<ID> ids) {
-		log.info("findAllMapById(Iterable<ID> ids");
-
-		Map<String, String> mapParam = new HashMap<String, String>();
-		mapParam.put("ids", StringUtils.toString(ids));
-		List<Map<String, Object>> mapEntities = namedParameterJdbcTemplate
-				.queryForList(sql_select_map_by_ids_namedParam, mapParam);
-
-		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
-		return mapEntities;
-	}
-
-	@Transactional(readOnly = true)
-	@Override
 	public List<Map<String, Object>> findAllMapByGtId(ID id) {
 		log.info("findAllMapByGtId(ID id)");
 
@@ -355,6 +341,20 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		mapParam.put("id", id);
 		List<Map<String, Object>> mapEntities = namedParameterJdbcTemplate
 				.queryForList(sql_select_map_by_gt_id_namedParam, mapParam);
+
+		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
+		return mapEntities;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<Map<String, Object>> findAllMapById(Iterable<ID> ids) {
+		log.info("findAllMapById(Iterable<ID> ids");
+
+		Map<String, String> mapParam = new HashMap<String, String>();
+		mapParam.put("ids", StringUtils.toString(ids));
+		List<Map<String, Object>> mapEntities = namedParameterJdbcTemplate
+				.queryForList(sql_select_map_by_ids_namedParam, mapParam);
 
 		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
 		return mapEntities;
