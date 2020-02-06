@@ -123,6 +123,7 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 			int row = save(entity);
 			rows += row;
 		}
+		log.info("rows=" + rows);
 		return rows;
 	}
 
@@ -232,6 +233,7 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 			int row = delete(entity);
 			rows += row;
 		}
+		log.info("rows=" + rows);
 		return rows;
 	}
 
@@ -279,6 +281,35 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 
 		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
 		return mapEntities;
+	}
+	
+	@Override
+	public int save(Map<String, ?> mapParam) {
+		log.info("save(Map<String, ?> mapParam)");
+		return _update(sql_insert_namedParam, mapParam, null);
+	}
+
+	@Override
+	public int saveWithKey(Map<String, ?> mapParam) {
+		log.info("saveWithKey(Map<String, ?> mapParam)");
+
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		int rows = _update(sql_insert_namedParam, mapParam, keyHolder);
+		int key = keyHolder.getKey().intValue();
+		log.info("key=" + key + ",rows=" + rows);
+		return key;
+	}
+	
+	@Override
+	public int updateAge(Map<String, ?> mapParam) {
+		log.info("updateAge(Map<String, ?> mapParam)");
+		return _update(sql_update_age_namedParam, mapParam, null);
+	}
+	
+	@Override
+	public int delete(Map<String, ?> mapParam) {
+		log.info("delete(Map<String, ?> mapParam)");
+		return _update(sql_delete_namedParam, mapParam, null);
 	}
 
 	// ==========BatchDao==========
@@ -356,23 +387,6 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 
 	// ==========ExampleDao==========
 	@Override
-	public int save(Map<String, ?> mapParam) {
-		log.info("save(Map<String, ?> mapParam)");
-		return _update(sql_insert_namedParam, mapParam, null);
-	}
-
-	@Override
-	public int saveWithKey(Map<String, ?> mapParam) {
-		log.info("saveWithKey(Map<String, ?> mapParam)");
-
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		int rows = _update(sql_insert_namedParam, mapParam, keyHolder);
-		int key = keyHolder.getKey().intValue();
-		log.info("key=" + key + ",rows=" + rows);
-		return key;
-	}
-
-	@Override
 	public int save(String name, int age, Date birthday) {
 		log.info("save(String name, int age, Date birthday)");
 		throw new UnsupportedOperationException();
@@ -384,22 +398,12 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public int updateAge(Map<String, ?> mapParam) {
-		log.info("updateAge(Map<String, ?> mapParam)");
-		return _update(sql_update_age_namedParam, mapParam, null);
-	}
+	
 
 	@Override
 	public int updateAge(String name, int age, Date birthday) {
 		log.info("updateAge(String name, int age, Date birthday)");
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int delete(Map<String, ?> mapParam) {
-		log.info("delete(Map<String, ?> mapParam)");
-		return _update(sql_delete_namedParam, mapParam, null);
 	}
 
 	@Override

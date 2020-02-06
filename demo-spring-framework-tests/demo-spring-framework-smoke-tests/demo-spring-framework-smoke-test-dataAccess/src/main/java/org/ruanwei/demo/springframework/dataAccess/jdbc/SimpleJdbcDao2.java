@@ -265,6 +265,18 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		return columnMapList;
 	}
 
+	@Override
+	public int updateAge(Map<String, ?> userMap) {
+		log.info("updateAge(Map<String, ?> userMap)");
+		return _update2(sql_update_age, userMap, null);
+	}
+
+	@Override
+	public int delete(Map<String, ?> mapUser) {
+		log.info("delete(Map<String, ?> mapUser)");
+		return _update2(sql_delete, mapUser, null);
+	}
+
 	// ==========BatchDao==========
 	@Override
 	public int[] batchSave(T[] users) {
@@ -388,21 +400,9 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Override
-	public int updateAge(Map<String, ?> userMap) {
-		log.info("updateAge(Map<String, ?> userMap)");
-		return _update2(sql_update_age, userMap, null);
-	}
-
-	@Override
 	public int updateAge(String name, int age, Date birthday) {
 		log.info("updateAge(String name, int age, Date birthday)");
 		return _update2(sql_update_age, name, age, birthday, null);
-	}
-
-	@Override
-	public int delete(Map<String, ?> mapUser) {
-		log.info("delete(Map<String, ?> mapUser)");
-		return _update2(sql_delete, mapUser, null);
 	}
 
 	@Override
@@ -439,7 +439,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		log.info("_update2(String sql, String name, int age, Date birthday, KeyHolder keyHolder)");
 
 		int rows = jdbcTemplate.update(sql, name, age, birthday);
-		
+
 		PreparedStatementSetter pss = ps -> {
 			ps.setString(1, name);
 			ps.setInt(2, age);
@@ -467,7 +467,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		log.info("_update2(String sql, String name, int age, Date birthday, KeyHolder keyHolder)");
 
 		int rows = jdbcTemplate.update(sql, paramMap.get("name"), paramMap.get("age"), paramMap.get("birthday"));
-		
+
 		PreparedStatementSetter pss = ps -> {
 			ps.setString(1, (String) paramMap.get("name"));
 			ps.setInt(2, (Integer) paramMap.get("age"));

@@ -19,4 +19,12 @@ public interface MapDao<ID> {
 	// Iterable<Map<String, Object>> findAllMapById(Iterable<ID> ids);
 
 	Iterable<Map<String, Object>> findAllMapByGtId(ID id);
+
+	int save(Map<String, ?> args);
+
+	int saveWithKey(Map<String, ?> args);
+
+	int updateAge(Map<String, ?> args);
+
+	int delete(Map<String, ?> args);
 }
