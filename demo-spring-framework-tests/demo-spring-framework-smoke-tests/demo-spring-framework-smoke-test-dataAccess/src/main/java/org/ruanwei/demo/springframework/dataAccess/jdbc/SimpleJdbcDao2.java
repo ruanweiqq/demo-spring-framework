@@ -261,48 +261,6 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		return mapEntities;
 	}
 
-	@Override
-	public int save(Map<String, ?> mapParam) {
-		log.info("save(Map<String, ?> mapParam)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int saveWithKey(Map<String, ?> mapParam) {
-		log.info("saveWithKey(Map<String, ?> mapParam)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int updateAge(Map<String, ?> mapParam) {
-		log.info("updateAge(Map<String, ?> mapParam)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int delete(Map<String, ?> mapParam) {
-		log.info("delete(Map<String, ?> mapParam)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchSave(Map<String, ?>[] mapEntities) {
-		log.info("batchSave(Map<String, ?>[] mapEntities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchUpdateAge(Map<String, ?>[] mapEntities) {
-		log.info("batchUpdateAge(Map<String, ?>[] mapEntities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchDelete(Map<String, ?>[] mapEntities) {
-		log.info("batchDelete(Map<String, ?>[] mapEntities)");
-		throw new UnsupportedOperationException();
-	}
-
 	// ==========BatchDao==========
 	@Override
 	public int[] batchSave(T[] entities) {
@@ -359,6 +317,49 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	// ==========ExampleDao==========
+
+	@Override
+	public int save(Map<String, ?> mapParam) {
+		log.info("save(Map<String, ?> mapParam)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int saveWithKey(Map<String, ?> mapParam) {
+		log.info("saveWithKey(Map<String, ?> mapParam)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int updateAge(Map<String, ?> mapParam) {
+		log.info("updateAge(Map<String, ?> mapParam)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int delete(Map<String, ?> mapParam) {
+		log.info("delete(Map<String, ?> mapParam)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchSave(Map<String, ?>[] mapEntities) {
+		log.info("batchSave(Map<String, ?>[] mapEntities)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchUpdateAge(Map<String, ?>[] mapEntities) {
+		log.info("batchUpdateAge(Map<String, ?>[] mapEntities)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchDelete(Map<String, ?>[] mapEntities) {
+		log.info("batchDelete(Map<String, ?>[] mapEntities)");
+		throw new UnsupportedOperationException();
+	}
+
 	@Override
 	public int save(String name, int age, Date birthday) {
 		log.info("save(String name, int age, Date birthday)");
