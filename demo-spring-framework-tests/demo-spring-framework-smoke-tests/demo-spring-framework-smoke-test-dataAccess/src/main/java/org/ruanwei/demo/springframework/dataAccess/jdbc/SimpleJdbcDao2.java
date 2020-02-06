@@ -248,6 +248,22 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 
 	@Transactional(readOnly = true)
 	@Override
+	public List<Map<String, Object>> findAllMapById(Iterable<ID> ids) {
+		log.info("findAllMapById(Iterable<ID> ids");
+
+		List<Map<String, Object>> mapEntities = jdbcTemplate.queryForList(sql_select_map_by_ids,
+				new Object[] { StringUtils.toString(ids) });
+		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
+
+		PreparedStatementSetter pss = ps -> ps.setString(1, StringUtils.toString(ids));
+		mapEntities = jdbcTemplate.queryForList(sql_select_map_by_ids, pss);
+		mapEntities.forEach(mapEntity -> log.info("mapEntity" + mapEntity));
+
+		return mapEntities;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
 	public List<Map<String, Object>> findAllMapByGtId(ID id) {
 		log.info("findAllMapById(ID id)");
 
@@ -256,7 +272,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 
 		PreparedStatementSetter pss = ps -> ps.setInt(1, (Integer) id);
 		mapEntities = jdbcTemplate.queryForList(sql_select_map_by_gt_id, pss);
-		mapEntities.forEach(mapEntity -> log.info("user2" + mapEntity));
+		mapEntities.forEach(mapEntity -> log.info("mapEntity" + mapEntity));
 
 		return mapEntities;
 	}

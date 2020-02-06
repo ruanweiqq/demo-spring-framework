@@ -31,8 +31,8 @@ public interface JdbcDao<T, ID> extends BatchDao<T, ID>, MapDao<T,ID>, ExampleDa
 	@Override
 	List<Map<String, Object>> findAllMap();
 
-	// @Override
-	// List<Map<String, Object>> findAllMapById(Iterable<ID> ids);
+	@Override
+	List<Map<String, Object>> findAllMapById(Iterable<ID> ids);
 
 	@Override
 	List<Map<String, Object>> findAllMapByGtId(ID id);

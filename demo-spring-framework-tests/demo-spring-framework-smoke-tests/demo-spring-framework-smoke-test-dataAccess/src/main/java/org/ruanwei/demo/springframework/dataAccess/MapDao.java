@@ -16,7 +16,7 @@ public interface MapDao<T, ID> extends CrudDao<T, ID> {
 
 	Iterable<Map<String, Object>> findAllMap();
 
-	// Iterable<Map<String, Object>> findAllMapById(Iterable<ID> ids);
+	Iterable<Map<String, Object>> findAllMapById(Iterable<ID> ids);
 
 	@Deprecated
 	Iterable<Map<String, Object>> findAllMapByGtId(ID id);

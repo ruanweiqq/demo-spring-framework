@@ -69,7 +69,7 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	private static final String sql_select_map_by_id_namedParam = "select id, name, age, birthday from user where id = :id";
 
 	private static final String sql_select_by_ids_namedParam = "select * from user where id in (:ids)";
-	private static final String sql_select_map_by_ids_namedParam2 = "select id, name, age, birthday from user where id in (:ids)";
+	private static final String sql_select_map_by_ids_namedParam = "select id, name, age, birthday from user where id in (:ids)";
 
 	private static final String sql_select_by_gt_id_namedParam = "select * from user where id > :id";
 	private static final String sql_select_map_by_gt_id_namedParam = "select id, name, age, birthday from user where id > :id";
@@ -264,6 +264,20 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 
 		List<Map<String, Object>> mapEntities = namedParameterJdbcTemplate.queryForList(sql_select_map_all,
 				EmptySqlParameterSource.INSTANCE);
+
+		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
+		return mapEntities;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<Map<String, Object>> findAllMapById(Iterable<ID> ids) {
+		log.info("findAllMapById(Iterable<ID> ids");
+
+		Map<String, String> mapParam = new HashMap<String, String>();
+		mapParam.put("ids", StringUtils.toString(ids));
+		List<Map<String, Object>> mapEntities = namedParameterJdbcTemplate
+				.queryForList(sql_select_map_by_ids_namedParam, mapParam);
 
 		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
 		return mapEntities;
