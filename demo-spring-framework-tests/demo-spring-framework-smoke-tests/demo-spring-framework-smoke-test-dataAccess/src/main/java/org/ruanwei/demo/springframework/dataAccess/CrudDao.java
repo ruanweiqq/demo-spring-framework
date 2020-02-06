@@ -11,7 +11,7 @@ import java.util.Optional;
  * @param <T>
  * @param <ID>
  */
-public interface CrudDao<T, ID> {
+public interface CrudDao<T, ID> extends Dao<T, ID> {
 
 	// ==========Read==========
 	Optional<T> findById(ID id); // 1
@@ -46,11 +46,4 @@ public interface CrudDao<T, ID> {
 	int deleteAll(Iterable<T> entities); // 10
 
 	int deleteAll(); // 11
-
-	default Class<T> getTClass() {
-		@SuppressWarnings("unchecked")
-		Class<T> tClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass())
-				.getActualTypeArguments()[0];
-		return tClass;
-	}
 }

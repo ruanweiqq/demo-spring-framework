@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.JdbcDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.JdbcExampleDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
 import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.HibernateDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibernateEntity;
@@ -183,13 +184,11 @@ public class DataAccessTest {
 		myBatisEntityForTransactionDelete2 = new UserMyBatisEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06"));
 	}
 
-	@Qualifier("userJdbcDao")
 	@Autowired
 	private JdbcDao<UserJdbcEntity, Integer> userJdbcDao;
 
-	@Qualifier("userJdbcDao2")
 	@Autowired
-	private JdbcDao<UserJdbcEntity, Integer> userJdbcDao2;
+	private JdbcExampleDao<UserJdbcEntity, Integer> userJdbcExampleDao;
 
 	@Autowired
 	private JpaDao<UserJpaEntity, Integer> userJpaDao;
@@ -215,7 +214,7 @@ public class DataAccessTest {
 	void beforeEach() {
 		log.info("beforeEach()==============================");
 		assertNotNull(userJdbcDao, "userJdbcDao should not be null");
-		assertNotNull(userJdbcDao2, "userJdbcDao2 should not be null");
+		assertNotNull(userJdbcExampleDao, "userJdbcDao2 should not be null");
 		assertNotNull(userJpaDao, "userJpaDao should not be null");
 		assertNotNull(userHibernateDao, "userHibernateDao should not be null");
 		assertNotNull(userMyBatisMapper, "userMyBatisMapper should not be null");
@@ -224,7 +223,7 @@ public class DataAccessTest {
 
 		userJdbcDao.delete(beanForUpdateOrDelete);
 		userJdbcDao.delete(mapForUpdateOrDelete);
-		userJdbcDao2.delete(beanForUpdateOrDelete.getName(), beanForUpdateOrDelete.getAge(),
+		userJdbcExampleDao.delete(beanForUpdateOrDelete.getName(), beanForUpdateOrDelete.getAge(),
 				beanForUpdateOrDelete.getBirthday());
 
 		userJdbcDao.batchDelete(beanArrayForBatchUpdateOrDelete);
@@ -290,8 +289,8 @@ public class DataAccessTest {
 		userJdbcDao.save(mapForCreate);
 		userJdbcDao.saveWithKey(mapForCreate);
 
-		userJdbcDao2.save(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
-		userJdbcDao2.saveWithKey(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
+		userJdbcExampleDao.save(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
+		userJdbcExampleDao.saveWithKey(beanForCreate.getName(), beanForCreate.getAge(), beanForCreate.getBirthday());
 
 		List<UserJdbcEntity> allUsers = userJdbcDao.findAll();
 		List<UserJdbcEntity> users1 = userJdbcDao.findAllById(ids);

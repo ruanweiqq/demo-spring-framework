@@ -3,8 +3,7 @@ package org.ruanwei.demo.springframework.dataAccess.jdbc;
 import java.util.List;
 import java.util.Map;
 
-import org.ruanwei.demo.springframework.dataAccess.BatchDao;
-import org.ruanwei.demo.springframework.dataAccess.BatchMapDao;
+import org.ruanwei.demo.springframework.dataAccess.ExampleDao;
 import org.ruanwei.demo.springframework.dataAccess.ExtendDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 
@@ -15,17 +14,7 @@ import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
  * @param <T>
  * @param <ID>
  */
-public interface JdbcDao<T, ID> extends BatchDao<T, ID>, ExtendDao<T,ID>, BatchMapDao, TransactionalDao<T> {
-
-	// ============将CrudDao中的Iterable具体化为List=============
-	@Override
-	List<T> findAll();
-
-	@Override
-	List<T> findAllById(Iterable<ID> ids);
-
-	@Override
-	List<T> findAllByGtId(ID id);
+public interface JdbcExampleDao<T, ID> extends ExtendDao<T, ID>, ExampleDao, TransactionalDao<T> {
 
 	// ============将MapDao中的Iterable具体化为List=============
 	@Override

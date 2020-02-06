@@ -1,6 +1,5 @@
 package org.ruanwei.demo.springframework.dataAccess.jdbc;
 
-import java.sql.Date;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -243,6 +242,43 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		return _update(sql_delete_all, Collections.emptyMap(), null);
 	}
 
+	// ==========BatchDao==========
+	@Override
+	public int[] batchSave(T[] entities) {
+		log.info("batchSave(T[] entities)");
+		return _batchUpdate(sql_insert_namedParam, entities);
+	}
+
+	@Override
+	public int[] batchSave(Collection<T> entities) {
+		log.info("batchSave(Collection<T> entities)");
+		return _batchUpdate(sql_insert_namedParam, entities);
+	}
+
+	@Override
+	public int[] batchUpdateAge(T[] entities) {
+		log.info("batchUpdateAge(T[] entities)");
+		return _batchUpdate(sql_update_age_namedParam, entities);
+	}
+
+	@Override
+	public int[] batchUpdateAge(Collection<T> entities) {
+		log.info("batchUpdateAge(Collection<T> entities)");
+		return _batchUpdate(sql_update_age_namedParam, entities);
+	}
+
+	@Override
+	public int[] batchDelete(T[] entities) {
+		log.info("batchDelete(T[] entities)");
+		return _batchUpdate(sql_delete_namedParam, entities);
+	}
+
+	@Override
+	public int[] batchDelete(Collection<T> entities) {
+		log.info("batchDelete(Collection<T> entities)");
+		return _batchUpdate(sql_delete_namedParam, entities);
+	}
+
 	// ==========MapDao==========
 	@Transactional(readOnly = true)
 	@Override
@@ -297,6 +333,7 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		return mapEntities;
 	}
 
+	// ==========MapDao2==========
 	@Override
 	public int save(Map<String, ?> mapEntity) {
 		log.info("save(Map<String, ?> mapEntity)");
@@ -325,7 +362,8 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		log.info("delete(Map<String, ?> mapEntity)");
 		return _update(sql_delete_namedParam, mapEntity, null);
 	}
-
+	
+	// ==========MapBatchDao==========
 	@Override
 	public int[] batchSave(Map<String, ?>[] mapEntities) {
 		log.info("batchSave(Map<String, ?>[] mapEntities)");
@@ -342,87 +380,6 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	public int[] batchDelete(Map<String, ?>[] mapEntities) {
 		log.info("batchDelete(Map<String, ?>[] mapEntities)");
 		return _batchUpdate(sql_delete_namedParam, mapEntities);
-	}
-
-	// ==========BatchDao==========
-	@Override
-	public int[] batchSave(T[] entities) {
-		log.info("batchSave(T[] entities)");
-		return _batchUpdate(sql_insert_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchSave(Collection<T> entities) {
-		log.info("batchSave(Collection<T> entities)");
-		return _batchUpdate(sql_insert_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchSave(List<Object[]> batchArgs) {
-		log.info("batchSave(List<Object[]> batchArgs");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchUpdateAge(T[] entities) {
-		log.info("batchUpdateAge(T[] entities)");
-		return _batchUpdate(sql_update_age_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchUpdateAge(Collection<T> entities) {
-		log.info("batchUpdateAge(Collection<T> entities)");
-		return _batchUpdate(sql_update_age_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchUpdateAge(List<Object[]> batchArgs) {
-		log.info("batchUpdateAge(List<Object[]> batchArgs)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchDelete(T[] entities) {
-		log.info("batchDelete(T[] entities)");
-		return _batchUpdate(sql_delete_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchDelete(Collection<T> entities) {
-		log.info("batchDelete(Collection<T> entities)");
-		return _batchUpdate(sql_delete_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchDelete(List<Object[]> batchArgs) {
-		log.info("batchDelete(List<Object[]> batchArgs)");
-		throw new UnsupportedOperationException();
-	}
-
-	// ==========ExampleDao==========
-
-	@Override
-	public int save(String name, int age, Date birthday) {
-		log.info("save(String name, int age, Date birthday)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int saveWithKey(String name, int age, Date birthday) {
-		log.info("saveWithKey(String name, int age, Date birthday)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int updateAge(String name, int age, Date birthday) {
-		log.info("updateAge(String name, int age, Date birthday)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int delete(String name, int age, Date birthday) {
-		log.info("delete(String name, int age, Date birthday)");
-		throw new UnsupportedOperationException();
 	}
 
 	// ==========TransactionalDao==========

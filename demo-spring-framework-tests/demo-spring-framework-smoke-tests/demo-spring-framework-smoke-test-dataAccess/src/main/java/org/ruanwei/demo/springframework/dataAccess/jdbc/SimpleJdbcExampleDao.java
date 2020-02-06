@@ -4,7 +4,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +47,8 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Transactional("transactionManager")
-public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
-	private static Log log = LogFactory.getLog(SimpleJdbcDao2.class);
+public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
+	private static Log log = LogFactory.getLog(SimpleJdbcExampleDao.class);
 
 	// 1.core JdbcTemplate & NamedParameterJdbcTemplate thread-safe
 	// named parameters instead of the traditional JDBC "?" placeholders.
@@ -103,7 +102,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 
 	// ==========CrudDao==========
 	@Transactional(readOnly = true)
-	@Override
+	// @Override
 	public Optional<T> findById(ID id) {
 		log.info("findById(ID id)");
 
@@ -115,14 +114,14 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Transactional(readOnly = true)
-	@Override
+	// @Override
 	public boolean existsById(ID id) {
 		log.info("existsById(ID id)");
 		return findById(id) != null;
 	}
 
 	@Transactional(readOnly = true)
-	@Override
+	// @Override
 	public List<T> findAll() {
 		log.info("findAll()");
 
@@ -133,7 +132,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Transactional(readOnly = true)
-	@Override
+	// @Override
 	public List<T> findAllById(Iterable<ID> ids) {
 		log.info("findAllById(Iterable<ID> ids)");
 
@@ -145,7 +144,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Transactional(readOnly = true)
-	@Override
+	// @Override
 	public List<T> findAllByGtId(ID id) {
 		log.info("findAllByGtId(ID id)");
 
@@ -160,7 +159,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Transactional(readOnly = true)
-	@Override
+	// @Override
 	public long count() {
 		log.info("count()");
 
@@ -171,50 +170,14 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		return count;
 	}
 
-	@Override
-	public int save(T entity) {
-		log.info("save(T entity)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int saveWithKey(T entity) {
-		log.info("saveWithKey(T entity)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int saveAll(Iterable<T> entities) {
-		log.info("saveAll(Iterable<T> entities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int updateAge(T entity) {
-		log.info("updateAge(T entity)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
+	// @Override
 	public int deleteById(ID id) {
 		log.info("deleteById(ID id)");
 		int rows = jdbcTemplate.update(sql_delete_by_id, id);
 		return rows;
 	}
 
-	@Override
-	public int delete(T entity) {
-		log.info("delete(T entity)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int deleteAll(Iterable<T> entities) {
-		log.info("deleteAll(Iterable<T> entities");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
+	// @Override
 	public int deleteAll() {
 		log.info("deleteAll()");
 		int rows = jdbcTemplate.update(sql_delete_all, new Object[] {});
@@ -277,77 +240,11 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		return mapEntities;
 	}
 
-	@Override
-	public int save(Map<String, ?> mapEntity) {
-		log.info("save(Map<String, ?> mapEntity)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int saveWithKey(Map<String, ?> mapEntity) {
-		log.info("saveWithKey(Map<String, ?> mapEntity)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int updateAge(Map<String, ?> mapEntity) {
-		log.info("updateAge(Map<String, ?> mapEntity)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int delete(Map<String, ?> mapEntity) {
-		log.info("delete(Map<String, ?> mapEntity)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchSave(Map<String, ?>[] mapEntities) {
-		log.info("batchSave(Map<String, ?>[] mapEntities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchUpdateAge(Map<String, ?>[] mapEntities) {
-		log.info("batchUpdateAge(Map<String, ?>[] mapEntities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchDelete(Map<String, ?>[] mapEntities) {
-		log.info("batchDelete(Map<String, ?>[] mapEntities)");
-		throw new UnsupportedOperationException();
-	}
-
-	// ==========BatchDao==========
-	@Override
-	public int[] batchSave(T[] entities) {
-		log.info("batchSave(T[] entities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchSave(Collection<T> entities) {
-		log.info("batchSave(Collection<T> entities)");
-		throw new UnsupportedOperationException();
-	}
-
+	// ==========ExampleDao==========
 	@Override
 	public int[] batchSave(List<Object[]> batchArgs) {
 		log.info("batchSave(List<Object[]> batchArgs");
 		return jdbcTemplate.batchUpdate(sql_insert, batchArgs);
-	}
-
-	@Override
-	public int[] batchUpdateAge(T[] entities) {
-		log.info("batchUpdateAge(T[] entities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchUpdateAge(Collection<T> entities) {
-		log.info("batchUpdateAge(Collection<T> entities)");
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -357,42 +254,17 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Override
-	public int[] batchDelete(T[] entities) {
-		log.info("batchDelete(T[] entities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchDelete(Collection<T> entities) {
-		log.info("batchDelete(Collection<T> entities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public int[] batchDelete(List<Object[]> batchArgs) {
 		log.info("batchDelete(List<Object[]> batchArgs)");
 		return jdbcTemplate.batchUpdate(sql_delete, batchArgs);
 	}
 
-	// ==========ExampleDao==========
 	@Override
 	public int save(String name, int age, Date birthday) {
 		log.info("save(String name, int age, Date birthday)");
 
 		int rows = _update2(sql_insert, name, age, birthday, null);
 		return rows;
-	}
-
-	public void save2(String name, int age, Date birthday) {
-		log.info("insertUserJdbcEntity6(UserJdbcEntity user)");
-		Map<String, Object> parameters = new HashMap<String, Object>(3);
-		parameters.put("name", name);
-		parameters.put("age", age);
-		parameters.put("birthday", birthday);
-
-		simpleJdbcInsert.execute(parameters);
-		Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);
-		log.info("generatedKey=" + newId.longValue());
 	}
 
 	@Override
@@ -404,6 +276,18 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		int key = keyHolder.getKey().intValue();
 		log.info("key=" + key + ",rows=" + rows);
 		return key;
+	}
+
+	public void saveWithKey2(String name, int age, Date birthday) {
+		log.info("saveWithKey2(String name, int age, Date birthday)");
+		Map<String, Object> parameters = new HashMap<String, Object>(3);
+		parameters.put("name", name);
+		parameters.put("age", age);
+		parameters.put("birthday", birthday);
+
+		simpleJdbcInsert.execute(parameters);
+		Number newId = simpleJdbcInsert.executeAndReturnKey(parameters);
+		log.info("generatedKey=" + newId.longValue());
 	}
 
 	@Override
@@ -428,7 +312,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	public void transactionalMethod1(T entity1, T entity2) {
 		log.info("transactionalMethod1(T entity1, T entity2)" + entity1 + entity2);
 
-		save(entity1);
+		save("ruanwei_tmp", 1, Date.valueOf("1983-07-06"));
 
 		userTransactionnalJdbcDao.transactionalMethod2(entity2);
 

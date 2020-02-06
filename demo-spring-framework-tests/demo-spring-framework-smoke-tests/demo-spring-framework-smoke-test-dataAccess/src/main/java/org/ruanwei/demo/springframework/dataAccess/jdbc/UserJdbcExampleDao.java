@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
  * @author ruanwei
  *
  */
-@Repository("userJdbcDao2")
-public class UserJdbcDao2 extends SimpleJdbcDao2<UserJdbcEntity, Integer> {
-	private static Log log = LogFactory.getLog(UserJdbcDao2.class);
+@Repository
+public class UserJdbcExampleDao extends SimpleJdbcExampleDao<UserJdbcEntity, Integer> {
+	private static Log log = LogFactory.getLog(UserJdbcExampleDao.class);
 
 }
