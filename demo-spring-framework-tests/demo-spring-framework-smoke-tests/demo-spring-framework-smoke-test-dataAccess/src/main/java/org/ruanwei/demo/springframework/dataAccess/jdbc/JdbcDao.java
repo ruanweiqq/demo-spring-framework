@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.ruanwei.demo.springframework.dataAccess.BatchDao;
-import org.ruanwei.demo.springframework.dataAccess.CrudDao;
 import org.ruanwei.demo.springframework.dataAccess.ExampleDao;
 import org.ruanwei.demo.springframework.dataAccess.MapDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
@@ -16,7 +15,7 @@ import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
  * @param <T>
  * @param <ID>
  */
-public interface JdbcDao<T, ID> extends CrudDao<T, ID>, BatchDao<T, ID>, MapDao<ID>, ExampleDao, TransactionalDao<T> {
+public interface JdbcDao<T, ID> extends BatchDao<T, ID>, MapDao<ID>, ExampleDao, TransactionalDao<T> {
 
 	// ============将CrudDao中的Iterable具体化为List=============
 	@Override

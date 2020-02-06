@@ -12,7 +12,7 @@ import java.util.Map;
  * @param <T>
  * @param <ID>
  */
-public interface BatchDao<T, ID> {
+public interface BatchDao<T, ID> extends CrudDao<T, ID> {
 
 	// ==========Batch Create==========
 	public int[] batchSave(T[] entities);
