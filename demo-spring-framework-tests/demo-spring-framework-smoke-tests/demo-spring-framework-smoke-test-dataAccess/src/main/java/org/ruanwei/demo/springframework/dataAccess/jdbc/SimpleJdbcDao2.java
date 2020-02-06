@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
 import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -104,6 +102,75 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	// ==========CrudDao==========
+	@Transactional(readOnly = true)
+	@Override
+	public Optional<T> findById(ID id) {
+		log.info("findById(ID id)");
+
+		// RowMapperResultSetExtractor & BeanPropertyRowMapper
+		T entity = jdbcTemplate.queryForObject(sql_select_by_id1, new Object[] { id }, getTClass());
+
+		log.info("entity=" + entity);
+		return Optional.ofNullable(entity);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public boolean existsById(ID id) {
+		log.info("existsById(ID id)");
+		return findById(id) != null;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<T> findAll() {
+		log.info("findAll()");
+
+		List<T> entities = jdbcTemplate.queryForList(sql_select_all1, getTClass());
+
+		entities.forEach(entity -> log.info("entity=" + entity));
+		return entities;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<T> findAllById(Iterable<ID> ids) {
+		log.info("findAllById(Iterable<ID> ids)");
+
+		List<T> entities = jdbcTemplate.queryForList(sql_select_by_ids1, new Object[] { StringUtils.toString(ids) },
+				getTClass());
+
+		entities.forEach(entity -> log.info("entity=" + entity));
+		return entities;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<T> findAllByGtId(ID id) {
+		log.info("findAllByGtId(ID id)");
+
+		List<T> entities = jdbcTemplate.queryForList(sql_select_by_gt_id2, new Object[] { id }, getTClass());
+		entities.forEach(entity -> log.info("entity=" + entity));
+
+		PreparedStatementSetter pss0 = ps -> ps.setInt(1, (Integer) id);
+		entities = jdbcTemplate.query(sql_select_by_gt_id2, pss0, new BeanPropertyRowMapper<T>(getTClass()));
+		entities.forEach(entity -> log.info("entity" + entity));
+
+		return entities;
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public long count() {
+		log.info("count()");
+
+		// RowMapperResultSetExtractor & SingleColumnRowMapper
+		Integer count = jdbcTemplate.queryForObject(sql_select_count, Integer.class);
+
+		log.info("count=" + count);
+		return count;
+	}
+
 	@Override
 	public int save(T entity) {
 		log.info("save(T entity)");
@@ -117,125 +184,54 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Override
-	public int saveAll(Iterable<T> users) {
-		log.info("saveAll(Iterable<T> users)");
+	public int saveAll(Iterable<T> entities) {
+		log.info("saveAll(Iterable<T> entities)");
 		throw new UnsupportedOperationException();
 	}
 
-	// RowMapperResultSetExtractor & BeanPropertyRowMapper
-	@Transactional(readOnly = true)
 	@Override
-	public Optional<T> findById(ID id) {
-		log.info("findById(ID id)");
-
-		T user = jdbcTemplate.queryForObject(sql_select_by_id1, new Object[] { id }, getTClass());
-
-		log.info("user=" + user);
-		return Optional.ofNullable(user);
-	}
-
-	@Transactional(readOnly = true)
-	@Override
-	public boolean existsById(ID id) {
-		log.info("existsById(ID id)");
-		return findById(id) == null;
-	}
-
-	@Transactional(readOnly = true)
-	@Override
-	public List<T> findAll() {
-		log.info("findAll()");
-
-		List<T> userList = jdbcTemplate.queryForList(sql_select_all1, getTClass());
-
-		userList.forEach(user -> log.info("user=" + user));
-		return userList;
-	}
-
-	@Transactional(readOnly = true)
-	@Override
-	public List<T> findAllById(Iterable<ID> ids) {
-		log.info("findAllById(Iterable<Integer> ids)");
-
-		List<T> userList = jdbcTemplate.queryForList(sql_select_by_ids1, new Object[] { StringUtils.toString(ids) },
-				getTClass());
-
-		userList.forEach(user -> log.info("user=" + user));
-		return userList;
-	}
-
-	@Transactional(readOnly = true)
-	@Override
-	public List<T> findAllByGtId(ID id) {
-		log.info("findAllByGtId(Integer id)");
-
-		List<T> userList = jdbcTemplate.queryForList(sql_select_by_gt_id2, new Object[] { id }, getTClass());
-		userList.forEach(user -> log.info("user1=" + user));
-
-		PreparedStatementSetter pss0 = ps -> ps.setInt(1, (Integer) id);
-		userList = jdbcTemplate.query(sql_select_by_gt_id2, pss0, new BeanPropertyRowMapper<T>(getTClass()));
-		userList.forEach(user -> log.info("user2" + user));
-
-		return userList;
-	}
-
-	// RowMapperResultSetExtractor & SingleColumnRowMapper
-	@Transactional(readOnly = true)
-	@Override
-	public long count() {
-		log.info("count()");
-
-		Integer count = jdbcTemplate.queryForObject(sql_select_count, Integer.class);
-
-		log.info("count=" + count);
-		return count;
-	}
-
-	@Override
-	public int updateAge(T user) {
-		log.info("updateAge(T user)");
+	public int updateAge(T entity) {
+		log.info("updateAge(T entity)");
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int deleteById(ID id) {
 		log.info("deleteById(ID id)");
-
-		Map<String, ID> paramMap = new HashMap<String, ID>();
-		paramMap.put("id", id);
-
-		return _update2(sql_delete_by_id, paramMap, null);
+		int rows = jdbcTemplate.update(sql_delete_by_id, id);
+		return rows;
 	}
 
 	@Override
-	public int delete(T user) {
-		log.info("delete(T user)");
+	public int delete(T entity) {
+		log.info("delete(T entity)");
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int deleteAll(Iterable<T> users) {
-		log.info("deleteAll(Iterable<T> users");
+	public int deleteAll(Iterable<T> entities) {
+		log.info("deleteAll(Iterable<T> entities");
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int deleteAll() {
 		log.info("deleteAll()");
-		return _update2(sql_delete_all, Collections.emptyMap(), null);
+		int rows = jdbcTemplate.update(sql_delete_all, new Object[] {});
+		return rows;
 	}
 
 	// ==========MapDao==========
-	// RowMapperResultSetExtractor & ColumnMapRowMapper
 	@Transactional(readOnly = true)
 	@Override
 	public Map<String, ?> findMapById(ID id) {
 		log.info("findMapById(ID id)");
 
-		Map<String, Object> columnMap = jdbcTemplate.queryForMap(sql_select_by_id2, id);
+		// RowMapperResultSetExtractor & ColumnMapRowMapper
+		Map<String, Object> mapEntity = jdbcTemplate.queryForMap(sql_select_by_id2, id);
 
-		columnMap.forEach((k, v) -> log.info(k + "=" + v));
-		return columnMap;
+		mapEntity.forEach((k, v) -> log.info(k + "=" + v));
+		return mapEntity;
 	}
 
 	@Transactional(readOnly = true)
@@ -243,11 +239,11 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	public List<Map<String, Object>> findAllMap() {
 		log.info("findAllMap()");
 
-		List<Map<String, Object>> columnMapList = jdbcTemplate.queryForList(sql_select_all2,
+		List<Map<String, Object>> mapEntities = jdbcTemplate.queryForList(sql_select_all2,
 				EmptySqlParameterSource.INSTANCE);
 
-		columnMapList.forEach(columbMap -> columbMap.forEach((k, v) -> log.info(k + "=" + v)));
-		return columnMapList;
+		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
+		return mapEntities;
 	}
 
 	@Transactional(readOnly = true)
@@ -255,56 +251,68 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	public List<Map<String, Object>> findAllMapByGtId(ID id) {
 		log.info("findAllMapById(ID id)");
 
-		List<Map<String, Object>> columnMapList = jdbcTemplate.queryForList(sql_select_by_gt_id1, new Object[] { id });
-		columnMapList.forEach(columbMap -> columbMap.forEach((k, v) -> log.info(k + "=" + v)));
+		List<Map<String, Object>> mapEntities = jdbcTemplate.queryForList(sql_select_by_gt_id1, new Object[] { id });
+		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
 
-		PreparedStatementSetter pss0 = ps -> ps.setInt(1, (Integer) id);
-		columnMapList = jdbcTemplate.queryForList(sql_select_by_gt_id1, pss0);
-		columnMapList.forEach(columbMap -> log.info("user2" + columbMap));
+		PreparedStatementSetter pss = ps -> ps.setInt(1, (Integer) id);
+		mapEntities = jdbcTemplate.queryForList(sql_select_by_gt_id1, pss);
+		mapEntities.forEach(mapEntity -> log.info("user2" + mapEntity));
 
-		return columnMapList;
+		return mapEntities;
 	}
 
 	@Override
-	public int updateAge(Map<String, ?> userMap) {
-		log.info("updateAge(Map<String, ?> userMap)");
-		return _update2(sql_update_age, userMap, null);
-	}
-
-	@Override
-	public int delete(Map<String, ?> mapUser) {
-		log.info("delete(Map<String, ?> mapUser)");
-		return _update2(sql_delete, mapUser, null);
-	}
-
-	@Override
-	public int[] batchSave(Map<String, Object>[] users) {
-		log.info("batchSave(Map<String, Object>[] users)");
+	public int save(Map<String, ?> mapParam) {
+		log.info("save(Map<String, ?> mapParam)");
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int[] batchUpdateAge(Map<String, Object>[] users) {
-		log.info("batchUpdateAge(Map<String, Object>[] users)");
+	public int saveWithKey(Map<String, ?> mapParam) {
+		log.info("saveWithKey(Map<String, ?> mapParam)");
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int[] batchDelete(Map<String, Object>[] users) {
-		log.info("batchDelete(Map<String, Object>[] users)");
+	public int updateAge(Map<String, ?> mapParam) {
+		log.info("updateAge(Map<String, ?> mapParam)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int delete(Map<String, ?> mapParam) {
+		log.info("delete(Map<String, ?> mapParam)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchSave(Map<String, ?>[] mapEntities) {
+		log.info("batchSave(Map<String, ?>[] mapEntities)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchUpdateAge(Map<String, ?>[] mapEntities) {
+		log.info("batchUpdateAge(Map<String, ?>[] mapEntities)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchDelete(Map<String, ?>[] mapEntities) {
+		log.info("batchDelete(Map<String, ?>[] mapEntities)");
 		throw new UnsupportedOperationException();
 	}
 
 	// ==========BatchDao==========
 	@Override
-	public int[] batchSave(T[] users) {
-		log.info("batchSave(T[] users)");
+	public int[] batchSave(T[] entities) {
+		log.info("batchSave(T[] entities)");
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int[] batchSave(Collection<T> users) {
-		log.info("batchSave(Collection<T> users)");
+	public int[] batchSave(Collection<T> entities) {
+		log.info("batchSave(Collection<T> entities)");
 		throw new UnsupportedOperationException();
 	}
 
@@ -315,14 +323,14 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Override
-	public int[] batchUpdateAge(T[] users) {
-		log.info("batchUpdateAge(T[] users)");
+	public int[] batchUpdateAge(T[] entities) {
+		log.info("batchUpdateAge(T[] entities)");
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int[] batchUpdateAge(Collection<T> users) {
-		log.info("batchUpdateAge(Collection<T> users)");
+	public int[] batchUpdateAge(Collection<T> entities) {
+		log.info("batchUpdateAge(Collection<T> entities)");
 		throw new UnsupportedOperationException();
 	}
 
@@ -333,14 +341,14 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Override
-	public int[] batchDelete(T[] users) {
-		log.info("batchDelete(T[] users)");
+	public int[] batchDelete(T[] entities) {
+		log.info("batchDelete(T[] entities)");
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int[] batchDelete(Collection<T> users) {
-		log.info("batchDelete(Collection<T> users)");
+	public int[] batchDelete(Collection<T> entities) {
+		log.info("batchDelete(Collection<T> entities)");
 		throw new UnsupportedOperationException();
 	}
 
@@ -351,23 +359,6 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	// ==========ExampleDao==========
-	@Override
-	public int save(Map<String, ?> paramMap) {
-		log.info("save(Map<String, ?> paramMap)");
-		return _update2(sql_insert, paramMap, null);
-	}
-
-	@Override
-	public int saveWithKey(Map<String, ?> userMap) {
-		log.info("saveWithKey(Map<String, ?> userMap)");
-
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		int rows = _update2(sql_insert, userMap, keyHolder);
-		int key = keyHolder.getKey().intValue();
-		log.info("key=" + key + ",rows=" + rows);
-		return key;
-	}
-
 	@Override
 	public int save(String name, int age, Date birthday) {
 		log.info("save(String name, int age, Date birthday)");
@@ -429,8 +420,8 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Override
-	public void transactionalMethod2(T user) {
-		log.info("transactionalMethod2(T user)" + user);
+	public void transactionalMethod2(T entity) {
+		log.info("transactionalMethod2(T entity)" + entity);
 		throw new UnsupportedOperationException();
 	}
 
@@ -463,37 +454,8 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		return rows;
 	}
 
-	private int _update2(String sql, Map<String, ?> paramMap, KeyHolder keyHolder) {
-		log.info("_update2(String sql, String name, int age, Date birthday, KeyHolder keyHolder)");
-
-		int rows = jdbcTemplate.update(sql, paramMap.get("name"), paramMap.get("age"), paramMap.get("birthday"));
-
-		PreparedStatementSetter pss = ps -> {
-			ps.setString(1, (String) paramMap.get("name"));
-			ps.setInt(2, (Integer) paramMap.get("age"));
-			ps.setDate(3, (Date) paramMap.get("birthday"));
-		};
-		rows = jdbcTemplate.update(sql, pss);
-
-		PreparedStatementCreator psc = conn -> {
-			PreparedStatement ps = conn.prepareStatement(sql, new String[] { "id" });
-			ps.setString(1, (String) paramMap.get("name"));
-			ps.setInt(2, (Integer) paramMap.get("age"));
-			ps.setDate(3, (Date) paramMap.get("birthday"));
-			return ps;
-		};
-		if (keyHolder == null) {
-			rows = jdbcTemplate.update(psc);
-		} else {
-			rows = jdbcTemplate.update(psc, keyHolder);
-		}
-		return rows;
-	}
-
 	private int[] _batchUpdate2(String sql, List<Object[]> batchArgs) {
 		log.info("_batchUpdate2(String sql, List<Object[]> batchArgs)");
-
-		int[] updateCounts = jdbcTemplate.batchUpdate(sql, batchArgs);
 
 		BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
 			@Override
@@ -508,22 +470,18 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 				return batchArgs.size();
 			}
 		};
-		updateCounts = jdbcTemplate.batchUpdate(sql, bpss);
+		int[] updateCounts = jdbcTemplate.batchUpdate(sql, bpss);
 
-		return updateCounts;
-	}
-
-	private int[][] _batchUpdate2(String sql, Collection<Object[]> batchArgs) {
-		log.info("_batchUpdate2(String sql, Collection<Object[]> batchArgs)");
-
-		ParameterizedPreparedStatementSetter<Object[]> uppss = (ps, args) -> {
+		ParameterizedPreparedStatementSetter<Object[]> ppss = (ps, args) -> {
 			ps.setString(1, (String) args[0]);
 			ps.setInt(2, (Integer) args[1]);
 			ps.setDate(3, (Date) args[2]);
 		};
-		int[][] updateCounts2 = jdbcTemplate.batchUpdate(sql, batchArgs, 2, uppss);
+		int[][] updateCounts2 = jdbcTemplate.batchUpdate(sql, batchArgs, 2, ppss);
 
-		return updateCounts2;
+		updateCounts = jdbcTemplate.batchUpdate(sql, batchArgs);
+
+		return updateCounts;
 	}
 
 	// ====================SimpleJdbc====================
@@ -535,10 +493,10 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 						new SqlOutParameter("out_name", Types.VARCHAR), new SqlOutParameter("out_age", Types.VARCHAR),
 						new SqlOutParameter("out_birthday", Types.DATE));
 		Map<String, Object> out = simpleJdbcCall.execute(in);
-		UserJdbcEntity user = new UserJdbcEntity();
-		user.setName((String) out.get("out_name"));
-		user.setAge((int) out.get("out_age"));
-		user.setBirthday((Date) out.get("out_birthday"));
+
+		log.info("name=" + out.get("out_name"));
+		log.info("age=" + out.get("out_age"));
+		log.info("birthday=" + out.get("out_birthday"));
 	}
 
 	public void createTable() {

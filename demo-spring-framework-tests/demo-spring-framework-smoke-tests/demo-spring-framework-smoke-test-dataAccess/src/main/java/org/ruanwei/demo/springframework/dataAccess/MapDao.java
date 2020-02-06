@@ -3,7 +3,6 @@ package org.ruanwei.demo.springframework.dataAccess;
 import java.util.Map;
 
 /**
- * 一共有11个接口是必须实现的,与org.springframework.data.repository.CrudRepository一致
  * 
  * @author ruanwei
  *
@@ -12,28 +11,33 @@ import java.util.Map;
  */
 public interface MapDao<T, ID> extends CrudDao<T, ID> {
 
+	// ==========Read==========
 	Map<String, ?> findMapById(ID id);
 
 	Iterable<Map<String, Object>> findAllMap();
 
 	// Iterable<Map<String, Object>> findAllMapById(Iterable<ID> ids);
 
+	@Deprecated
 	Iterable<Map<String, Object>> findAllMapByGtId(ID id);
 
+	// ==========Create==========
 	int save(Map<String, ?> args);
 
 	int saveWithKey(Map<String, ?> args);
-
+	
+	// ==========Update==========
 	int updateAge(Map<String, ?> args);
 
+	// ==========Delete==========
 	int delete(Map<String, ?> args);
 
 	@Deprecated
-	public int[] batchSave(Map<String, Object>[] batchArgs);
+	public int[] batchSave(Map<String, ?>[] batchArgs);
 
 	@Deprecated
-	public int[] batchUpdateAge(Map<String, Object>[] batchArgs);
+	public int[] batchUpdateAge(Map<String, ?>[] batchArgs);
 
 	@Deprecated
-	int[] batchDelete(Map<String, Object>[] batchArgs);
+	int[] batchDelete(Map<String, ?>[] batchArgs);
 }

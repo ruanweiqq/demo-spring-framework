@@ -94,39 +94,6 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	// ==========CrudDao==========
-	@Override
-	public int save(T entity) {
-		log.info("save(T entity)");
-		return _update(sql_insert_namedParam, entity, null);
-	}
-
-	@Override
-	public int saveWithKey(T entity) {
-		log.info("saveWithKey(T entity)");
-
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		int rows = _update(sql_insert_namedParam, entity, keyHolder);
-		int key = keyHolder.getKey().intValue();
-		// see @TransactionalEventListener
-		applicationEventPublisher.publishEvent(new SaveEvent<T, Integer>(entity, key));
-
-		log.info("key=" + key + ",rows=" + rows);
-		return key;
-	}
-
-	@Override
-	public int saveAll(Iterable<T> entities) {
-		log.info("saveAll(Iterable<T> entities)");
-
-		int rows = 0;
-		for (T entity : entities) {
-			int row = save(entity);
-			rows += row;
-		}
-		log.info("rows=" + rows);
-		return rows;
-	}
-
 	@Transactional(readOnly = true)
 	@Override
 	public Optional<T> findById(ID id) {
@@ -189,17 +156,50 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		return entities;
 	}
 
-	// RowMapperResultSetExtractor & SingleColumnRowMapper
 	@Transactional(readOnly = true)
 	@Override
 	public long count() {
 		log.info("count()");
 
+		// RowMapperResultSetExtractor & SingleColumnRowMapper
 		Integer count = namedParameterJdbcTemplate.queryForObject(sql_select_count, EmptySqlParameterSource.INSTANCE,
 				Integer.class);
 
 		log.info("count=" + count);
 		return count;
+	}
+
+	@Override
+	public int save(T entity) {
+		log.info("save(T entity)");
+		return _update(sql_insert_namedParam, entity, null);
+	}
+
+	@Override
+	public int saveWithKey(T entity) {
+		log.info("saveWithKey(T entity)");
+
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		int rows = _update(sql_insert_namedParam, entity, keyHolder);
+		int key = keyHolder.getKey().intValue();
+		// see @TransactionalEventListener
+		applicationEventPublisher.publishEvent(new SaveEvent<T, Integer>(entity, key));
+
+		log.info("key=" + key + ",rows=" + rows);
+		return key;
+	}
+
+	@Override
+	public int saveAll(Iterable<T> entities) {
+		log.info("saveAll(Iterable<T> entities)");
+
+		int rows = 0;
+		for (T entity : entities) {
+			int row = save(entity);
+			rows += row;
+		}
+		log.info("rows=" + rows);
+		return rows;
 	}
 
 	@Override
@@ -313,20 +313,20 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Override
-	public int[] batchSave(Map<String, Object>[] mapEntities) {
-		log.info("batchSave(Map<String, Object>[] mapEntities)");
+	public int[] batchSave(Map<String, ?>[] mapEntities) {
+		log.info("batchSave(Map<String, ?>[] mapEntities)");
 		return _batchUpdate(sql_insert_namedParam, mapEntities);
 	}
 
 	@Override
-	public int[] batchUpdateAge(Map<String, Object>[] mapEntities) {
-		log.info("batchUpdateAge(Map<String, Object>[] mapEntities)");
+	public int[] batchUpdateAge(Map<String, ?>[] mapEntities) {
+		log.info("batchUpdateAge(Map<String, ?>[] mapEntities)");
 		return _batchUpdate(sql_update_age_namedParam, mapEntities);
 	}
 
 	@Override
-	public int[] batchDelete(Map<String, Object>[] mapEntities) {
-		log.info("batchDelete(Map<String, Object>[] mapEntities)");
+	public int[] batchDelete(Map<String, ?>[] mapEntities) {
+		log.info("batchDelete(Map<String, ?>[] mapEntities)");
 		return _batchUpdate(sql_delete_namedParam, mapEntities);
 	}
 
@@ -466,17 +466,17 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		return namedParameterJdbcTemplate.batchUpdate(sql, batch);
 	}
 
-	private int[] _batchUpdate(String sql, Map<String, ?>[] valueMaps) {
-		log.info("_batchUpdate(Map<String, ?>[] valueMaps)");
-
-		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(valueMaps);
-		return namedParameterJdbcTemplate.batchUpdate(sql, batch);
-	}
-
 	private int[] _batchUpdate(String sql, Collection<?> candidates) {
 		log.info("_batchUpdate(Collection<?> candidates)");
 
 		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(candidates);
+		return namedParameterJdbcTemplate.batchUpdate(sql, batch);
+	}
+
+	private int[] _batchUpdate(String sql, Map<String, ?>[] valueMaps) {
+		log.info("_batchUpdate(Map<String, ?>[] valueMaps)");
+
+		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(valueMaps);
 		return namedParameterJdbcTemplate.batchUpdate(sql, batch);
 	}
 }

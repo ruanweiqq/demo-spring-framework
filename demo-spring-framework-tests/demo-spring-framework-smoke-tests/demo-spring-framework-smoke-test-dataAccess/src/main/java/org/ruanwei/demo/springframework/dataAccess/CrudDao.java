@@ -4,7 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
 
 /**
- * 一共13个接口中有11个接口是必须实现的,与org.springframework.data.repository.CrudRepository一致
+ * 一共13个接口，其中有11个接口是必须实现的,与org.springframework.data.repository.CrudRepository一致
  * 
  * @author ruanwei
  *
@@ -13,27 +13,29 @@ import java.util.Optional;
  */
 public interface CrudDao<T, ID> {
 
-	// ==========Create==========
-	int save(T entity); // 1
-	
-	int saveWithKey(T entity);
-
-	int saveAll(Iterable<T> entities); // 2
-
 	// ==========Read==========
-	Optional<T> findById(ID id); // 3
+	Optional<T> findById(ID id); // 1
 
-	boolean existsById(ID id); // 4
+	boolean existsById(ID id); // 2
 
-	Iterable<T> findAll(); // 5
+	Iterable<T> findAll(); // 3
 
-	Iterable<T> findAllById(Iterable<ID> ids); // 6
+	Iterable<T> findAllById(Iterable<ID> ids); // 4
 
+	@Deprecated
 	Iterable<T> findAllByGtId(ID id);
 
-	long count(); // 7
+	long count(); // 5
+
+	// ==========Create==========
+	int save(T entity); // 6
+
+	int saveWithKey(T entity);
+
+	int saveAll(Iterable<T> entities); // 7
 
 	// ==========Update==========
+	@Deprecated
 	int updateAge(T entity);
 
 	// ==========Delete==========
@@ -46,6 +48,7 @@ public interface CrudDao<T, ID> {
 	int deleteAll(); // 11
 
 	default Class<T> getTClass() {
+		@SuppressWarnings("unchecked")
 		Class<T> tClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass())
 				.getActualTypeArguments()[0];
 		return tClass;
