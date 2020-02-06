@@ -16,6 +16,9 @@ import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -279,7 +282,20 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		return _batchUpdate(sql_delete_namedParam, entities);
 	}
 
-	// ==========MapDao==========
+	// ==========PagingAndSortingDao==========
+	@Override
+	public Page<T> findAll(Pageable pageable) {
+		log.info("findAll(Pageable pageable)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<T> findAll(Sort sort) {
+		log.info("findAll(Sort sort)");
+		throw new UnsupportedOperationException();
+	}
+
+	// ==========ExtendDao==========
 	@Transactional(readOnly = true)
 	@Override
 	public Map<String, ?> findMapById(ID id) {
@@ -333,7 +349,7 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		return mapEntities;
 	}
 
-	// ==========MapDao2==========
+	// ==========MapDao==========
 	@Override
 	public int save(Map<String, ?> mapEntity) {
 		log.info("save(Map<String, ?> mapEntity)");
@@ -362,8 +378,8 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		log.info("delete(Map<String, ?> mapEntity)");
 		return _update(sql_delete_namedParam, mapEntity, null);
 	}
-	
-	// ==========MapBatchDao==========
+
+	// ==========BatchMapDao==========
 	@Override
 	public int[] batchSave(Map<String, ?>[] mapEntities) {
 		log.info("batchSave(Map<String, ?>[] mapEntities)");
@@ -451,4 +467,5 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(valueMaps);
 		return namedParameterJdbcTemplate.batchUpdate(sql, batch);
 	}
+
 }
