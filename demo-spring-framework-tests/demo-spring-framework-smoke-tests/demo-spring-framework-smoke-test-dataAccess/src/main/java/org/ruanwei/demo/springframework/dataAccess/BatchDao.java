@@ -18,7 +18,8 @@ public interface BatchDao<T, ID> {
 	public int[] batchSave(T[] entities);
 
 	public int[] batchSave(Collection<T> entities);
-	
+
+	@Deprecated
 	public int[] batchSave(Map<String, Object>[] batchArgs);
 
 	// JdbcTemplate
@@ -29,6 +30,7 @@ public interface BatchDao<T, ID> {
 
 	public int[] batchUpdateAge(Collection<T> entities);
 
+	@Deprecated
 	public int[] batchUpdateAge(Map<String, Object>[] batchArgs);
 
 	// JdbcTemplate
@@ -39,6 +41,7 @@ public interface BatchDao<T, ID> {
 
 	int[] batchDelete(Collection<T> entities);
 
+	@Deprecated
 	int[] batchDelete(Map<String, Object>[] batchArgs);
 
 	// JdbcTemplate

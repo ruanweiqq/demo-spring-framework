@@ -349,8 +349,10 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	public int saveWithKey(Map<String, ?> userMap) {
 		log.info("saveWithKey(Map<String, ?> userMap)");
 
-		int key = _update2(sql_insert, userMap, new GeneratedKeyHolder());
-		log.info("generatedKey=" + key);
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		int rows = _update2(sql_insert, userMap, keyHolder);
+		int key = keyHolder.getKey().intValue();
+		log.info("key=" + key + ",rows=" + rows);
 		return key;
 	}
 
@@ -378,8 +380,10 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	public int saveWithKey(String name, int age, Date birthday) {
 		log.info("saveWithKey(String name, int age, Date birthday)");
 
-		int key = _update2(sql_insert, name, age, birthday, new GeneratedKeyHolder());
-		log.info("generatedKey=" + key);
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		int rows = _update2(sql_insert, name, age, birthday, keyHolder);
+		int key = keyHolder.getKey().intValue();
+		log.info("key=" + key + ",rows=" + rows);
 		return key;
 	}
 
@@ -420,7 +424,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		save(entity1);
 
 		userTransactionnalJdbcDao.transactionalMethod2(entity2);
-				
+
 		int i = 1 / 0;
 	}
 
@@ -431,16 +435,17 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	// ====================private====================
-
 	private int _update2(String sql, String name, int age, Date birthday, KeyHolder keyHolder) {
 		log.info("_update2(String sql, String name, int age, Date birthday, KeyHolder keyHolder)");
 
+		int rows = jdbcTemplate.update(sql, name, age, birthday);
+		
 		PreparedStatementSetter pss = ps -> {
 			ps.setString(1, name);
 			ps.setInt(2, age);
 			ps.setDate(3, birthday);
 		};
-		int updateCounts = jdbcTemplate.update(sql, pss);
+		rows = jdbcTemplate.update(sql, pss);
 
 		PreparedStatementCreator psc = conn -> {
 			PreparedStatement ps = conn.prepareStatement(sql, new String[] { "id" });
@@ -450,26 +455,25 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 			return ps;
 		};
 		if (keyHolder == null) {
-			updateCounts = jdbcTemplate.update(psc);
+			rows = jdbcTemplate.update(psc);
 		} else {
-			jdbcTemplate.update(psc, keyHolder);
-			updateCounts = keyHolder.getKey().intValue();
+			rows = jdbcTemplate.update(psc, keyHolder);
 		}
 
-		updateCounts = jdbcTemplate.update(sql, name, age, birthday);
-
-		return updateCounts;
+		return rows;
 	}
 
 	private int _update2(String sql, Map<String, ?> paramMap, KeyHolder keyHolder) {
 		log.info("_update2(String sql, String name, int age, Date birthday, KeyHolder keyHolder)");
 
+		int rows = jdbcTemplate.update(sql, paramMap.get("name"), paramMap.get("age"), paramMap.get("birthday"));
+		
 		PreparedStatementSetter pss = ps -> {
 			ps.setString(1, (String) paramMap.get("name"));
 			ps.setInt(2, (Integer) paramMap.get("age"));
 			ps.setDate(3, (Date) paramMap.get("birthday"));
 		};
-		int updateCounts = jdbcTemplate.update(sql, pss);
+		rows = jdbcTemplate.update(sql, pss);
 
 		PreparedStatementCreator psc = conn -> {
 			PreparedStatement ps = conn.prepareStatement(sql, new String[] { "id" });
@@ -479,18 +483,13 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 			return ps;
 		};
 		if (keyHolder == null) {
-			updateCounts = jdbcTemplate.update(psc);
+			rows = jdbcTemplate.update(psc);
 		} else {
-			jdbcTemplate.update(psc, keyHolder);
-			updateCounts = keyHolder.getKey().intValue();
+			rows = jdbcTemplate.update(psc, keyHolder);
 		}
-
-		updateCounts = jdbcTemplate.update(sql, paramMap.get("name"), paramMap.get("age"), paramMap.get("birthday"));
-
-		return updateCounts;
+		return rows;
 	}
 
-	// ====================batch update====================
 	private int[] _batchUpdate2(String sql, List<Object[]> batchArgs) {
 		log.info("_batchUpdate2(String sql, List<Object[]> batchArgs)");
 

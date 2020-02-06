@@ -4,7 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
 
 /**
- * 一共有11个接口是必须实现的,与org.springframework.data.repository.CrudRepository一致
+ * 一共13个接口中有11个接口是必须实现的,与org.springframework.data.repository.CrudRepository一致
  * 
  * @author ruanwei
  *

@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.ruanwei.demo.springframework.dataAccess.BatchDao;
 import org.ruanwei.demo.springframework.dataAccess.CrudDao;
-import org.ruanwei.demo.springframework.dataAccess.MapDao;
 import org.ruanwei.demo.springframework.dataAccess.ExampleDao;
+import org.ruanwei.demo.springframework.dataAccess.MapDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 
 /**

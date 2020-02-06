@@ -12,7 +12,6 @@ import java.util.Map;
  */
 public interface MapDao<ID> {
 
-	// ============JdbcDao中的独特方法=============
 	Map<String, ?> findMapById(ID id);
 
 	Iterable<Map<String, Object>> findAllMap();
