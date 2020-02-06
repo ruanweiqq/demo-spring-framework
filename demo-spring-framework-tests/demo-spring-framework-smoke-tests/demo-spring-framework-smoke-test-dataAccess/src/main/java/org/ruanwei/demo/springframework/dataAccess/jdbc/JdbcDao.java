@@ -20,6 +20,9 @@ import org.springframework.data.domain.Sort;
 public interface JdbcDao<T, ID>
 		extends PagingAndSortingDao<T, ID>, BatchDao<T, ID>, ExtendDao<T, ID>, BatchMapDao, TransactionalDao<T> {
 
+	@Deprecated
+	int deleteAllByGtId(ID id);
+
 	// ============将CrudDao中的Iterable具体化为List=============
 	@Override
 	List<T> findAll();

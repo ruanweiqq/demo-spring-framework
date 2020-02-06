@@ -84,6 +84,7 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	private static final String sql_insert_namedParam = "insert into user(name,age,birthday) values(:name, :age, :birthday)";
 	private static final String sql_update_age_namedParam = "update user set age = :age where name = :name and birthday = :birthday";
 	private static final String sql_delete_by_id_namedParam = "delete from user where id = :id";
+	private static final String sql_delete_by_gt_id_namedParam = "delete from user where id > :id";
 	private static final String sql_delete_namedParam = "delete from user where name = :name and age = :age and birthday = :birthday";
 	private static final String sql_delete_all = "delete from user";
 
@@ -93,6 +94,16 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 
 		this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource).withTableName("user").usingGeneratedKeyColumns("id");
 		this.simpleJdbcCall = new SimpleJdbcCall(dataSource);
+	}
+	
+	@Override
+	public int deleteAllByGtId(ID id) {
+		log.info("deleteAllByGtId(ID id)");
+		
+		Map<String, ID> paramMap = new HashMap<String, ID>();
+		paramMap.put("id", id);
+
+		return _update(sql_delete_by_gt_id_namedParam, paramMap, null);
 	}
 
 	// ==========CrudDao==========
