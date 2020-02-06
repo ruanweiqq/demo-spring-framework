@@ -1,4 +1,4 @@
-package org.ruanwei.demo.springframework.dataAccess;
+package org.ruanwei.demo.springframework.dataAccess.dao;
 
 import java.util.Map;
 
@@ -8,7 +8,7 @@ import java.util.Map;
  *
  * @param <ID>
  */
-public interface ExtendDao<T, ID> extends Dao<T, ID> {
+public interface ExtendDao<T, ID> extends CrudDao<T, ID> {
 
 	// ==========Read==========
 	Map<String, ?> findMapById(ID id);

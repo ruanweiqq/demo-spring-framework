@@ -1,4 +1,4 @@
-package org.ruanwei.demo.springframework.dataAccess;
+package org.ruanwei.demo.springframework.dataAccess.dao;
 
 import java.util.Collection;
 

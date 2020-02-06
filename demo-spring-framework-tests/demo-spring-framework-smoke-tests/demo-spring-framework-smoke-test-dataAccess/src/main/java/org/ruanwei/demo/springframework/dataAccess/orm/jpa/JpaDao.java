@@ -2,8 +2,8 @@ package org.ruanwei.demo.springframework.dataAccess.orm.jpa;
 
 import java.util.List;
 
-import org.ruanwei.demo.springframework.dataAccess.CrudDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
+import org.ruanwei.demo.springframework.dataAccess.dao.CrudDao;
 
 /**
  * 

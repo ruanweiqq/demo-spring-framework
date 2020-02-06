@@ -102,7 +102,7 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 
 	// ==========CrudDao==========
 	@Transactional(readOnly = true)
-	// @Override
+	@Override
 	public Optional<T> findById(ID id) {
 		log.info("findById(ID id)");
 
@@ -114,14 +114,14 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 	}
 
 	@Transactional(readOnly = true)
-	// @Override
+	@Override
 	public boolean existsById(ID id) {
 		log.info("existsById(ID id)");
 		return findById(id) != null;
 	}
 
 	@Transactional(readOnly = true)
-	// @Override
+	@Override
 	public List<T> findAll() {
 		log.info("findAll()");
 
@@ -132,7 +132,7 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 	}
 
 	@Transactional(readOnly = true)
-	// @Override
+	@Override
 	public List<T> findAllById(Iterable<ID> ids) {
 		log.info("findAllById(Iterable<ID> ids)");
 
@@ -144,7 +144,7 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 	}
 
 	@Transactional(readOnly = true)
-	// @Override
+	@Override
 	public List<T> findAllByGtId(ID id) {
 		log.info("findAllByGtId(ID id)");
 
@@ -159,7 +159,7 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 	}
 
 	@Transactional(readOnly = true)
-	// @Override
+	@Override
 	public long count() {
 		log.info("count()");
 
@@ -170,14 +170,49 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 		return count;
 	}
 
-	// @Override
+	@Override
+	public int save(T entity) {
+		log.info("save(T entity)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int saveWithKey(T entity) {
+		log.info("saveWithKey(T entity)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int saveAll(Iterable<T> entities) {
+		log.info("saveAll(Iterable<T> entities)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int updateAge(T entity) {
+		log.info("updateAge(T entity)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public int deleteById(ID id) {
 		log.info("deleteById(ID id)");
 		int rows = jdbcTemplate.update(sql_delete_by_id, id);
 		return rows;
 	}
 
-	// @Override
+	@Override
+	public int delete(T entity) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int deleteAll(Iterable<T> entities) {
+		log.info("deleteAll(Iterable<T> entities");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public int deleteAll() {
 		log.info("deleteAll()");
 		int rows = jdbcTemplate.update(sql_delete_all, new Object[] {});

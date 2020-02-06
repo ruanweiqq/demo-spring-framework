@@ -3,9 +3,9 @@ package org.ruanwei.demo.springframework.dataAccess.jdbc;
 import java.util.List;
 import java.util.Map;
 
-import org.ruanwei.demo.springframework.dataAccess.ExampleDao;
-import org.ruanwei.demo.springframework.dataAccess.ExtendDao;
 import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
+import org.ruanwei.demo.springframework.dataAccess.dao.ExampleDao;
+import org.ruanwei.demo.springframework.dataAccess.dao.ExtendDao;
 
 /**
  * 
