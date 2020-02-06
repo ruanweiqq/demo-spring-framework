@@ -283,89 +283,33 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		return mapEntities;
 	}
 
-	// ==========BatchDao==========
 	@Override
-	public int[] batchSave(T[] entities) {
-		log.info("batchSave(T[] entities)");
-		return _batchUpdate(sql_insert_namedParam, entities);
+	public int save(Map<String, ?> mapEntity) {
+		log.info("save(Map<String, ?> mapEntity)");
+		return _update(sql_insert_namedParam, mapEntity, null);
 	}
 
 	@Override
-	public int[] batchSave(Collection<T> entities) {
-		log.info("batchSave(Collection<T> entities)");
-		return _batchUpdate(sql_insert_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchSave(List<Object[]> batchArgs) {
-		log.info("batchSave(List<Object[]> batchArgs");
-		return _batchUpdate(sql_insert_namedParam, batchArgs);
-	}
-
-	@Override
-	public int[] batchUpdateAge(T[] entities) {
-		log.info("batchUpdateAge(T[] entities)");
-		return _batchUpdate(sql_update_age_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchUpdateAge(Collection<T> entities) {
-		log.info("batchUpdateAge(Collection<T> entities)");
-		return _batchUpdate(sql_update_age_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchUpdateAge(List<Object[]> batchArgs) {
-		log.info("batchUpdateAge(List<Object[]> batchArgs)");
-		return _batchUpdate(sql_update_age_namedParam, batchArgs);
-	}
-
-	@Override
-	public int[] batchDelete(T[] entities) {
-		log.info("batchDelete(T[] entities)");
-		return _batchUpdate(sql_delete_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchDelete(Collection<T> entities) {
-		log.info("batchDelete(Collection<T> entities)");
-		return _batchUpdate(sql_delete_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchDelete(List<Object[]> batchArgs) {
-		log.info("batchDelete(List<Object[]> batchArgs)");
-		return _batchUpdate(sql_delete_namedParam, batchArgs);
-	}
-
-	// ==========ExampleDao==========
-	@Override
-	public int save(Map<String, ?> mapParam) {
-		log.info("save(Map<String, ?> mapParam)");
-		return _update(sql_insert_namedParam, mapParam, null);
-	}
-
-	@Override
-	public int saveWithKey(Map<String, ?> mapParam) {
-		log.info("saveWithKey(Map<String, ?> mapParam)");
+	public int saveWithKey(Map<String, ?> mapEntity) {
+		log.info("saveWithKey(Map<String, ?> mapEntity)");
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		int rows = _update(sql_insert_namedParam, mapParam, keyHolder);
+		int rows = _update(sql_insert_namedParam, mapEntity, keyHolder);
 		int key = keyHolder.getKey().intValue();
 		log.info("key=" + key + ",rows=" + rows);
 		return key;
 	}
 
 	@Override
-	public int updateAge(Map<String, ?> mapParam) {
-		log.info("updateAge(Map<String, ?> mapParam)");
-		return _update(sql_update_age_namedParam, mapParam, null);
+	public int updateAge(Map<String, ?> mapEntity) {
+		log.info("updateAge(Map<String, ?> mapEntity)");
+		return _update(sql_update_age_namedParam, mapEntity, null);
 	}
 
 	@Override
-	public int delete(Map<String, ?> mapParam) {
-		log.info("delete(Map<String, ?> mapParam)");
-		return _update(sql_delete_namedParam, mapParam, null);
+	public int delete(Map<String, ?> mapEntity) {
+		log.info("delete(Map<String, ?> mapEntity)");
+		return _update(sql_delete_namedParam, mapEntity, null);
 	}
 
 	@Override
@@ -385,7 +329,64 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		log.info("batchDelete(Map<String, ?>[] mapEntities)");
 		return _batchUpdate(sql_delete_namedParam, mapEntities);
 	}
-	
+
+	// ==========BatchDao==========
+	@Override
+	public int[] batchSave(T[] entities) {
+		log.info("batchSave(T[] entities)");
+		return _batchUpdate(sql_insert_namedParam, entities);
+	}
+
+	@Override
+	public int[] batchSave(Collection<T> entities) {
+		log.info("batchSave(Collection<T> entities)");
+		return _batchUpdate(sql_insert_namedParam, entities);
+	}
+
+	@Override
+	public int[] batchSave(List<Object[]> batchArgs) {
+		log.info("batchSave(List<Object[]> batchArgs");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchUpdateAge(T[] entities) {
+		log.info("batchUpdateAge(T[] entities)");
+		return _batchUpdate(sql_update_age_namedParam, entities);
+	}
+
+	@Override
+	public int[] batchUpdateAge(Collection<T> entities) {
+		log.info("batchUpdateAge(Collection<T> entities)");
+		return _batchUpdate(sql_update_age_namedParam, entities);
+	}
+
+	@Override
+	public int[] batchUpdateAge(List<Object[]> batchArgs) {
+		log.info("batchUpdateAge(List<Object[]> batchArgs)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchDelete(T[] entities) {
+		log.info("batchDelete(T[] entities)");
+		return _batchUpdate(sql_delete_namedParam, entities);
+	}
+
+	@Override
+	public int[] batchDelete(Collection<T> entities) {
+		log.info("batchDelete(Collection<T> entities)");
+		return _batchUpdate(sql_delete_namedParam, entities);
+	}
+
+	@Override
+	public int[] batchDelete(List<Object[]> batchArgs) {
+		log.info("batchDelete(List<Object[]> batchArgs)");
+		throw new UnsupportedOperationException();
+	}
+
+	// ==========ExampleDao==========
+
 	@Override
 	public int save(String name, int age, Date birthday) {
 		log.info("save(String name, int age, Date birthday)");

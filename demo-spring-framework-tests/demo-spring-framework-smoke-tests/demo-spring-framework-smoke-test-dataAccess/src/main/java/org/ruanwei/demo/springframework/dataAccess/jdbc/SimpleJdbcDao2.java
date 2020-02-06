@@ -73,17 +73,17 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
 
-	private static final String sql_select_by_id1 = "select * from user where id = ?";
-	private static final String sql_select_by_id2 = "select id, name, age, birthday from user where id = ?";
+	private static final String sql_select_by_id = "select * from user where id = ?";
+	private static final String sql_select_map_by_id = "select id, name, age, birthday from user where id = ?";
 
-	private static final String sql_select_by_ids1 = "select * from user where id in (?)";
-	private static final String sql_select_by_ids2 = "select id, name, age, birthday from user where id in (?)";
+	private static final String sql_select_by_ids = "select * from user where id in (?)";
+	private static final String sql_select_map_by_ids = "select id, name, age, birthday from user where id in (?)";
 
-	private static final String sql_select_by_gt_id1 = "select id, name, age, birthday from user where id > ?";
-	private static final String sql_select_by_gt_id2 = "select * from user where id > ?";
+	private static final String sql_select_by_gt_id = "select * from user where id > ?";
+	private static final String sql_select_map_by_gt_id = "select id, name, age, birthday from user where id > ?";
 
-	private static final String sql_select_all1 = "select * from user";
-	private static final String sql_select_all2 = "select id, name, age, birthday from user";
+	private static final String sql_select_all = "select * from user";
+	private static final String sql_select_map_all = "select id, name, age, birthday from user";
 
 	private static final String sql_select_count = "select count(*) from user";
 
@@ -108,7 +108,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		log.info("findById(ID id)");
 
 		// RowMapperResultSetExtractor & BeanPropertyRowMapper
-		T entity = jdbcTemplate.queryForObject(sql_select_by_id1, new Object[] { id }, getTClass());
+		T entity = jdbcTemplate.queryForObject(sql_select_by_id, new Object[] { id }, getTClass());
 
 		log.info("entity=" + entity);
 		return Optional.ofNullable(entity);
@@ -126,7 +126,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	public List<T> findAll() {
 		log.info("findAll()");
 
-		List<T> entities = jdbcTemplate.queryForList(sql_select_all1, getTClass());
+		List<T> entities = jdbcTemplate.queryForList(sql_select_all, getTClass());
 
 		entities.forEach(entity -> log.info("entity=" + entity));
 		return entities;
@@ -137,7 +137,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	public List<T> findAllById(Iterable<ID> ids) {
 		log.info("findAllById(Iterable<ID> ids)");
 
-		List<T> entities = jdbcTemplate.queryForList(sql_select_by_ids1, new Object[] { StringUtils.toString(ids) },
+		List<T> entities = jdbcTemplate.queryForList(sql_select_by_ids, new Object[] { StringUtils.toString(ids) },
 				getTClass());
 
 		entities.forEach(entity -> log.info("entity=" + entity));
@@ -149,11 +149,11 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	public List<T> findAllByGtId(ID id) {
 		log.info("findAllByGtId(ID id)");
 
-		List<T> entities = jdbcTemplate.queryForList(sql_select_by_gt_id2, new Object[] { id }, getTClass());
+		List<T> entities = jdbcTemplate.queryForList(sql_select_by_gt_id, new Object[] { id }, getTClass());
 		entities.forEach(entity -> log.info("entity=" + entity));
 
 		PreparedStatementSetter pss0 = ps -> ps.setInt(1, (Integer) id);
-		entities = jdbcTemplate.query(sql_select_by_gt_id2, pss0, new BeanPropertyRowMapper<T>(getTClass()));
+		entities = jdbcTemplate.query(sql_select_by_gt_id, pss0, new BeanPropertyRowMapper<T>(getTClass()));
 		entities.forEach(entity -> log.info("entity" + entity));
 
 		return entities;
@@ -228,7 +228,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		log.info("findMapById(ID id)");
 
 		// RowMapperResultSetExtractor & ColumnMapRowMapper
-		Map<String, Object> mapEntity = jdbcTemplate.queryForMap(sql_select_by_id2, id);
+		Map<String, Object> mapEntity = jdbcTemplate.queryForMap(sql_select_map_by_id, id);
 
 		mapEntity.forEach((k, v) -> log.info(k + "=" + v));
 		return mapEntity;
@@ -239,7 +239,7 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	public List<Map<String, Object>> findAllMap() {
 		log.info("findAllMap()");
 
-		List<Map<String, Object>> mapEntities = jdbcTemplate.queryForList(sql_select_all2,
+		List<Map<String, Object>> mapEntities = jdbcTemplate.queryForList(sql_select_map_all,
 				EmptySqlParameterSource.INSTANCE);
 
 		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
@@ -251,94 +251,37 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	public List<Map<String, Object>> findAllMapByGtId(ID id) {
 		log.info("findAllMapById(ID id)");
 
-		List<Map<String, Object>> mapEntities = jdbcTemplate.queryForList(sql_select_by_gt_id1, new Object[] { id });
+		List<Map<String, Object>> mapEntities = jdbcTemplate.queryForList(sql_select_map_by_gt_id, new Object[] { id });
 		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
 
 		PreparedStatementSetter pss = ps -> ps.setInt(1, (Integer) id);
-		mapEntities = jdbcTemplate.queryForList(sql_select_by_gt_id1, pss);
+		mapEntities = jdbcTemplate.queryForList(sql_select_map_by_gt_id, pss);
 		mapEntities.forEach(mapEntity -> log.info("user2" + mapEntity));
 
 		return mapEntities;
 	}
 
-	// ==========BatchDao==========
 	@Override
-	public int[] batchSave(T[] entities) {
-		log.info("batchSave(T[] entities)");
+	public int save(Map<String, ?> mapEntity) {
+		log.info("save(Map<String, ?> mapEntity)");
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int[] batchSave(Collection<T> entities) {
-		log.info("batchSave(Collection<T> entities)");
+	public int saveWithKey(Map<String, ?> mapEntity) {
+		log.info("saveWithKey(Map<String, ?> mapEntity)");
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int[] batchSave(List<Object[]> batchArgs) {
-		log.info("batchSave(List<Object[]> batchArgs");
-		return _batchUpdate2(sql_insert, batchArgs);
-	}
-
-	@Override
-	public int[] batchUpdateAge(T[] entities) {
-		log.info("batchUpdateAge(T[] entities)");
+	public int updateAge(Map<String, ?> mapEntity) {
+		log.info("updateAge(Map<String, ?> mapEntity)");
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int[] batchUpdateAge(Collection<T> entities) {
-		log.info("batchUpdateAge(Collection<T> entities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchUpdateAge(List<Object[]> batchArgs) {
-		log.info("batchUpdateAge(List<Object[]> batchArgs)");
-		return _batchUpdate2(sql_update_age, batchArgs);
-	}
-
-	@Override
-	public int[] batchDelete(T[] entities) {
-		log.info("batchDelete(T[] entities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchDelete(Collection<T> entities) {
-		log.info("batchDelete(Collection<T> entities)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchDelete(List<Object[]> batchArgs) {
-		log.info("batchDelete(List<Object[]> batchArgs)");
-		return _batchUpdate2(sql_delete, batchArgs);
-	}
-
-	// ==========ExampleDao==========
-
-	@Override
-	public int save(Map<String, ?> mapParam) {
-		log.info("save(Map<String, ?> mapParam)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int saveWithKey(Map<String, ?> mapParam) {
-		log.info("saveWithKey(Map<String, ?> mapParam)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int updateAge(Map<String, ?> mapParam) {
-		log.info("updateAge(Map<String, ?> mapParam)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int delete(Map<String, ?> mapParam) {
-		log.info("delete(Map<String, ?> mapParam)");
+	public int delete(Map<String, ?> mapEntity) {
+		log.info("delete(Map<String, ?> mapEntity)");
 		throw new UnsupportedOperationException();
 	}
 
@@ -360,6 +303,62 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		throw new UnsupportedOperationException();
 	}
 
+	// ==========BatchDao==========
+	@Override
+	public int[] batchSave(T[] entities) {
+		log.info("batchSave(T[] entities)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchSave(Collection<T> entities) {
+		log.info("batchSave(Collection<T> entities)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchSave(List<Object[]> batchArgs) {
+		log.info("batchSave(List<Object[]> batchArgs");
+		return jdbcTemplate.batchUpdate(sql_insert, batchArgs);
+	}
+
+	@Override
+	public int[] batchUpdateAge(T[] entities) {
+		log.info("batchUpdateAge(T[] entities)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchUpdateAge(Collection<T> entities) {
+		log.info("batchUpdateAge(Collection<T> entities)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchUpdateAge(List<Object[]> batchArgs) {
+		log.info("batchUpdateAge(List<Object[]> batchArgs)");
+		return jdbcTemplate.batchUpdate(sql_update_age, batchArgs);
+	}
+
+	@Override
+	public int[] batchDelete(T[] entities) {
+		log.info("batchDelete(T[] entities)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchDelete(Collection<T> entities) {
+		log.info("batchDelete(Collection<T> entities)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchDelete(List<Object[]> batchArgs) {
+		log.info("batchDelete(List<Object[]> batchArgs)");
+		return jdbcTemplate.batchUpdate(sql_delete, batchArgs);
+	}
+
+	// ==========ExampleDao==========
 	@Override
 	public int save(String name, int age, Date birthday) {
 		log.info("save(String name, int age, Date birthday)");
@@ -455,8 +454,8 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		return rows;
 	}
 
-	private int[] _batchUpdate2(String sql, List<Object[]> batchArgs) {
-		log.info("_batchUpdate2(String sql, List<Object[]> batchArgs)");
+	private int[] _batchUpdate(String sql, List<Object[]> batchArgs) {
+		log.info("_batchUpdate(String sql, List<Object[]> batchArgs)");
 
 		BatchPreparedStatementSetter bpss = new BatchPreparedStatementSetter() {
 			@Override
@@ -479,8 +478,6 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 			ps.setDate(3, (Date) args[2]);
 		};
 		int[][] updateCounts2 = jdbcTemplate.batchUpdate(sql, batchArgs, 2, ppss);
-
-		updateCounts = jdbcTemplate.batchUpdate(sql, batchArgs);
 
 		return updateCounts;
 	}

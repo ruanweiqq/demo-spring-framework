@@ -20,4 +20,18 @@ public interface MapDao<T, ID> extends CrudDao<T, ID> {
 
 	@Deprecated
 	Iterable<Map<String, Object>> findAllMapByGtId(ID id);
+
+	int save(Map<String, ?> args);
+
+	int saveWithKey(Map<String, ?> args);
+
+	int updateAge(Map<String, ?> args);
+
+	int delete(Map<String, ?> args);
+
+	public int[] batchSave(Map<String, ?>[] batchArgs);
+
+	public int[] batchUpdateAge(Map<String, ?>[] batchArgs);
+
+	int[] batchDelete(Map<String, ?>[] batchArgs);
 }

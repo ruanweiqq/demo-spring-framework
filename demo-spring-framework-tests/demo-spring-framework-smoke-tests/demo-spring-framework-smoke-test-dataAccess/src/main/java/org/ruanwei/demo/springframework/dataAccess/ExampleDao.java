@@ -13,26 +13,19 @@ import java.util.Map;
  */
 public interface ExampleDao {
 
-	int save(Map<String, ?> args);
+	// =====NamedParameterJdbcTemplate=====
 
-	int saveWithKey(Map<String, ?> args);
 
-	int updateAge(Map<String, ?> args);
-
-	int delete(Map<String, ?> args);
-
-	public int[] batchSave(Map<String, ?>[] batchArgs);
-
-	public int[] batchUpdateAge(Map<String, ?>[] batchArgs);
-
-	int[] batchDelete(Map<String, ?>[] batchArgs);
-
-	// JdbcTemplate
+	// =====JdbcTemplate=====
+	@Deprecated
 	int save(String name, int age, Date birthday);
 
+	@Deprecated
 	int saveWithKey(String name, int age, Date birthday);
 
+	@Deprecated
 	int updateAge(String name, int age, Date birthday);
 
+	@Deprecated
 	int delete(String name, int age, Date birthday);
 }
