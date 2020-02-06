@@ -118,7 +118,7 @@ public class DataAccessTest {
 	private static final int eq0 = 0;
 	private static final int eq1 = 1;
 	// TODO:这里eq0不能放在eq1前面，坑！
-	private static final List<Integer> ids = Arrays.asList(eq1,eq0);
+	private static final List<Integer> ids = Arrays.asList(eq1, eq0);
 
 	static {
 		// create
@@ -285,6 +285,9 @@ public class DataAccessTest {
 		// 2.更新age
 		userJdbcDao.updateAge(beanForUpdateOrDelete);
 		userJdbcDao.updateAge(mapForUpdateOrDelete);
+		// TODO:这里的参数由于SQL参数顺序的原因报错，待重构
+//		userJdbcExampleDao.updateAge(beanForUpdateOrDelete.getName(), beanForUpdateOrDelete.getAge(),
+//				beanForUpdateOrDelete.getBirthday());
 
 		users = userJdbcDao.findAllByGtId(gt1);
 		users.forEach(u -> {
