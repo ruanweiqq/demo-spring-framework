@@ -277,6 +277,24 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 		return _update2(sql_delete, mapUser, null);
 	}
 
+	@Override
+	public int[] batchSave(Map<String, Object>[] users) {
+		log.info("batchSave(Map<String, Object>[] users)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchUpdateAge(Map<String, Object>[] users) {
+		log.info("batchUpdateAge(Map<String, Object>[] users)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int[] batchDelete(Map<String, Object>[] users) {
+		log.info("batchDelete(Map<String, Object>[] users)");
+		throw new UnsupportedOperationException();
+	}
+
 	// ==========BatchDao==========
 	@Override
 	public int[] batchSave(T[] users) {
@@ -287,12 +305,6 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	@Override
 	public int[] batchSave(Collection<T> users) {
 		log.info("batchSave(Collection<T> users)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchSave(Map<String, Object>[] users) {
-		log.info("batchSave(Map<String, Object>[] users)");
 		throw new UnsupportedOperationException();
 	}
 
@@ -315,12 +327,6 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Override
-	public int[] batchUpdateAge(Map<String, Object>[] users) {
-		log.info("batchUpdateAge(Map<String, Object>[] users)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public int[] batchUpdateAge(List<Object[]> batchArgs) {
 		log.info("batchUpdateAge(List<Object[]> batchArgs)");
 		return _batchUpdate2(sql_update_age, batchArgs);
@@ -335,12 +341,6 @@ public class SimpleJdbcDao2<T, ID> implements JdbcDao<T, ID> {
 	@Override
 	public int[] batchDelete(Collection<T> users) {
 		log.info("batchDelete(Collection<T> users)");
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int[] batchDelete(Map<String, Object>[] users) {
-		log.info("batchDelete(Map<String, Object>[] users)");
 		throw new UnsupportedOperationException();
 	}
 

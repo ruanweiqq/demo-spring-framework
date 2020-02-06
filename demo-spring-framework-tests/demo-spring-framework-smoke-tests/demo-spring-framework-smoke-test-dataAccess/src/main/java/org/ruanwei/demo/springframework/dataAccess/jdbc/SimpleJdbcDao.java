@@ -282,7 +282,7 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		mapEntities.forEach(mapEntity -> mapEntity.forEach((k, v) -> log.info(k + "=" + v)));
 		return mapEntities;
 	}
-	
+
 	@Override
 	public int save(Map<String, ?> mapParam) {
 		log.info("save(Map<String, ?> mapParam)");
@@ -299,17 +299,35 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		log.info("key=" + key + ",rows=" + rows);
 		return key;
 	}
-	
+
 	@Override
 	public int updateAge(Map<String, ?> mapParam) {
 		log.info("updateAge(Map<String, ?> mapParam)");
 		return _update(sql_update_age_namedParam, mapParam, null);
 	}
-	
+
 	@Override
 	public int delete(Map<String, ?> mapParam) {
 		log.info("delete(Map<String, ?> mapParam)");
 		return _update(sql_delete_namedParam, mapParam, null);
+	}
+
+	@Override
+	public int[] batchSave(Map<String, Object>[] mapEntities) {
+		log.info("batchSave(Map<String, Object>[] mapEntities)");
+		return _batchUpdate(sql_insert_namedParam, mapEntities);
+	}
+
+	@Override
+	public int[] batchUpdateAge(Map<String, Object>[] mapEntities) {
+		log.info("batchUpdateAge(Map<String, Object>[] mapEntities)");
+		return _batchUpdate(sql_update_age_namedParam, mapEntities);
+	}
+
+	@Override
+	public int[] batchDelete(Map<String, Object>[] mapEntities) {
+		log.info("batchDelete(Map<String, Object>[] mapEntities)");
+		return _batchUpdate(sql_delete_namedParam, mapEntities);
 	}
 
 	// ==========BatchDao==========
@@ -323,12 +341,6 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	public int[] batchSave(Collection<T> entities) {
 		log.info("batchSave(Collection<T> entities)");
 		return _batchUpdate(sql_insert_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchSave(Map<String, Object>[] mapEntities) {
-		log.info("batchSave(Map<String, Object>[] mapEntities)");
-		return _batchUpdate(sql_insert_namedParam, mapEntities);
 	}
 
 	@Override
@@ -350,12 +362,6 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	}
 
 	@Override
-	public int[] batchUpdateAge(Map<String, Object>[] mapEntities) {
-		log.info("batchUpdateAge(Map<String, Object>[] mapEntities)");
-		return _batchUpdate(sql_update_age_namedParam, mapEntities);
-	}
-
-	@Override
 	public int[] batchUpdateAge(List<Object[]> batchArgs) {
 		log.info("batchUpdateAge(List<Object[]> batchArgs)");
 		return _batchUpdate(sql_update_age_namedParam, batchArgs);
@@ -371,12 +377,6 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	public int[] batchDelete(Collection<T> entities) {
 		log.info("batchDelete(Collection<T> entities)");
 		return _batchUpdate(sql_delete_namedParam, entities);
-	}
-
-	@Override
-	public int[] batchDelete(Map<String, Object>[] mapEntities) {
-		log.info("batchDelete(Map<String, Object>[] mapEntities)");
-		return _batchUpdate(sql_delete_namedParam, mapEntities);
 	}
 
 	@Override
@@ -397,8 +397,6 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		log.info("saveWithKey(String name, int age, Date birthday)");
 		throw new UnsupportedOperationException();
 	}
-
-	
 
 	@Override
 	public int updateAge(String name, int age, Date birthday) {

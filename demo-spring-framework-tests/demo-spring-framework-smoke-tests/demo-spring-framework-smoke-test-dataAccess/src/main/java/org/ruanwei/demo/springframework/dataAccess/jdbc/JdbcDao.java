@@ -15,7 +15,7 @@ import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
  * @param <T>
  * @param <ID>
  */
-public interface JdbcDao<T, ID> extends BatchDao<T, ID>, MapDao<ID>, ExampleDao, TransactionalDao<T> {
+public interface JdbcDao<T, ID> extends BatchDao<T, ID>, MapDao<T,ID>, ExampleDao, TransactionalDao<T> {
 
 	// ============将CrudDao中的Iterable具体化为List=============
 	@Override

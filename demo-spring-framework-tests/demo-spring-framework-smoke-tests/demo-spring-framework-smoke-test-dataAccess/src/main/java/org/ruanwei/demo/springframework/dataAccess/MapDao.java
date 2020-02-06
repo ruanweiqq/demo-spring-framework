@@ -10,7 +10,7 @@ import java.util.Map;
  * @param <T>
  * @param <ID>
  */
-public interface MapDao<ID> {
+public interface MapDao<T, ID> extends CrudDao<T, ID> {
 
 	Map<String, ?> findMapById(ID id);
 
@@ -27,4 +27,13 @@ public interface MapDao<ID> {
 	int updateAge(Map<String, ?> args);
 
 	int delete(Map<String, ?> args);
+
+	@Deprecated
+	public int[] batchSave(Map<String, Object>[] batchArgs);
+
+	@Deprecated
+	public int[] batchUpdateAge(Map<String, Object>[] batchArgs);
+
+	@Deprecated
+	int[] batchDelete(Map<String, Object>[] batchArgs);
 }
