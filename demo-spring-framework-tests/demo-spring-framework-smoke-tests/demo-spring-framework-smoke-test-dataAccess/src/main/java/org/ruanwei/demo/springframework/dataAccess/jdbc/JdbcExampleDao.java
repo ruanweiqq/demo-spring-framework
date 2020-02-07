@@ -3,10 +3,8 @@ package org.ruanwei.demo.springframework.dataAccess.jdbc;
 import java.util.List;
 import java.util.Map;
 
-import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.dao.ExampleDao;
 import org.ruanwei.demo.springframework.dataAccess.dao.ExtendDao;
-import org.springframework.data.domain.Sort;
 
 /**
  * 
@@ -15,7 +13,7 @@ import org.springframework.data.domain.Sort;
  * @param <T>
  * @param <ID>
  */
-public interface JdbcExampleDao<T, ID> extends ExtendDao<T, ID>, ExampleDao, TransactionalDao<T> {
+public interface JdbcExampleDao<T, ID> extends ExtendDao<T, ID>, ExampleDao {
 
 	// ============将CrudDao中的Iterable具体化为List=============
 	@Override

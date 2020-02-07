@@ -1,6 +1,6 @@
 package org.ruanwei.demo.springframework.dataAccess;
 
-public interface TransactionalDao<T> {
+public interface TransactionalDao22222<T> {
 
 	// Transaction
 	// 1.事务是默认在抛出运行时异常进行回滚的，因此不能在事务方法中进行try-catch捕获

@@ -26,6 +26,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.ruanwei.demo.springframework.dataAccess.DataAccessService;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.JdbcDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.JdbcExampleDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
@@ -65,8 +66,8 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 @ActiveProfiles("development")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
-//@SpringJUnitConfig(AppConfig.class)
+//@SpringJUnitConfig(locations = "classpath:spring/applicationContext.xml")
+@SpringJUnitConfig(AppConfig.class)
 public class DataAccessTest {
 	private static Log log = LogFactory.getLog(DataAccessTest.class);
 
@@ -206,6 +207,9 @@ public class DataAccessTest {
 	// @Autowired
 	private UserJpaRepository userJpaRepository;
 
+	@Autowired
+	private DataAccessService dataAccessService;
+
 	@BeforeAll
 	static void beforeAll() {
 		log.info("beforeAll()");
@@ -221,6 +225,7 @@ public class DataAccessTest {
 		assertNotNull(userMyBatisMapper, "userMyBatisMapper should not be null");
 		// assertNotNull(userJdbcRepository, "userJdbcRepository should not be null");
 		// assertNotNull(userJpaRepository, "userJpaRepository should not be null");
+		assertNotNull(dataAccessService, "dataAccessService should not be null");
 
 		userJdbcDao.deleteAllByGtId(gt1);
 		long count = userJdbcDao.count();
@@ -345,7 +350,7 @@ public class DataAccessTest {
 		});
 
 		// 2.更新age
-		userJdbcDao.updateAge(beanForUpdateOrDelete);//待下面bugfix后删除
+		userJdbcDao.updateAge(beanForUpdateOrDelete);// 待下面bugfix后删除
 		// TODO:这里的参数由于SQL参数顺序的原因报错，待重构
 //			userJdbcExampleDao.updateAge(beanForUpdateOrDelete.getName(), beanForUpdateOrDelete.getAge(),
 //					beanForUpdateOrDelete.getBirthday());
@@ -451,8 +456,7 @@ public class DataAccessTest {
 	void testSpringJdbcWithTransaction() {
 		log.info("4======================================================================================");
 		try {
-			userJdbcDao.transactionalMethod1(new UserJdbcEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
-					new UserJdbcEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+			dataAccessService.doSomethingWithJdbcTransaction(beanForTransactionDelete1, beanForTransactionDelete2);
 		} catch (ArithmeticException e) {
 			log.error("transaction rolled back for ArithmeticException", e);
 		} catch (Exception e) {
@@ -521,8 +525,8 @@ public class DataAccessTest {
 	void testSpringJpaWithTransaction() {
 		log.info("6======================================================================================");
 		try {
-			userJpaDao.transactionalMethod1(new UserJpaEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
-					new UserJpaEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+			dataAccessService.doSomethingWithJpaTransaction(jpaEntityForTransactionDelete1,
+					jpaEntityForTransactionDelete2);
 		} catch (ArithmeticException e) {
 			log.error("transaction rolled back for ArithmeticException", e);
 		} catch (Exception e) {
@@ -591,8 +595,11 @@ public class DataAccessTest {
 	void testSpringHibernateWithTransaction() {
 		log.info("8======================================================================================");
 		try {
-			userHibernateDao.transactionalMethod1(new UserHibernateEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
-					new UserHibernateEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+			// userHibernateDao.transactionalMethod1(hibernateEntityForTransactionDelete1,
+			// hibernateEntityForTransactionDelete2);
+
+			dataAccessService.doSomethingWithHibernateTransaction(hibernateEntityForTransactionDelete1,
+					hibernateEntityForTransactionDelete2);
 		} catch (ArithmeticException e) {
 			log.error("transaction rolled back for ArithmeticException", e);
 		} catch (Exception e) {
@@ -651,14 +658,17 @@ public class DataAccessTest {
 	}
 
 	// 由于接口无法注入依赖，以及无法增加异常逻辑，所以这个用例跑不通
-	@Disabled
+	// @Disabled
 	@Order(10)
 	@Test
 	void testSpringMyBatisWithTransaction() {
 		log.info("10======================================================================================");
 		try {
-			userMyBatisMapper.transactionalMethod1(new UserMyBatisEntity("ruanwei_tmp", 1, Date.valueOf("1983-07-06")),
-					new UserMyBatisEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+			// userMyBatisMapper.transactionalMethod1(myBatisEntityForTransactionDelete1,
+			// myBatisEntityForTransactionDelete2);
+
+			dataAccessService.doSomethingWithMybatisTransaction(myBatisEntityForTransactionDelete1,
+					myBatisEntityForTransactionDelete2);
 		} catch (ArithmeticException e) {
 			log.error("transaction rolled back for ArithmeticException", e);
 		} catch (Exception e) {

@@ -13,7 +13,6 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,7 +25,6 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
-import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
@@ -64,10 +62,6 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 	private UpdatableSqlQuery<T> updatableSqlQuery;
 	private SqlUpdate sqlUpdate;
 	private StoredProcedure storedProcedure;
-
-	@Qualifier("userTransactionnalJdbcDao")
-	@Autowired
-	private TransactionalDao<T> userTransactionnalJdbcDao;
 
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
@@ -336,29 +330,6 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 	public int delete(String name, int age, Date birthday) {
 		log.info("delete(String name, int age, Date birthday)");
 		return _update2(sql_delete, name, age, birthday, null);
-	}
-
-	// ==========TransactionalDao==========
-	// 1.事务是默认在抛出运行时异常进行回滚的，因此不能在事务方法中进行try-catch捕获
-	// 2.事务是通过代理目标对象实现的，因此只有调用代理的事务方法才生效，调用目标对象(例如同一类中的其他方法)没有事务
-	// 3.由于事务传播类型不同，transactionalMethod1会回滚，transactionalMethod2不会回滚
-	// 4.事务应该应用在业务逻辑层而不是数据访问层，因此准备重构
-	@Override
-	@Transactional(rollbackFor = ArithmeticException.class)
-	public void transactionalMethod1(T entity1, T entity2) {
-		log.info("transactionalMethod1(T entity1, T entity2)" + entity1 + entity2);
-
-		save("ruanwei_tmp", 1, Date.valueOf("1983-07-06"));
-
-		userTransactionnalJdbcDao.transactionalMethod2(entity2);
-
-		int i = 1 / 0;
-	}
-
-	@Override
-	public void transactionalMethod2(T entity) {
-		log.info("transactionalMethod2(T entity)" + entity);
-		throw new UnsupportedOperationException();
 	}
 
 	// ====================private====================

@@ -2,7 +2,6 @@ package org.ruanwei.demo.springframework.dataAccess.orm.jpa;
 
 import java.util.List;
 
-import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.dao.CrudDao;
 
 /**
@@ -12,7 +11,7 @@ import org.ruanwei.demo.springframework.dataAccess.dao.CrudDao;
  * @param <T>
  * @param <ID>
  */
-public interface JpaDao<T, ID> extends CrudDao<T, ID>,TransactionalDao<T> {
+public interface JpaDao<T, ID> extends CrudDao<T, ID> {
 
 	// ============将CrudDao中的Iterable具体化为List=============
 	@Override

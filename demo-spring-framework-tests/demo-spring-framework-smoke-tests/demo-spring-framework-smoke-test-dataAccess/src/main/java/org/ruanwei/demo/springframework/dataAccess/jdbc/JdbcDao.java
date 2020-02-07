@@ -3,7 +3,6 @@ package org.ruanwei.demo.springframework.dataAccess.jdbc;
 import java.util.List;
 import java.util.Map;
 
-import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.dao.BatchDao;
 import org.ruanwei.demo.springframework.dataAccess.dao.BatchMapDao;
 import org.ruanwei.demo.springframework.dataAccess.dao.ExtendDao;
@@ -18,7 +17,7 @@ import org.springframework.data.domain.Sort;
  * @param <ID>
  */
 public interface JdbcDao<T, ID>
-		extends PagingAndSortingDao<T, ID>, BatchDao<T, ID>, ExtendDao<T, ID>, BatchMapDao, TransactionalDao<T> {
+		extends PagingAndSortingDao<T, ID>, BatchDao<T, ID>, ExtendDao<T, ID>, BatchMapDao {
 
 	@Deprecated
 	int deleteAllByGtId(ID id);

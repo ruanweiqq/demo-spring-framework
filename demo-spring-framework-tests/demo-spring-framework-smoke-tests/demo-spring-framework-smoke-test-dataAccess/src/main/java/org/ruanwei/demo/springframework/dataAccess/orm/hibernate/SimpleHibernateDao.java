@@ -1,7 +1,6 @@
 package org.ruanwei.demo.springframework.dataAccess.orm.hibernate;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,12 +10,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
-import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibernateEntity;
 import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -41,9 +40,6 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 	private HibernateTemplate hibernateTemplate; // from Spring ORM
 
 	@Autowired
-	private TransactionalDao<T> userTransactionnalHibernateDao;
-
-	@Autowired
 	public void setSessionFactory(@Qualifier("sessionFactory") SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 		this.hibernateTemplate = new HibernateTemplate(sessionFactory);
@@ -61,9 +57,11 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 		return (int) currentSession().save(entity);
 	}
 
+	@Transactional(transactionManager = "hibernateTransactionManager",propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public int saveWithKey(T entity) {
-		throw new UnsupportedOperationException();
+		return save(entity);
+		//throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -233,30 +231,6 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 		// UserHibernateEntity.class);
 		Query<?> query = currentSession().createQuery("delete UserHibernateEntity u");
 		return query.executeUpdate();
-	}
-
-	// 1.事务是默认在抛出运行时异常进行回滚的，因此不能在事务方法中进行try-catch捕获
-	// 2.事务是通过代理目标对象实现的，因此只有调用代理的事务方法才生效，调用目标对象(例如同一类中的其他方法)没有事务
-	// 3.由于事务传播类型不同，transactionalMethod1会回滚，transactionalMethod2不会回滚
-	// 4.事务应该应用在业务逻辑层而不是数据访问层，因此准备重构
-	@Transactional(rollbackFor = ArithmeticException.class)
-	@Override
-	public void transactionalMethod1(T entity1, T entity2) {
-		log.info("transactionalMethod1(T entity1, T entity2)" + entity1);
-
-		save(entity1);
-
-		// 注意:不能使用单线程的数据源，也不能与其他的DAO共享数据源，否则这里启动事务失败，参考JpaTransactionManager.doBegin方法第403行
-		userTransactionnalHibernateDao
-				.transactionalMethod2(entity2);
-
-		int i = 1 / 0;
-	}
-
-	@Override
-	public void transactionalMethod2(T user) {
-		log.info("transactionalMethod2(T user)" + user);
-		throw new UnsupportedOperationException();
 	}
 
 	// ======================================================

@@ -15,8 +15,6 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.mapper.MapperFactoryBean;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.SaveEvent;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -51,7 +49,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.config.JtaTransactionManagerFactoryBean;
-import org.springframework.transaction.event.TransactionalEventListener;
 import org.vibur.dbcp.ViburDBCPDataSource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -68,7 +65,7 @@ import redis.clients.jedis.JedisPoolConfig;
 //@Import(AbstractJdbcConfiguration.class)
 //@EnableJpaRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jpa")
 //@EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
-@EnableTransactionManagement
+@EnableTransactionManagement // see TransactionManagementConfigurer
 @PropertySource("classpath:jdbc.properties")
 @MapperScan(basePackages = "org.ruanwei.demo.springframework.dataAccess.orm.mybatis", sqlSessionFactoryRef = "sqlSessionFactory", factoryBean = MapperFactoryBean.class)
 @ComponentScan(basePackages = { "org.ruanwei.demo.springframework" })
@@ -86,7 +83,7 @@ public class AppConfig {// implements
 	private String username;
 	@Value("${jdbc.password}")
 	private String password;
-
+	
 	@Order(0)
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -315,15 +312,6 @@ public class AppConfig {// implements
 		JndiObjectFactoryBean jndiObjectFactoryBean = new JndiObjectFactoryBean();
 		jndiObjectFactoryBean.setJndiName("java:comp/env/jdbc/myds");
 		return jndiObjectFactoryBean;
-	}
-
-	// 应该移动到service层
-	@TransactionalEventListener
-	public void handleTransactionalEvent(SaveEvent<UserJdbcEntity, Integer> event) {
-		log.info("handleTransactionalEvent" + event);
-		UserJdbcEntity user = (UserJdbcEntity) event.getSource();
-		// User u = findById(user.getId());
-		// log.info("user has been saved=======================" + u);
 	}
 
 	// B.4.OXM

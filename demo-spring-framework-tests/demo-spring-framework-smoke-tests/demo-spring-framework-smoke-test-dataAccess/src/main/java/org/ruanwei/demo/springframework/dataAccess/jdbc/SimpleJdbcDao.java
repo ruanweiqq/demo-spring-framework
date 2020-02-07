@@ -11,11 +11,9 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
 import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,6 +31,7 @@ import org.springframework.jdbc.object.StoredProcedure;
 import org.springframework.jdbc.object.UpdatableSqlQuery;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -59,13 +58,6 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	private UpdatableSqlQuery<T> updatableSqlQuery;
 	private SqlUpdate sqlUpdate;
 	private StoredProcedure storedProcedure;
-
-	@Qualifier("userTransactionnalJdbcDao")
-	@Autowired
-	private TransactionalDao<T> userTransactionnalJdbcDao;
-
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
 
 	private static final String sql_select_by_id_namedParam = "select * from user where id = :id";
 	private static final String sql_select_map_by_id_namedParam = "select id, name, age, birthday from user where id = :id";
@@ -188,6 +180,7 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		return _update(sql_insert_namedParam, entity, null);
 	}
 
+	@Transactional(transactionManager = "transactionManager", propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public int saveWithKey(T entity) {
 		log.info("saveWithKey(T entity)");
@@ -195,8 +188,6 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		int rows = _update(sql_insert_namedParam, entity, keyHolder);
 		int key = keyHolder.getKey().intValue();
-		// see @TransactionalEventListener
-		applicationEventPublisher.publishEvent(new SaveEvent<T, Integer>(entity, key));
 
 		log.info("key=" + key + ",rows=" + rows);
 		return key;
@@ -407,29 +398,6 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	public int[] batchDelete(Map<String, ?>[] mapEntities) {
 		log.info("batchDelete(Map<String, ?>[] mapEntities)");
 		return _batchUpdate(sql_delete_namedParam, mapEntities);
-	}
-
-	// ==========TransactionalDao==========
-	// 1.事务是默认在抛出运行时异常进行回滚的，因此不能在事务方法中进行try-catch捕获
-	// 2.事务是通过代理目标对象实现的，因此只有调用代理的事务方法才生效，调用目标对象(例如同一类中的其他方法)没有事务
-	// 3.由于事务传播类型不同，transactionalMethod1会回滚，transactionalMethod2不会回滚
-	// 4.事务应该应用在业务逻辑层而不是数据访问层，因此准备重构
-	@Override
-	@Transactional(rollbackFor = ArithmeticException.class)
-	public void transactionalMethod1(T entity1, T entity2) {
-		log.info("transactionalMethod1(T entity1, T entity2)" + entity1);
-
-		save(entity1);
-
-		userTransactionnalJdbcDao.transactionalMethod2(entity2);
-		// new UserJdbcEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06"))
-		int i = 1 / 0;
-	}
-
-	@Override
-	public void transactionalMethod2(T entity) {
-		log.info("transactionalMethod2(T entity)" + entity);
-		throw new UnsupportedOperationException();
 	}
 
 	// ====================private====================
