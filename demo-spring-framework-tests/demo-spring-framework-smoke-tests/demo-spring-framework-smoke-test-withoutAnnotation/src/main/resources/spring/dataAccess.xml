@@ -36,6 +36,17 @@
 	<!-- ==========B.Data Access:DAO/Transaction/JDBC/ORM/OXM/Spring Data========== -->	
 	<!-- B.0.Transaction -->
 	<aop:config>
+		<aop:pointcut id="serviceJdbcPointcut"
+			expression="execution(* org.ruanwei.demo.springframework.dataAccess.*Service*.doSomethingWithJdbcTransaction(..))" />
+		<aop:pointcut id="serviceJdbcPointcut2"
+			expression="execution(* org.ruanwei.demo.springframework.dataAccess.*Service*.doSomethingWithJdbcTransaction2(..))" />
+		<aop:pointcut id="serviceJpaPointcut"
+			expression="execution(* org.ruanwei.demo.springframework.dataAccess.*Service*.doSomethingWithJpaTransaction(..))" />
+		<aop:pointcut id="serviceHibernatePointcut"
+			expression="execution(* org.ruanwei.demo.springframework.dataAccess.*Service*.doSomethingWithHibernateTransaction(..))" />
+		<aop:pointcut id="serviceMyBatisPointcut"
+			expression="execution(* org.ruanwei.demo.springframework.dataAccess.*Service*.doSomethingWithMybatisTransaction(..))" />
+
 		<aop:pointcut id="jdbcPointcut"
 			expression="execution(* org.ruanwei.demo.springframework.dataAccess.jdbc.*Dao.*(..))" />
 		<aop:pointcut id="jpaPointcut"
@@ -43,19 +54,30 @@
 		<aop:pointcut id="hibernatePointcut"
 			expression="execution(* org.ruanwei.demo.springframework.dataAccess.orm.hibernate.*Dao.*(..))" />
 		<aop:pointcut id="mybatisPointcut"
-			expression="execution(* org.ruanwei.demo.springframework.dataAccess.orm.mybatis.*Dao.*(..))" />
+			expression="execution(* org.ruanwei.demo.springframework.dataAccess.orm.mybatis.*Mapper.*(..))" />
 		<aop:pointcut id="repositoryPointcut"
 			expression="execution(* org.ruanwei.demo.springframework.dataAccess.springdata.*.*Repository.*(..))" />
 
-		<aop:advisor advice-ref="jdbcTxAdvice"
+		<aop:advisor advice-ref="dataSourceTxAdvice"
+			pointcut-ref="serviceJdbcPointcut" order="0" />
+		<aop:advisor advice-ref="dataSourceTxAdvice"
+			pointcut-ref="serviceJdbcPointcut2" order="0" />
+		<aop:advisor advice-ref="dataSourceTxAdvice"
+			pointcut-ref="serviceMyBatisPointcut" order="0" />
+		<aop:advisor advice-ref="jpaTxAdvice"
+			pointcut-ref="serviceJpaPointcut" order="0" />
+		<aop:advisor advice-ref="hibernateTxAdvice"
+			pointcut-ref="serviceHibernatePointcut" order="0" />
+
+		<aop:advisor advice-ref="dataSourceTxAdvice"
 			pointcut-ref="jdbcPointcut" order="1" />
 		<aop:advisor advice-ref="jpaTxAdvice"
 			pointcut-ref="jpaPointcut" order="2" />
 		<aop:advisor advice-ref="hibernateTxAdvice"
 			pointcut-ref="hibernatePointcut" order="3" />
-		<aop:advisor advice-ref="jdbcTxAdvice"
+		<aop:advisor advice-ref="dataSourceTxAdvice"
 			pointcut-ref="mybatisPointcut" order="4" />
-		<aop:advisor advice-ref="jdbcTxAdvice"
+		<aop:advisor advice-ref="dataSourceTxAdvice"
 			pointcut-ref="repositoryPointcut" order="5" />
 		<!-- execute before the transactional advice (hence the lower order number) -->
 		<!-- <aop:aspect id="myAspect3" ref="myAdvice" order="1">
@@ -66,14 +88,17 @@
 		</aop:aspect> -->
 	</aop:config>
 	<!-- see TransactionProxyFactoryBean -->
-	<tx:advice id="jdbcTxAdvice"
+	<tx:advice id="dataSourceTxAdvice"
 		transaction-manager="transactionManager">
 		<tx:attributes>
 			<tx:method name="find*" read-only="true" />
-			<tx:method name="transactionalMethod1"
+			<tx:method name="doSomethingWithJdbcTransaction"
 				propagation="REQUIRED" rollback-for="java.lang.ArithmeticException" />
-			<tx:method name="transactionalMethod2"
-				propagation="REQUIRES_NEW" />
+			<tx:method name="doSomethingWithJdbcTransaction2"
+				propagation="REQUIRED" rollback-for="java.lang.ArithmeticException" />
+			<tx:method name="doSomethingWithMybatisTransaction"
+				propagation="REQUIRED" rollback-for="java.lang.ArithmeticException" />
+			<tx:method name="saveWithKey" propagation="REQUIRES_NEW" />
 			<!-- other methods use the default transaction settings (see below) -->
 			<tx:method name="*" />
 		</tx:attributes>
@@ -82,10 +107,9 @@
 		transaction-manager="jpaTransactionManager">
 		<tx:attributes>
 			<tx:method name="find*" read-only="true" />
-			<tx:method name="transactionalMethod1"
+			<tx:method name="doSomethingWithJpaTransaction"
 				propagation="REQUIRED" rollback-for="java.lang.ArithmeticException" />
-			<tx:method name="transactionalMethod2"
-				propagation="REQUIRES_NEW" />
+			<tx:method name="saveWithKey" propagation="REQUIRES_NEW" />
 			<!-- other methods use the default transaction settings (see below) -->
 			<tx:method name="*" />
 		</tx:attributes>
@@ -95,24 +119,32 @@
 		<tx:attributes>
 			<!-- all methods starting with 'query' are read only -->
 			<tx:method name="find*" read-only="true" />
-			<tx:method name="transactionalMethod1"
+			<tx:method name="doSomethingWithHibernateTransaction"
 				propagation="REQUIRED" rollback-for="java.lang.ArithmeticException" />
-			<tx:method name="transactionalMethod2"
-				propagation="REQUIRES_NEW" />
+			<tx:method name="saveWithKey" propagation="REQUIRES_NEW" />
 			<!-- other methods use the default transaction settings (see below) -->
 			<tx:method name="*" />
 		</tx:attributes>
 	</tx:advice>
+
+	<bean id="dataAccessService"
+		class="org.ruanwei.demo.springframework.dataAccess.DataAccessServiceImpl">
+		<property name="userJdbcDao" ref="userJdbcDao" />
+		<property name="userJdbcExampleDao" ref="userJdbcExampleDao" />
+		<property name="userJpaDao" ref="userJpaDao" />
+		<property name="userHibernateDao" ref="userHibernateDao" />
+		<property name="userMyBatisMapper" ref="userMyBatisMapper" />
+		<!-- <property name="userJdbcRepository" ref="userJdbcRepository" />
+		<property name="userJpaRepository" ref="userJpaRepository" /> -->
+	</bean>
 	
 	<!-- B.1.JDBC -->
 	<bean id="userJdbcDao"
 		class="org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao">
 		<property name="dataSource" ref="springDataSource" />
-		<property name="userTransactionnalJdbcDao"
-			ref="userTransactionnalJdbcDao" />
 	</bean>
-	<bean id="userTransactionnalJdbcDao"
-		class="org.ruanwei.demo.springframework.dataAccess.jdbc.UserTransactionJdbcDao">
+	<bean id="userJdbcExampleDao"
+		class="org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcExampleDao">
 		<property name="dataSource" ref="springDataSource" />
 	</bean>
 	<!-- PlatformTransactionManager:local transaction manager for plain JDBC -->
@@ -147,23 +179,15 @@
 	<!-- B.2.2.JPA -->
 	<bean id="userJpaDao"
 		class="org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao">
-		<property name="entityManagerFactory"
-			ref="entityManagerFactory" />
-		<property name="userTransactionnalJpaDao"
-			ref="userTransactionnalJpaDao" />
-	</bean>
-	<bean id="userTransactionnalJpaDao"
-		class="org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserTransactionJpaDao">
-		<!-- <property name="entityManagerFactory"
-			ref="entityManagerFactory" /> -->
+		<!-- 注意，JPA和Hibernate都提供了EntityManagerFactory实现，使用了@Primary强制注入HIbernate的SessionFactory，否则注入失败 -->
+		<!-- 由于是使用注解按照类型进行注入的，因此下面这行配置无效 -->
+		<!-- <property name="entityManagerFactory" ref="entityManagerFactory" /> -->
 	</bean>
 	<!-- PlatformTransactionManager:local transaction manager for JPA -->
 	<!-- see HibernateTransactionManager -->
 	<bean id="jpaTransactionManager"
 		class="org.springframework.orm.jpa.JpaTransactionManager">
-		<!-- <property name="entityManagerFactory"
-			ref="entityManagerFactory" /> -->
-		<!-- 注意：这里使用的是sessionFactory而不是entityManagerFactory -->
+		<!-- 注意：为了与上面保持事务的一致性，这里使用的也是sessionFactory而不是entityManagerFactory -->
 		<property name="entityManagerFactory" ref="sessionFactory" />
 		<property name="dataSource" ref="hikariDataSource" />
 		<property name="jpaDialect">
@@ -206,19 +230,12 @@
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
 		</property>
-		
 		<!-- JPA providers of Hibernate does not require a JVM agent -->
 	</bean>
 	
 	<!-- B.2.3.Hibernate -->
 	<bean id="userHibernateDao"
 		class="org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserHibernateDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-		<property name="userTransactionnalHibernateDao"
-			ref="userTransactionnalHibernateDao" />
-	</bean>
-	<bean id="userTransactionnalHibernateDao"
-		class="org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserTransactionHibernateDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<!-- LocalSessionFactoryBean and HibernateTransactionManager are alternative to LocalContainerEntityManagerFactoryBean and JpaTransactionManager for common JPA purposes -->

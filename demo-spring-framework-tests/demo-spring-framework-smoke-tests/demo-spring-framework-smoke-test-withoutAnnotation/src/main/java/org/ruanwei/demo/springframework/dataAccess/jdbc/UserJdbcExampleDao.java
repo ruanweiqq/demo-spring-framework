@@ -10,6 +10,7 @@ import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
  * @author ruanwei
  *
  */
-public class UserJdbcDao extends SimpleJdbcDao<UserJdbcEntity,Integer> {
-	private static Log log = LogFactory.getLog(UserJdbcDao.class);
+public class UserJdbcExampleDao extends SimpleJdbcExampleDao<UserJdbcEntity, Integer> {
+	private static Log log = LogFactory.getLog(UserJdbcExampleDao.class);
+
 }

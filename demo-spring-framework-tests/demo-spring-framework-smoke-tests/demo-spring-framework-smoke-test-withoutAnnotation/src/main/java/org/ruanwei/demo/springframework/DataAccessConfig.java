@@ -11,17 +11,20 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.hibernate.SessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.ruanwei.demo.springframework.dataAccess.TransactionalDao;
+import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.mapper.MapperFactoryBean;
+import org.ruanwei.demo.springframework.dataAccess.DataAccessService;
+import org.ruanwei.demo.springframework.dataAccess.DataAccessServiceImpl;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.JdbcDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.JdbcExampleDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcExampleDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.UserSaveEvent;
-import org.ruanwei.demo.springframework.dataAccess.jdbc.UserTransactionJdbcDao;
 import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
+import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.HibernateDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserHibernateDao;
-import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.UserTransactionHibernateDao;
-import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibernateEntity;
+import org.ruanwei.demo.springframework.dataAccess.orm.jpa.JpaDao;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao;
-import org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserTransactionJpaDao;
-import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.EnvironmentAware;
@@ -67,6 +70,7 @@ import com.zaxxer.hikari.HikariDataSource;
 //@EnableJpaRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jpa")
 //@EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
 @PropertySource("classpath:jdbc.properties")
+@MapperScan(basePackages = "org.ruanwei.demo.springframework.dataAccess.orm.mybatis", sqlSessionFactoryRef = "sqlSessionFactory", factoryBean = MapperFactoryBean.class)
 @ImportResource({ "classpath:spring/dataAccess.xml" })
 @Configuration
 public class DataAccessConfig implements EnvironmentAware, InitializingBean {// implements
@@ -109,23 +113,35 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 
 	// B.Data Access:DAO/Transaction/JDBC/ORM/OXM/Spring Data
 	// B.0.Transaction
+	@Bean("dataAccessService")
+	public DataAccessService dataAccessService() {
+		DataAccessServiceImpl dataAccessService = new DataAccessServiceImpl();
+		dataAccessService.setUserJdbcDao(userJdbcDao());
+		dataAccessService.setUserJdbcExampleDao(userJdbcExampleDao());
+		dataAccessService.setUserJpaDao(userJpaDao());
+		dataAccessService.setUserHibernateDao(userHibernateDao());
+		// dataAccessService.setUserMyBatisMapper(userMyBatisMapper());
+		// dataAccessService.setUserJdbcRepository(userJdbcRepository());
+		// dataAccessService.setUserJpaRepository(userJpaRepository());
+		return dataAccessService;
+	}
+
 	// B.1.JDBC
 	@Bean("userJdbcDao")
-	public UserJdbcDao userJdbcDao() {
+	public JdbcDao userJdbcDao() {
 		UserJdbcDao userJdbcDao = new UserJdbcDao();
 		userJdbcDao.setDataSource(springDataSource());
-		userJdbcDao.setUserTransactionnalJdbcDao(userTransactionnalJdbcDao());
 		return userJdbcDao;
 	}
 
-	@Bean("userTransactionnalJdbcDao")
-	public TransactionalDao<UserJdbcEntity> userTransactionnalJdbcDao() {
-		UserTransactionJdbcDao userTransactionJdbcDao = new UserTransactionJdbcDao();
-		userTransactionJdbcDao.setDataSource(springDataSource());
-		return userTransactionJdbcDao;
+	@Bean("userJdbcExampleDao")
+	public JdbcExampleDao userJdbcExampleDao() {
+		UserJdbcExampleDao userJdbcExampleDao = new UserJdbcExampleDao();
+		userJdbcExampleDao.setDataSource(springDataSource());
+		return userJdbcExampleDao;
 	}
 
-	// local transaction manager for plain JDBC
+	// local transaction manager for JDBC DataSource
 	@Primary
 	@Bean("transactionManager")
 	public PlatformTransactionManager transactionManager() {
@@ -154,31 +170,23 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 
 	// B.2.2.JPA==========
 	@Bean("userJpaDao")
-	public UserJpaDao userJpaDao(EntityManagerFactory entityManagerFactory) {
+	public JpaDao userJpaDao() {
 		UserJpaDao userJpaDao = new UserJpaDao();
-		userJpaDao.setEntityManagerFactory(entityManagerFactory);
-		userJpaDao.setUserTransactionnalJpaDao(userTransactionnalJpaDao());
+		userJpaDao.setEntityManagerFactory(entityManagerFactory().getObject());
 		return userJpaDao;
-	}
-
-	@Bean("userTransactionnalJpaDao")
-	public TransactionalDao<UserJpaEntity> userTransactionnalJpaDao() {
-		UserTransactionJpaDao userTransactionnalJpaDao = new UserTransactionJpaDao();
-		return userTransactionnalJpaDao;
 	}
 
 	// see HibernateTransactionManager
 	@Bean("jpaTransactionManager")
-	public PlatformTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
+	public PlatformTransactionManager jpaTransactionManager() {
 		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
-		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory);
+		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 		jpaTransactionManager.setDataSource(hikariDataSource());
 		jpaTransactionManager.setJpaDialect(new HibernateJpaDialect()); // EclipseLinkJpaDialect
 		return jpaTransactionManager;
 	}
 
 	// see LocalSessionFactoryBean
-	@Qualifier("entityManagerFactory")
 	@Bean("entityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		// see also LocalEntityManagerFactoryBean
@@ -202,17 +210,10 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 
 	// B.2.3.Hibernate==========
 	@Bean("userHibernateDao")
-	public UserHibernateDao userHibernateDao() {
+	public HibernateDao userHibernateDao() {
 		UserHibernateDao userHibernateDao = new UserHibernateDao();
 		userHibernateDao.setSessionFactory(sessionFactory().getObject());
-		userHibernateDao.setUserTransactionnalHibernateDao(userTransactionnalHibernateDao());
 		return userHibernateDao;
-	}
-
-	@Bean("userTransactionnalHibernateDao")
-	public TransactionalDao<UserHibernateEntity> userTransactionnalHibernateDao() {
-		UserTransactionHibernateDao userTransactionnalHibernateDao = new UserTransactionHibernateDao();
-		return userTransactionnalHibernateDao;
 	}
 
 	// LocalSessionFactoryBean and HibernateTransactionManager are alternative to

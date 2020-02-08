@@ -14,10 +14,8 @@ import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.MyBatisMapper;
 import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.entity.UserMyBatisEntity;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
 import org.ruanwei.demo.springframework.dataAccess.springdata.jpa.UserJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 /**
@@ -28,35 +26,20 @@ import org.springframework.transaction.event.TransactionalEventListener;
  * @author ruanwei
  *
  */
-@Service
-public class DataAccessServiceImpl implements DataAccessService {
+public class DataAccessServiceImpl implements DataAccessService, ApplicationEventPublisherAware {
 	private static Log log = LogFactory.getLog(DataAccessServiceImpl.class);
 
-	@Autowired
 	private JdbcDao<UserJdbcEntity, Integer> userJdbcDao;
-
-	@Autowired
 	private JdbcExampleDao<UserJdbcEntity, Integer> userJdbcExampleDao;
-
-	@Autowired
 	private JpaDao<UserJpaEntity, Integer> userJpaDao;
-
-	@Autowired
 	private HibernateDao<UserHibernateEntity, Integer> userHibernateDao;
-
-	@Autowired
 	private MyBatisMapper<UserMyBatisEntity, Integer> userMyBatisMapper;
 
-	// @Autowired
 	private UserJdbcRepository userJdbcRepository;
-
-	// @Autowired
 	private UserJpaRepository userJpaRepository;
 
-	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
 
-	@Transactional(transactionManager = "transactionManager", rollbackFor = ArithmeticException.class)
 	@Override
 	public void doSomethingWithJdbcTransaction(UserJdbcEntity user1, UserJdbcEntity user2) {
 		log.info("doSomethingWithJdbcTransaction(UserJdbcEntity user1, UserJdbcEntity user2)");
@@ -73,7 +56,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 		int i = 1 / 0;
 	}
 
-	@Transactional(transactionManager = "transactionManager", rollbackFor = ArithmeticException.class)
 	@Override
 	public void doSomethingWithJdbcTransaction2(UserJdbcEntity user1, UserJdbcEntity user2) {
 		userJdbcExampleDao.save(user1);
@@ -81,7 +63,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 		int i = 1 / 0;
 	}
 
-	@Transactional(transactionManager = "jpaTransactionManager", rollbackFor = ArithmeticException.class)
 	@Override
 	public void doSomethingWithJpaTransaction(UserJpaEntity user1, UserJpaEntity user2) {
 		userJpaDao.save(user1);
@@ -89,7 +70,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 		int i = 1 / 0;
 	}
 
-	@Transactional(transactionManager = "hibernateTransactionManager", rollbackFor = ArithmeticException.class)
 	@Override
 	public void doSomethingWithHibernateTransaction(UserHibernateEntity user1, UserHibernateEntity user2) {
 		userHibernateDao.save(user1);
@@ -97,7 +77,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 		int i = 1 / 0;
 	}
 
-	@Transactional(transactionManager = "transactionManager", rollbackFor = ArithmeticException.class)
 	@Override
 	public void doSomethingWithMybatisTransaction(UserMyBatisEntity user1, UserMyBatisEntity user2) {
 		userMyBatisMapper.save(user1);
@@ -111,5 +90,37 @@ public class DataAccessServiceImpl implements DataAccessService {
 	public void handleTransactionalEvent(SaveEvent<UserJdbcEntity, Integer> event) {
 		log.info("handleTransactionalEvent" + event);
 		log.info("event======================================" + event);
+	}
+
+	public void setUserJdbcDao(JdbcDao<UserJdbcEntity, Integer> userJdbcDao) {
+		this.userJdbcDao = userJdbcDao;
+	}
+
+	public void setUserJdbcExampleDao(JdbcExampleDao<UserJdbcEntity, Integer> userJdbcExampleDao) {
+		this.userJdbcExampleDao = userJdbcExampleDao;
+	}
+
+	public void setUserJpaDao(JpaDao<UserJpaEntity, Integer> userJpaDao) {
+		this.userJpaDao = userJpaDao;
+	}
+
+	public void setUserHibernateDao(HibernateDao<UserHibernateEntity, Integer> userHibernateDao) {
+		this.userHibernateDao = userHibernateDao;
+	}
+
+	public void setUserMyBatisMapper(MyBatisMapper<UserMyBatisEntity, Integer> userMyBatisMapper) {
+		this.userMyBatisMapper = userMyBatisMapper;
+	}
+
+	public void setUserJdbcRepository(UserJdbcRepository userJdbcRepository) {
+		this.userJdbcRepository = userJdbcRepository;
+	}
+
+	public void setUserJpaRepository(UserJpaRepository userJpaRepository) {
+		this.userJpaRepository = userJpaRepository;
+	}
+
+	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 }

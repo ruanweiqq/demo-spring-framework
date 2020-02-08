@@ -657,7 +657,6 @@ public class DataAccessTest {
 		userMyBatisMapper.delete(myBatisEntityForTransactionDelete2);
 	}
 
-	// 由于接口无法注入依赖，以及无法增加异常逻辑，所以这个用例跑不通
 	// @Disabled
 	@Order(10)
 	@Test
