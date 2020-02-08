@@ -89,9 +89,8 @@
 	<!-- see HibernateTransactionManager -->
 	<bean id="jpaTransactionManager"
 		class="org.springframework.orm.jpa.JpaTransactionManager">
-		<!-- <property name="entityManagerFactory"
-			ref="entityManagerFactory" /> -->
-		<!-- 注意：这里使用的是sessionFactory而不是entityManagerFactory -->
+		<!-- 注意，JPA和Hibernate都提供了EntityManagerFactory实现，使用了@Primary强制注入HIbernate的SessionFactory，否则注入失败 -->
+		<!-- 注意：为了与DAO保持事务的一致性，这里使用的也是sessionFactory而不是entityManagerFactory -->
 		<property name="entityManagerFactory" ref="sessionFactory" />
 		<property name="dataSource" ref="hikariDataSource" />
 		<property name="jpaDialect">

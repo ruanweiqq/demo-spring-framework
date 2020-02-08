@@ -179,7 +179,7 @@
 	<!-- B.2.2.JPA -->
 	<bean id="userJpaDao"
 		class="org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao">
-		<!-- 注意，JPA和Hibernate都提供了EntityManagerFactory实现，使用了@Primary强制注入HIbernate的SessionFactory，否则注入失败 -->
+		<!-- 注意，JPA和Hibernate都提供了EntityManagerFactory实现，使用了<bean primary=true>强制注入HIbernate的SessionFactory，否则注入失败 -->
 		<!-- 由于是使用注解按照类型进行注入的，因此下面这行配置无效 -->
 		<!-- <property name="entityManagerFactory" ref="entityManagerFactory" /> -->
 	</bean>
@@ -187,7 +187,7 @@
 	<!-- see HibernateTransactionManager -->
 	<bean id="jpaTransactionManager"
 		class="org.springframework.orm.jpa.JpaTransactionManager">
-		<!-- 注意：为了与上面保持事务的一致性，这里使用的也是sessionFactory而不是entityManagerFactory -->
+		<!-- 注意：为了与DAO保持事务的一致性，这里使用的也是sessionFactory而不是entityManagerFactory -->
 		<property name="entityManagerFactory" ref="sessionFactory" />
 		<property name="dataSource" ref="hikariDataSource" />
 		<property name="jpaDialect">
