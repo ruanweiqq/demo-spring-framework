@@ -15,6 +15,9 @@ import org.apache.commons.logging.LogFactory;
 import org.ruanwei.demo.springframework.dataAccess.orm.jpa.entity.UserJpaEntity;
 import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,12 +100,12 @@ public class SimpleJpaDao<T, ID> implements JpaDao<T, ID> {
 		return 0;
 	}
 
-	@Transactional(transactionManager = "jpaTransactionManager",propagation = Propagation.REQUIRES_NEW)
+	@Transactional(transactionManager = "jpaTransactionManager", propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public int saveWithKey(T entity) {
 		log.info("saveWithKey(T entity)");
 		return save(entity);
-		//throw new UnsupportedOperationException();
+		// throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -214,6 +217,7 @@ public class SimpleJpaDao<T, ID> implements JpaDao<T, ID> {
 	}
 
 	// =====Update=====
+	// TODO:重构为entityManager.merge()进行更新
 	@Override
 	public int updateAge(T entity) {
 		log.info("updateAge(T entity)");
@@ -272,6 +276,19 @@ public class SimpleJpaDao<T, ID> implements JpaDao<T, ID> {
 		// Query query = entityManager.createNativeQuery(sql, UserJpaEntity.class);
 		Query query = entityManager.createQuery("delete UserJpaEntity u");
 		return query.executeUpdate();
+	}
+
+	// ==========PagingAndSortingDao==========
+	@Override
+	public Page<T> findAll(Pageable pageable) {
+		log.info("findAll(Pageable pageable)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<T> findAll(Sort sort) {
+		log.info("findAll(Sort sort)");
+		throw new UnsupportedOperationException();
 	}
 
 	// ======================================================

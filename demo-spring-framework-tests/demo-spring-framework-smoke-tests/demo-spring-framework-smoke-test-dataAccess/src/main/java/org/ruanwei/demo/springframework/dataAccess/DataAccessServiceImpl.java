@@ -61,7 +61,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 	public void doSomethingWithJdbcTransaction(UserJdbcEntity user1, UserJdbcEntity user2) {
 		log.info("doSomethingWithJdbcTransaction(UserJdbcEntity user1, UserJdbcEntity user2)");
 
-		// 这个由于ArithmeticException会回滚
+		// 这个由于REQUIRED，ArithmeticException会回滚
 		userJdbcDao.save(user1);
 		applicationEventPublisher.publishEvent(new SaveEvent<UserJdbcEntity, Integer>(user1, 111));
 

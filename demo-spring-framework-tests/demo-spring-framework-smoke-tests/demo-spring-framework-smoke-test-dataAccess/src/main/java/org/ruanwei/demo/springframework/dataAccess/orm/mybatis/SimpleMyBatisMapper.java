@@ -9,6 +9,9 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,4 +84,15 @@ public interface SimpleMyBatisMapper<T, ID> extends MyBatisMapper<T, ID> {
 	default int deleteAll() {
 		return deleteAll(null);
 	};
+
+	// ==========PagingAndSortingDao==========
+	@Override
+	default public Page<T> findAll(Pageable pageable) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	default public List<T> findAll(Sort sort) {
+		throw new UnsupportedOperationException();
+	}
 }

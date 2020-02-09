@@ -14,6 +14,9 @@ import org.ruanwei.demo.springframework.dataAccess.orm.hibernate.entity.UserHibe
 import org.ruanwei.demo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,11 +60,11 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 		return (int) currentSession().save(entity);
 	}
 
-	@Transactional(transactionManager = "hibernateTransactionManager",propagation = Propagation.REQUIRES_NEW)
+	@Transactional(transactionManager = "hibernateTransactionManager", propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public int saveWithKey(T entity) {
 		return save(entity);
-		//throw new UnsupportedOperationException();
+		// throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -231,6 +234,19 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 		// UserHibernateEntity.class);
 		Query<?> query = currentSession().createQuery("delete UserHibernateEntity u");
 		return query.executeUpdate();
+	}
+
+	// ==========PagingAndSortingDao==========
+	@Override
+	public Page<T> findAll(Pageable pageable) {
+		log.info("findAll(Pageable pageable)");
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<T> findAll(Sort sort) {
+		log.info("findAll(Sort sort)");
+		throw new UnsupportedOperationException();
 	}
 
 	// ======================================================

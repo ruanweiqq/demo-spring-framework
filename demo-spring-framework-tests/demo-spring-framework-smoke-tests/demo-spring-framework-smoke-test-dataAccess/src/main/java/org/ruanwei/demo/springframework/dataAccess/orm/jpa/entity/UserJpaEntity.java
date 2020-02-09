@@ -5,26 +5,22 @@ import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
 
 @Data
 @NamedQueries({ @NamedQuery(name = "findAll", query = "select u from UserJpaEntity u"),
 		@NamedQuery(name = "countAll", query = "select count(u) from UserJpaEntity u") })
-@DynamicUpdate
 @Table(name = "user")
 @Entity
 public class UserJpaEntity {
 
-	@GenericGenerator(name = "increment", strategy = "increment")
-	@GeneratedValue(generator = "increment")//查询最大值
+	@GeneratedValue(strategy = GenerationType.IDENTITY,generator = "increment") // 查询最大值
 	@Id
 	private int id;
 
