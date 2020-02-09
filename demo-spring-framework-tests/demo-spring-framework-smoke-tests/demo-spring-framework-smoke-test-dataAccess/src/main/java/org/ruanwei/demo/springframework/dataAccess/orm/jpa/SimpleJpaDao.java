@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * <b>Java Persistence API (Hibernate provide a implementation):</b><br/>
+ * <b>Java Persistence API (implementation of Hibernate):</b><br/>
  * <li>javax.persistence.EntityManagerFactory (org.hibernate.SessionFactory).
  * <li>javax.persistence.EntityManager (org.hibernate.Session).
  * <li>javax.persistence.Transaction (org.hibernate.Transaction).<br/><br/>
