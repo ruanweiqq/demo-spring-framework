@@ -217,7 +217,6 @@ public class SimpleJpaDao<T, ID> implements JpaDao<T, ID> {
 	}
 
 	// =====Update=====
-	// TODO:重构为entityManager.merge()进行更新
 	@Override
 	public int updateAge(T entity) {
 		log.info("updateAge(T entity)");
@@ -233,6 +232,15 @@ public class SimpleJpaDao<T, ID> implements JpaDao<T, ID> {
 		query.setParameter("birthday", user.getBirthday());
 
 		return query.executeUpdate();
+	}
+
+	@Override
+	public int update(T entity) {
+		log.info("update(T entity)");
+
+		entityManager.merge(entity);
+
+		return 0;
 	}
 
 	// =====Delete=====

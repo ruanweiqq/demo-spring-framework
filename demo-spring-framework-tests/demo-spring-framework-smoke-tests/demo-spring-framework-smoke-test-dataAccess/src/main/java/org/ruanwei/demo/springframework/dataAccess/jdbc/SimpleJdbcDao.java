@@ -211,6 +211,12 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		log.info("updateAge(T entity)");
 		return _update(sql_update_age_namedParam, entity, null);
 	}
+	
+	@Override
+	public int update(T entity) {
+		log.info("update(T entity)");
+		throw new UnsupportedOperationException();
+	}
 
 	@Override
 	public int deleteById(ID id) {

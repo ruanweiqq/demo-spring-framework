@@ -63,7 +63,12 @@ public interface SimpleMyBatisMapper<T, ID> extends MyBatisMapper<T, ID> {
 	// ==========Update==========
 	@Update("update user set age = #{age} where name = #{name} and birthday = #{birthday}")
 	@Override
-	int updateAge(T user);
+	int updateAge(T entity);
+
+	@Override
+	default int update(T entity) {
+		throw new UnsupportedOperationException();
+	}
 
 	// ==========Delete==========
 	@Delete("delete from user where id = #{id}")

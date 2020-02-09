@@ -189,6 +189,12 @@ public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 		log.info("updateAge(T entity)");
 		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public int update(T entity) {
+		log.info("update(T entity)");
+		throw new UnsupportedOperationException();
+	}
 
 	@Override
 	public int deleteById(ID id) {

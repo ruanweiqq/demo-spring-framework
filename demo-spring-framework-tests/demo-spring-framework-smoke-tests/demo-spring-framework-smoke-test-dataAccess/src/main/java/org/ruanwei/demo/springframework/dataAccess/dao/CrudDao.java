@@ -37,6 +37,8 @@ public interface CrudDao<T, ID> extends Dao<T, ID> {
 	@Deprecated
 	int updateAge(T entity);
 
+	int update(T entity);
+
 	// ==========Delete==========
 	int deleteById(ID id); // 8
 

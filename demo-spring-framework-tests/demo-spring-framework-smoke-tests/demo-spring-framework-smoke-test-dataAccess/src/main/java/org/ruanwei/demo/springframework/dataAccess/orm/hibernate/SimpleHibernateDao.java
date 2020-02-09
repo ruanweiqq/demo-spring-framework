@@ -191,6 +191,18 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 		return query.executeUpdate();
 	}
 
+	@Override
+	public int update(T entity) {
+		currentSession().update(entity);
+		return 0;
+	}
+
+	// @Override
+	public int saveOrUpdate(T entity) {
+		currentSession().saveOrUpdate(entity);
+		return 0;
+	}
+
 	// =====Delete=====
 	@Override
 	public int deleteById(ID id) {
@@ -250,7 +262,6 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 	}
 
 	// ======================================================
-
 	@Transactional(readOnly = true)
 	public Optional<T> findById3(Integer id) {
 		return currentSession().byId(getTClass()).loadOptional(id);
@@ -260,18 +271,6 @@ public class SimpleHibernateDao<T, ID> implements HibernateDao<T, ID> {
 	// @Override
 	public boolean exists(T entity) {
 		return currentSession().contains(entity);
-	}
-
-	// @Override
-	public int update(T entity) {
-		currentSession().update(entity);
-		return 0;
-	}
-
-	// @Override
-	public int saveOrUpdate(T entity) {
-		currentSession().saveOrUpdate(entity);
-		return 0;
 	}
 
 }
