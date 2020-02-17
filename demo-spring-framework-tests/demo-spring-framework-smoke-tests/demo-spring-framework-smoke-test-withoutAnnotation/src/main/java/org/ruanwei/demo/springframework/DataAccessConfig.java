@@ -143,7 +143,7 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 
 	// local transaction manager for JDBC DataSource
 	@Primary
-	@Bean("transactionManager")
+	@Bean("dataSourceTransactionManager")
 	public PlatformTransactionManager transactionManager() {
 		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
 		transactionManager.setDataSource(springDataSource());

@@ -66,8 +66,8 @@ import org.springframework.util.concurrent.ListenableFuture;
  */
 @ActiveProfiles("development")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringJUnitConfig(locations = "classpath:spring/dataAccess.xml")
-//@SpringJUnitConfig(DataAccessConfig.class)
+//@SpringJUnitConfig(locations = "classpath:spring/dataAccess.xml")
+@SpringJUnitConfig(DataAccessConfig.class)
 public class DataAccessTest {
 	private static Log log = LogFactory.getLog(DataAccessTest.class);
 

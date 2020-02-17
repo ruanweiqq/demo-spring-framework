@@ -89,7 +89,7 @@
 	</aop:config>
 	<!-- see TransactionProxyFactoryBean -->
 	<tx:advice id="dataSourceTxAdvice"
-		transaction-manager="transactionManager">
+		transaction-manager="dataSourceTransactionManager">
 		<tx:attributes>
 			<tx:method name="find*" read-only="true" />
 			<tx:method name="doSomethingWithJdbcTransaction"
@@ -147,8 +147,8 @@
 		class="org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcExampleDao">
 		<property name="dataSource" ref="springDataSource" />
 	</bean>
-	<!-- PlatformTransactionManager:local transaction manager for plain JDBC -->
-	<bean id="transactionManager"
+	<!-- PlatformTransactionManager:local transaction manager for JDBC DataSource -->
+	<bean id="dataSourceTransactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
 		primary="true">
 		<property name="dataSource" ref="springDataSource" />
