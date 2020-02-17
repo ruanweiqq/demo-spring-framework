@@ -32,8 +32,7 @@ import org.springframework.util.concurrent.ListenableFuture;
  *
  */
 
-@Transactional
-@Repository
+@Transactional(transactionManager = "dataSourceTransactionManager")
 public interface UserJdbcRepository extends PagingAndSortingRepository<User, Integer> {
 	// ====================single row====================
 	@Query("select name from user where id = :id")

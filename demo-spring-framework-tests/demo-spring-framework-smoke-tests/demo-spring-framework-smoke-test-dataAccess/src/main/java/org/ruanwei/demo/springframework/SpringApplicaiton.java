@@ -1,38 +1,41 @@
 package org.ruanwei.demo.springframework;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.JdbcDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.UserJdbcDao;
+import org.ruanwei.demo.springframework.dataAccess.jdbc.entity.UserJdbcEntity;
+import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.MyBatisMapper;
+import org.ruanwei.demo.springframework.dataAccess.orm.mybatis.entity.UserMyBatisEntity;
+import org.ruanwei.demo.springframework.dataAccess.springdata.jdbc.UserJdbcRepository;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-@Deprecated
 public class SpringApplicaiton {
 	private static Log log = LogFactory.getLog(SpringApplicaiton.class);
 
 	private static AbstractApplicationContext context;
 	static {
 		log.info("0======================================================================================");
-		// initApplicationContext(ApplicationContextType.ANNOTATION_CONFIG);
+		initApplicationContext(ApplicationContextType.ANNOTATION_CONFIG);
 		log.info("0======================================================================================");
 	}
 
 	public static void main(String[] args) {
 		log.info("Hello, World!" + context);
-		Integer[] arr = { 1, 2, 3 };
-		List<Integer> list = Arrays.asList(arr);
-		log.info("0======================================================================================"
-				+ toString1(arr));
-		log.info("0======================================================================================"
-				+ toString2(list));
+		UserJdbcDao userJdbcDao = context.getBean(UserJdbcDao.class);
+		log.info("userJdbcDao====" + userJdbcDao);
+		MyBatisMapper<UserMyBatisEntity, Integer> userMyBatisMapper = context.getBean(MyBatisMapper.class);
+		log.info("userMyBatisMapper====" + userMyBatisMapper);
+		UserJdbcRepository userJdbcRepository = context.getBean(UserJdbcRepository.class);
+		log.info("userJdbcRepository====" + userJdbcRepository);
 	}
 
-	public static String toString2(Iterable<Integer> ids) {
+	private static String toString2(Iterable<Integer> ids) {
 		if (ids == null)
 			return "null";
 
@@ -51,7 +54,7 @@ public class SpringApplicaiton {
 		return b.toString();
 	}
 
-	public static String toString1(Integer[] ids) {
+	private static String toString1(Integer[] ids) {
 		if (ids == null)
 			return "null";
 		int iMax = ids.length - 1;

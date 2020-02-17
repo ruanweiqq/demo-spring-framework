@@ -47,9 +47,9 @@ public class DataAccessServiceImpl implements DataAccessService {
 	@Autowired
 	private MyBatisMapper<UserMyBatisEntity, Integer> userMyBatisMapper;
 
-	// @Autowired
+	//@Autowired
 	private UserJdbcRepository userJdbcRepository;
-
+	
 	// @Autowired
 	private UserJpaRepository userJpaRepository;
 

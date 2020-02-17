@@ -316,8 +316,8 @@
 	
 	<!-- ==========B.Data Access:Spring Data========== -->
 	<!-- B.1.Spring Data:JDBC -->
-	<repositories
-		base-package="org.ruanwei.demo.springframework.dataAccess.springdata.jdbc" />
+	<!-- <repositories
+		base-package="org.ruanwei.demo.springframework.dataAccess.springdata.jdbc" /> -->
 		
 	<!-- B.2.Spring Data:JPA -->
 	<!-- <jpa:repositories

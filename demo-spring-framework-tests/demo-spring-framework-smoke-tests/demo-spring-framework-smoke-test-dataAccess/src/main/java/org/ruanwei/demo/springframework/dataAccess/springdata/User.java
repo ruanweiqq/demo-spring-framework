@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.domain.AfterDomainEventPublication;
 import org.springframework.data.domain.DomainEvents;
 
@@ -27,6 +28,7 @@ public class User {
 		this.birthday = birthday;
 	}
 
+	@PersistenceConstructor
 	public User(int id, String name, int age, Date birthday) {
 		this.id = id;
 		this.name = name;

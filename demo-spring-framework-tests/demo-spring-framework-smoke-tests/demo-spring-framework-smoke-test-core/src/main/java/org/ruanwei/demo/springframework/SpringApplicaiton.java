@@ -2,6 +2,7 @@ package org.ruanwei.demo.springframework;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.ruanwei.demo.springframework.core.ioc.Family;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -19,6 +20,8 @@ public class SpringApplicaiton {
 
 	public static void main(String[] args) {
 		log.info("Hello, World!" + context);
+		Family family = context.getBean(Family.class);
+		log.info("family====" + family);
 	}
 
 	private static void initApplicationContext(ApplicationContextType type) {

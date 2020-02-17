@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -30,6 +31,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.data.jdbc.repository.RowMapperMap;
+import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.jdbc.repository.config.ConfigurableRowMapperMap;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -40,6 +42,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -67,14 +70,12 @@ import redis.clients.jedis.JedisPoolConfig;
  *
  */
 @Profile("development")
-
 //@EnableJpaRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jpa")
-//@Import(JdbcConfiguration.class)
-//@Import(AbstractJdbcConfiguration.class)
+@Import(AbstractJdbcConfiguration.class)
 @EnableJdbcRepositories(basePackages = "org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
+@MapperScan(basePackages = "org.ruanwei.demo.springframework.dataAccess.orm.mybatis", sqlSessionFactoryRef = "sqlSessionFactory", factoryBean = MapperFactoryBean.class)
 @EnableTransactionManagement // see TransactionManagementConfigurer
 @PropertySource("classpath:jdbc.properties")
-@MapperScan(basePackages = "org.ruanwei.demo.springframework.dataAccess.orm.mybatis", sqlSessionFactoryRef = "sqlSessionFactory", factoryBean = MapperFactoryBean.class)
 @ComponentScan(basePackages = { "org.ruanwei.demo.springframework" })
 @Configuration
 public class AppConfig {// implements
@@ -90,7 +91,7 @@ public class AppConfig {// implements
 	private String username;
 	@Value("${jdbc.password}")
 	private String password;
-
+	
 	@Order(0)
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -367,6 +368,10 @@ public class AppConfig {// implements
 
 	// B.Data Access:Spring Data
 	// for spring data jdbc
+	@Bean
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate(DataSource dataSource) {
+        return new NamedParameterJdbcTemplate(dataSource);
+    }
 	//@Bean
 	public RowMapperMap rowMappers() {
 		return new ConfigurableRowMapperMap().register(Map.class, new ColumnMapRowMapper());
