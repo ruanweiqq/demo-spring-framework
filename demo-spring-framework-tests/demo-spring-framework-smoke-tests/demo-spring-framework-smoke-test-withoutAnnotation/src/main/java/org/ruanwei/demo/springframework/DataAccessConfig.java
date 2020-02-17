@@ -55,13 +55,14 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.config.JtaTransactionManagerFactoryBean;
 import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.interceptor.TransactionProxyFactoryBean;
 import org.vibur.dbcp.ViburDBCPDataSource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.zaxxer.hikari.HikariDataSource;
 
 /**
- * 对于事务配置，没有与基于XML的配置元数据相匹配的基于Java的配置元数据(无注解),因此开启了@EnableTransactionManagement.
+ * 对于事务配置，没有与基于XML的配置元数据相匹配的基于Java的配置元数据(无注解),因此开启了@ImportResource.参考TransactionProxyFactoryBean
  * 
  * @author ruanwei
  *
@@ -113,6 +114,19 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 
 	// B.Data Access:DAO/Transaction/JDBC/ORM/OXM/Spring Data
 	// B.0.Transaction
+	//@Bean("transactionProxyFactoryBean")
+	public TransactionProxyFactoryBean transactionProxyFactoryBean() {
+		TransactionProxyFactoryBean transactionProxyFactoryBean = new TransactionProxyFactoryBean();
+		transactionProxyFactoryBean.setTransactionManager(dataSourceTransactionManager());
+		Properties transactionAttributes = new Properties();
+		transactionAttributes.put("saveWithKey", "PROPAGATION_REQUIRES_NEW");
+		transactionAttributes.put("doSomethingWithJdbcTransaction", "PROPAGATION_REQUIRED");
+		transactionAttributes.put("find*", "PROPAGATION_REQUIRED,readOnly");
+		transactionProxyFactoryBean.setTransactionAttributes(transactionAttributes);
+		transactionProxyFactoryBean.setTarget(userJdbcDao());
+		return transactionProxyFactoryBean;
+	} 
+	
 	@Bean("dataAccessService")
 	public DataAccessService dataAccessService() {
 		DataAccessServiceImpl dataAccessService = new DataAccessServiceImpl();
@@ -142,9 +156,8 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 	}
 
 	// local transaction manager for JDBC DataSource
-	@Primary
 	@Bean("dataSourceTransactionManager")
-	public PlatformTransactionManager transactionManager() {
+	public PlatformTransactionManager dataSourceTransactionManager() {
 		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
 		transactionManager.setDataSource(springDataSource());
 		return transactionManager;
@@ -168,19 +181,21 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 		return factoryBean.getObject();
 	}
 
-	// B.2.2.JPA==========
+	// B.2.2.JPA:Hibernate/EclipseLink/OpenJPA==========
 	@Bean("userJpaDao")
 	public JpaDao userJpaDao() {
 		UserJpaDao userJpaDao = new UserJpaDao();
-		userJpaDao.setEntityManagerFactory(entityManagerFactory().getObject());
+		// 这里使用了@Primary强制注入Hibernate的SessionFactory而不是JPA的EntityManagerFactory，否则注入失败
+		// 由于是使用注解按照类型进行注入的，因此下面这行配置无效
+		//userJpaDao.setEntityManagerFactory(sessionFactory().getObject());
 		return userJpaDao;
 	}
 
 	// see HibernateTransactionManager
 	@Bean("jpaTransactionManager")
-	public PlatformTransactionManager jpaTransactionManager() {
+	public PlatformTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
 		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
-		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory);
 		jpaTransactionManager.setDataSource(hikariDataSource());
 		jpaTransactionManager.setJpaDialect(new HibernateJpaDialect()); // EclipseLinkJpaDialect
 		return jpaTransactionManager;
@@ -208,7 +223,7 @@ public class DataAccessConfig implements EnvironmentAware, InitializingBean {// 
 		return entityManagerFactory;
 	}
 
-	// B.2.3.Hibernate==========
+	// B.2.3.Hibernate Native==========
 	@Bean("userHibernateDao")
 	public HibernateDao userHibernateDao() {
 		UserHibernateDao userHibernateDao = new UserHibernateDao();

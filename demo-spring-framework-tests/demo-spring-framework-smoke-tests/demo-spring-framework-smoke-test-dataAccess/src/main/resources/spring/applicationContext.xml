@@ -43,7 +43,7 @@
 	<!-- B.0.Transaction -->
 	<!-- refer to smoke-test-withoutAnnotation for details -->
 	<tx:annotation-driven
-		transaction-manager="transactionManager" />
+		transaction-manager="dataSourceTransactionManager" />
 	
 	<!-- B.1.JDBC -->
 	<!-- PlatformTransactionManager:local transaction manager for JDBC DataSource -->
@@ -83,7 +83,7 @@
 			value="classpath*:mybatis/*-mapper.xml" />
 	</bean>
 	
-	<!-- B.2.2.JPA -->
+	<!-- B.2.2.JPA:Hibernate/EclipseLink/OpenJPA -->
 	<!-- PlatformTransactionManager:local transaction manager for JPA -->
 	<!-- see HibernateTransactionManager -->
 	<bean id="jpaTransactionManager"
@@ -132,11 +132,9 @@
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
 		</property>
-		
-		<!-- JPA providers of Hibernate does not require a JVM agent -->
 	</bean>
 	
-	<!-- B.2.3.Hibernate -->
+	<!-- B.2.3.Hibernate Native -->
 	<!-- LocalSessionFactoryBean and HibernateTransactionManager are alternative to LocalContainerEntityManagerFactoryBean and JpaTransactionManager for common JPA purposes -->
 	<!-- PlatformTransactionManager:local transaction manager for Hibernate -->
 	<bean id="hibernateTransactionManager"

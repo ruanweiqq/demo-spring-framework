@@ -101,7 +101,7 @@ public class AppConfig {// implements
 	// local transaction manager for plain JDBC
 	@Primary
 	@Bean("dataSourceTransactionManager")
-	public PlatformTransactionManager transactionManager() {
+	public PlatformTransactionManager dataSourceTransactionManager() {
 		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
 		transactionManager.setDataSource(springDataSource());
 		return transactionManager;
@@ -131,7 +131,7 @@ public class AppConfig {// implements
 		return factoryBean.getObject();
 	}
 
-	// B.2.2.JPA==========
+	// B.2.2.JPA:Hibernate/EclipseLink/OpenJPA==========
 	// local transaction manager for JPA
 	// see HibernateTransactionManager
 	@Bean("jpaTransactionManager")
@@ -166,7 +166,7 @@ public class AppConfig {// implements
 		return entityManagerFactory;
 	}
 
-	// B.2.3.Hibernate==========
+	// B.2.3.Hibernate Native==========
 	// LocalSessionFactoryBean and HibernateTransactionManager are alternative to
 	// LocalContainerEntityManagerFactoryBean and JpaTransactionManager for common
 	// JPA purposes.
