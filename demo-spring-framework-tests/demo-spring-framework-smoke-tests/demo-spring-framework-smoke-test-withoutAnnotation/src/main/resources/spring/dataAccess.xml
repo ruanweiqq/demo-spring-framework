@@ -180,7 +180,7 @@
 	<!-- B.2.2.JPA:Hibernate/EclipseLink/OpenJPA -->
 	<bean id="userJpaDao"
 		class="org.ruanwei.demo.springframework.dataAccess.orm.jpa.UserJpaDao">
-		<!-- 这里使用了<bean primary=true>强制注入Hibernate的SessionFactory而不是JPA的EntityManagerFactory，否则注入失败 -->
+		<!-- 这里使用了<bean primary=true>强制注入Hibernate的SessionFactory而不是JPA的EntityManagerFactory到JpaDAO，否则注入失败 -->
 		<!-- 由于是使用注解按照类型进行注入的，因此下面这行配置无效 -->
 		<!-- <property name="entityManagerFactory" ref="sessionFactory" /> -->
 	</bean>

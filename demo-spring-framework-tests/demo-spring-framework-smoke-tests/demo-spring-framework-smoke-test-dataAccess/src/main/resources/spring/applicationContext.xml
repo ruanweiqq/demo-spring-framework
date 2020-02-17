@@ -85,10 +85,10 @@
 	
 	<!-- B.2.2.JPA:Hibernate/EclipseLink/OpenJPA -->
 	<!-- PlatformTransactionManager:local transaction manager for JPA -->
+	<!-- 这里使用了<bean primary=true>强制注入Hibernate的SessionFactory而不是JPA的EntityManagerFactory到JpaDAO，否则注入失败 -->
 	<!-- see HibernateTransactionManager -->
 	<bean id="jpaTransactionManager"
 		class="org.springframework.orm.jpa.JpaTransactionManager">
-		<!-- 注意，JPA和Hibernate都提供了EntityManagerFactory实现，使用了@Primary强制注入HIbernate的SessionFactory，否则注入失败 -->
 		<!-- 注意：为了与DAO保持事务的一致性，这里使用的也是sessionFactory而不是entityManagerFactory -->
 		<property name="entityManagerFactory" ref="sessionFactory" />
 		<property name="dataSource" ref="hikariDataSource" />
