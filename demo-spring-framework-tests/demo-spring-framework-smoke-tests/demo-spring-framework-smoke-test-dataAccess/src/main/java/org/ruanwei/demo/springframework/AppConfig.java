@@ -28,6 +28,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -64,7 +65,7 @@ import redis.clients.jedis.JedisPoolConfig;
 @Profile("development")
 //@Import(AbstractJdbcConfiguration.class)
 //@EnableJpaRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jpa")
-//@EnableJdbcRepositories("org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
+@EnableJdbcRepositories(basePackages = "org.ruanwei.demo.springframework.dataAccess.springdata.jdbc")
 @EnableTransactionManagement // see TransactionManagementConfigurer
 @PropertySource("classpath:jdbc.properties")
 @MapperScan(basePackages = "org.ruanwei.demo.springframework.dataAccess.orm.mybatis", sqlSessionFactoryRef = "sqlSessionFactory", factoryBean = MapperFactoryBean.class)

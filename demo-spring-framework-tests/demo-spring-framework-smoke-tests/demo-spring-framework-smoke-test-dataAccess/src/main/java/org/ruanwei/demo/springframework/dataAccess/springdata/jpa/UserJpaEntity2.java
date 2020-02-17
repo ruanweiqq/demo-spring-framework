@@ -11,8 +11,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "user")
-public class UserJpaEntity {
+@Table()
+public class UserJpaEntity2 {
 	@Id
 	private int id;
 	@Column
@@ -20,10 +20,10 @@ public class UserJpaEntity {
 	private int age;
 	private Date birthday;
 
-	public UserJpaEntity() {
+	public UserJpaEntity2() {
 	}
 
-	public UserJpaEntity(String name, int age, Date birthday) {
+	public UserJpaEntity2(String name, int age, Date birthday) {
 		this.name = name;
 		this.age = age;
 		this.birthday = birthday;
@@ -31,7 +31,7 @@ public class UserJpaEntity {
 
 	@Override
 	public String toString() {
-		return "UserJpaEntity [id=" + id + ", name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
+		return "UserJpaEntity2 [id=" + id + ", name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
 	}
 
 }

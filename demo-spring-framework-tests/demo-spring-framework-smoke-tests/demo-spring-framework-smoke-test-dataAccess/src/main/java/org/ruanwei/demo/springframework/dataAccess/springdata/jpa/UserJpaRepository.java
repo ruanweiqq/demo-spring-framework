@@ -25,7 +25,7 @@ import org.springframework.util.concurrent.ListenableFuture;
  * @author ruanwei
  *
  */
-public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Integer> {
+public interface UserJpaRepository extends JpaRepository<UserJpaEntity2, Integer> {
 	// ====================single row====================
 	@Query("select name from user where id = :id")
 	String findNameById(@Param("id") int id);
@@ -34,7 +34,7 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Integer>
 	Map<String, Object> findNameAndAgeById(@Param("id") int id);
 
 	@Query("select * from user where id = :id")
-	UserJpaEntity findUserById(@Param("id") int id);
+	UserJpaEntity2 findUserById(@Param("id") int id);
 
 	// ====================multiple row====================
 	@Query("select name from user where id > :id")
@@ -44,7 +44,7 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Integer>
 	List<Map<String, Object>> findNameAndAgeListById(@Param("id") int id);
 
 	@Query("select * from user where id > :id")
-	List<UserJpaEntity> findUserListById(@Param("id") int id);
+	List<UserJpaEntity2> findUserListById(@Param("id") int id);
 
 	// ====================update====================
 	@Modifying
@@ -61,29 +61,29 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Integer>
 
 	// ====================transaction====================
 	// 不能在事务方法中进行try-catch
-	default public void transactionalMethod1(UserJpaEntity user) {
+	default public void transactionalMethod1(UserJpaEntity2 user) {
 		createUser(user.getName(), user.getAge(), user.getBirthday());
 
-		transactionalMethod2(new UserJpaEntity("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
+		transactionalMethod2(new UserJpaEntity2("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 
 		int i = 1 / 0;
 	}
 
 	// 不能在事务方法中进行try-catch
-	default public void transactionalMethod2(UserJpaEntity user) {
+	default public void transactionalMethod2(UserJpaEntity2 user) {
 		createUser(user.getName(), user.getAge(), user.getBirthday());
 	}
 
 	// ====================async query====================
 	@Async
 	@Query("select * from user")
-	Future<List<UserJpaEntity>> findAllUser1();
+	Future<List<UserJpaEntity2>> findAllUser1();
 
 	@Async
 	@Query("select * from user")
-	CompletableFuture<List<UserJpaEntity>> findAllUser2();
+	CompletableFuture<List<UserJpaEntity2>> findAllUser2();
 
 	@Async
 	@Query("select * from user")
-	ListenableFuture<List<UserJpaEntity>> findAllUser3();
+	ListenableFuture<List<UserJpaEntity2>> findAllUser3();
 }

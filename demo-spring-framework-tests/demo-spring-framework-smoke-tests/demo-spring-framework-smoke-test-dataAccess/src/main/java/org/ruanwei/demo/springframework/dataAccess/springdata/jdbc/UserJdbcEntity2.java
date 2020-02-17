@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @Table("user")
-public class UserJdbcEntity {
+public class UserJdbcEntity2 {
 	@Id
 	private int id;
 	@Column("name")
@@ -18,10 +18,10 @@ public class UserJdbcEntity {
 	private int age;
 	private Date birthday;
 
-	public UserJdbcEntity() {
+	public UserJdbcEntity2() {
 	}
 
-	public UserJdbcEntity(String name, int age, Date birthday) {
+	public UserJdbcEntity2(String name, int age, Date birthday) {
 		this.name = name;
 		this.age = age;
 		this.birthday = birthday;
@@ -29,7 +29,7 @@ public class UserJdbcEntity {
 
 	@Override
 	public String toString() {
-		return "UserJdbcEntity [id=" + id + ", name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
+		return "UserJdbcEntity2 [id=" + id + ", name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
 	}
 
 }
