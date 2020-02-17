@@ -15,7 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional("transactionManager")
+@Transactional("dataSourceTransactionManager")
 public interface SimpleMyBatisMapper<T, ID> extends MyBatisMapper<T, ID> {
 
 	// ==========Create==========
@@ -24,7 +24,7 @@ public interface SimpleMyBatisMapper<T, ID> extends MyBatisMapper<T, ID> {
 	@Override
 	int save(T entity);
 
-	@Transactional(transactionManager = "transactionManager", propagation = Propagation.REQUIRES_NEW)
+	@Transactional(transactionManager = "dataSourceTransactionManager", propagation = Propagation.REQUIRES_NEW)
 	@Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
 	@Insert("insert into user(name,age,birthday) values(#{name}, #{age}, #{birthday})")
 	@Override

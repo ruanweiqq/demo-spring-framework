@@ -100,7 +100,7 @@ public class AppConfig {// implements
 	// B.1.JDBC
 	// local transaction manager for plain JDBC
 	@Primary
-	@Bean("transactionManager")
+	@Bean("dataSourceTransactionManager")
 	public PlatformTransactionManager transactionManager() {
 		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
 		transactionManager.setDataSource(springDataSource());

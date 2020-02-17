@@ -27,8 +27,8 @@
         http://www.springframework.org/schema/redis http://www.springframework.org/schema/redis/spring-redis.xsd"
 	default-init-method="init" default-destroy-method="destroy">
 
-	<!-- ==========A.Core:IoC========== -->
 	<!-- refer to smoke-test-core and smoke-test-withoutAnnotation for details -->
+	<!-- ==========A.Core:IoC========== -->
 	<context:component-scan
 		base-package="org.ruanwei.demo.springframework">
 	</context:component-scan>
@@ -37,7 +37,6 @@
 		location="classpath*:jdbc.properties" file-encoding="UTF-8" order="0" />
 
     <!-- ==========A.Core:AOP and Instrumentation========== -->
-	<!-- refer to smoke-test-core and smoke-test-withoutAnnotation for details -->
 	<aop:aspectj-autoproxy />
 	
 	<!-- ==========B.Data Access:DAO/Transaction/JDBC/ORM/OXM/Spring Data========== -->	
@@ -47,8 +46,8 @@
 		transaction-manager="transactionManager" />
 	
 	<!-- B.1.JDBC -->
-	<!-- PlatformTransactionManager:local transaction manager for plain JDBC -->
-	<bean id="transactionManager"
+	<!-- PlatformTransactionManager:local transaction manager for JDBC DataSource -->
+	<bean id="dataSourceTransactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
 		primary="true">
 		<property name="dataSource" ref="springDataSource" />

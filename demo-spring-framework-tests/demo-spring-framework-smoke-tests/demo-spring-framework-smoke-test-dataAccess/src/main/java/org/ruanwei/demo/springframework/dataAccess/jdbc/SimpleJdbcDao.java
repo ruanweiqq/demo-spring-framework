@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author ruanwei
  *
  */
-@Transactional("transactionManager")
+@Transactional("dataSourceTransactionManager")
 public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 	private static Log log = LogFactory.getLog(SimpleJdbcDao.class);
 
@@ -180,7 +180,7 @@ public class SimpleJdbcDao<T, ID> implements JdbcDao<T, ID> {
 		return _update(sql_insert_namedParam, entity, null);
 	}
 
-	@Transactional(transactionManager = "transactionManager", propagation = Propagation.REQUIRES_NEW)
+	@Transactional(transactionManager = "dataSourceTransactionManager", propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public int saveWithKey(T entity) {
 		log.info("saveWithKey(T entity)");

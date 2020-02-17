@@ -56,7 +56,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
 
-	@Transactional(transactionManager = "transactionManager", rollbackFor = ArithmeticException.class)
+	@Transactional(transactionManager = "dataSourceTransactionManager", rollbackFor = ArithmeticException.class)
 	@Override
 	public void doSomethingWithJdbcTransaction(UserJdbcEntity user1, UserJdbcEntity user2) {
 		log.info("doSomethingWithJdbcTransaction(UserJdbcEntity user1, UserJdbcEntity user2)");
@@ -73,7 +73,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 		int i = 1 / 0;
 	}
 
-	@Transactional(transactionManager = "transactionManager", rollbackFor = ArithmeticException.class)
+	@Transactional(transactionManager = "dataSourceTransactionManager", rollbackFor = ArithmeticException.class)
 	@Override
 	public void doSomethingWithJdbcTransaction2(UserJdbcEntity user1, UserJdbcEntity user2) {
 		userJdbcExampleDao.save(user1);
@@ -97,7 +97,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 		int i = 1 / 0;
 	}
 
-	@Transactional(transactionManager = "transactionManager", rollbackFor = ArithmeticException.class)
+	@Transactional(transactionManager = "dataSourceTransactionManager", rollbackFor = ArithmeticException.class)
 	@Override
 	public void doSomethingWithMybatisTransaction(UserMyBatisEntity user1, UserMyBatisEntity user2) {
 		userMyBatisMapper.save(user1);

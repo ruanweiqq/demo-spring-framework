@@ -44,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author ruanwei
  *
  */
-@Transactional("transactionManager")
+@Transactional("dataSourceTransactionManager")
 public class SimpleJdbcExampleDao<T, ID> implements JdbcExampleDao<T, ID> {
 	private static Log log = LogFactory.getLog(SimpleJdbcExampleDao.class);
 
