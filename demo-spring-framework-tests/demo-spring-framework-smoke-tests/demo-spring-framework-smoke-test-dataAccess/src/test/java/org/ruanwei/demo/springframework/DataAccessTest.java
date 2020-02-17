@@ -201,7 +201,7 @@ public class DataAccessTest {
 	@Autowired
 	private MyBatisMapper<UserMyBatisEntity, Integer> userMyBatisMapper;
 
-	// @Autowired
+	@Autowired 
 	private UserJdbcRepository userJdbcRepository;
 
 	// @Autowired

@@ -13,6 +13,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.ListenableFuture;
 
 /**
@@ -29,6 +31,9 @@ import org.springframework.util.concurrent.ListenableFuture;
  * @author ruanwei
  *
  */
+
+@Transactional
+@Repository
 public interface UserJdbcRepository extends PagingAndSortingRepository<User, Integer> {
 	// ====================single row====================
 	@Query("select name from user where id = :id")
@@ -68,15 +73,32 @@ public interface UserJdbcRepository extends PagingAndSortingRepository<User, Int
 	default public void transactionalMethod1(User user) {
 		createUser(user.getName(), user.getAge(), user.getBirthday());
 
-		transactionalMethod2(new User("ruanwei_tmp", 2, Date.valueOf("1983-07-06")));
 
 		int i = 1 / 0;
 	}
 
-	// 不能在事务方法中进行try-catch
-	default public void transactionalMethod2(User user) {
-		createUser(user.getName(), user.getAge(), user.getBirthday());
-	}
+	// 1 Create
+	// CrudRepository#save
+	// CrudRepository#saveAll
+
+	// 2 Update
+	@Modifying
+	@Query("update user set name = :name,age = :age,birthday = :birthday where id = :id")
+	int update(@Param("name") String name, @Param("age") int age);
+
+	// 3.1 Read single row
+	// CrudRepository.findById
+	// CrudRepository.existsById
+
+	// 3.2 Read multiple row
+	// CrudRepository.findAll
+	// CrudRepository.count
+
+	// 4 Delete
+	// CrudRepository.deleteById
+	// CrudRepository.delete
+
+	// ====================multiple row====================
 
 	// ====================async query====================
 	@Async
