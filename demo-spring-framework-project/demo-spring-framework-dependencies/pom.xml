@@ -30,7 +30,7 @@
 		
 		<!-- Spring Framework -->
 		<!-- <spring-framework.version>5.0.12.RELEASE</spring-framework.version> -->
-		<spring-framework.version>5.2.3.RELEASE</spring-framework.version>
+		<spring-framework.version>5.2.9.RELEASE</spring-framework.version>
 		<javax-inject.version>1</javax-inject.version>
 		<validation-api.version>2.0.1.Final</validation-api.version>
 		<hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
