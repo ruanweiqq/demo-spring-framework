@@ -33,7 +33,7 @@
 		<spring-framework.version>5.2.3.RELEASE</spring-framework.version>
 		<javax-inject.version>1</javax-inject.version>
 		<validation-api.version>2.0.1.Final</validation-api.version>
-		<hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
+		<hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
 		<javax-el.version>3.0.1-b11</javax-el.version>
 		<jackson.version>2.10.1</jackson.version>
 		
