@@ -35,7 +35,7 @@
 		<validation-api.version>2.0.1.Final</validation-api.version>
 		<hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
 		<javax-el.version>3.0.1-b11</javax-el.version>
-		<jackson.version>2.10.1</jackson.version>
+		<jackson.version>2.12.7.1</jackson.version>
 		
 		
 		<!-- Spring Data -->
